@@ -15,8 +15,7 @@ namespace test
 		{
 			InitializeComponent();
 			Console.WriteLine(Path.GetDirectoryName(Environment.CurrentDirectory));
-			image = Image.FromStream(
-				System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("test.images.octopus.png"));
+			image = Image.FromStream(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("test.images.poulpy.png"));
 			x = 0;
 			y = 0;
 

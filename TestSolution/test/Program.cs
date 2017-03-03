@@ -12,8 +12,7 @@ namespace test
 		public static void Main(string[] args)
 		{
 			Console.WriteLine("Hello World!");
-
-
+            
 			TransparentForm form = new TransparentForm();
 			form.Show();
 			Application.EnableVisualStyles();
