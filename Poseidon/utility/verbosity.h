@@ -1,0 +1,6 @@
+#ifndef POSEIDON_VERBOSITY_H
+#define POSEIDON_VERBOSITY_H
+
+int verbosity;
+
+#endif //POSEIDON_VERBOSITY_H
