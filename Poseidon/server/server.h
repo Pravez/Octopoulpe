@@ -1,0 +1,4 @@
+#ifndef POSEIDON_SERVER_H
+#define POSEIDON_SERVER_H
+
+#endif //POSEIDON_SERVER_H
