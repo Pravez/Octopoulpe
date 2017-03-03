@@ -4,3 +4,9 @@
 /home/manjaro/Projects/test/test/obj/x86/Debug/test.exe
 /home/manjaro/Projects/test/test/obj/x86/Debug/test.exe.mdb
 /home/manjaro/Projects/test/test/obj/x86/Debug/test.images.octopus.png
+/home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.octopus.png
+/home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/bin/Debug/test.exe.mdb
+/home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/bin/Debug/test.exe
+/home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/test.exe
+/home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/test.exe.mdb

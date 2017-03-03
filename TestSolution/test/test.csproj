@@ -38,12 +38,15 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TransparentForm.cs" />
+    <Compile Include="View\Connect.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="View\affichage.cfg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="images\" />
+    <Folder Include="View\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="images\octopus.png" />

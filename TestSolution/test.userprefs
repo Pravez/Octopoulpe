@@ -1,4 +1,4 @@
-﻿<Properties StartupConfiguration="{87259DC2-A986-482D-80F2-D42A26768DB0}|Default">
+﻿<Properties StartupConfiguration="{87259DC2-A986-482D-80F2-D42A26768DB0}|Default" StartupItem="test/test.csproj">
   <MonoDevelop.Ide.Workbench ActiveDocument="test/TransparentForm.cs">
     <Files>
       <File FileName="test/Program.cs" Line="21" Column="1" />
@@ -6,10 +6,10 @@
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.ItemProperties.test PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.test PreferredExecutionTarget="MonoDevelop.Default" />
 </Properties>
