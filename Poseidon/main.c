@@ -21,9 +21,15 @@ int main(int argc, char* argv[]){
 
     int view = aq__add_view(&aquarium1, (struct position) {10, 10}, (struct dimension) {10, 10});
 
-    aqv__add_fish(aq__get_view_by_id(&aquarium1, view), fish__create(OCTOPUS, 5, 6));
+    aq__add_fish_to_view(&aquarium1, view, fish__create(OCTOPUS, 50, 50));
+    aq__add_fish(&aquarium1, fish__create(BLOBFISH, 10, 20));
+    aq__add_fish(&aquarium1, fish__create(BLOBFISH, 10, 30));
+    aq__add_fish(&aquarium1, fish__create(BLOBFISH, 10, 40));
 
-    display_view(aq__get_view_by_id(&aquarium1, view));
+    display_aquarium(&aquarium1);
+
+    aq__remove_fish(&aquarium1, 1);
+    display_aquarium(&aquarium1);
 
     return EXIT_SUCCESS;
 }
