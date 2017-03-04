@@ -17,18 +17,20 @@ int main(int argc, char* argv[]){
     _console_log(LOG_LOW, "simple log");
 
     struct aquarium aquarium1;
-    aq__initialize_aquarium(&aquarium1, (struct dimension) {100, 100});
+    aq__initialize_aquarium(&aquarium1, (struct dimension) {1000, 1000});
 
-    int view = aq__add_view(&aquarium1, (struct position) {10, 10}, (struct dimension) {10, 10});
+    int view1 = aq__add_view(&aquarium1, (struct position) {250, 250}, (struct dimension) {500, 500});
+    int view2 = aq__add_view(&aquarium1, (struct position) {100, 100}, (struct dimension) {900, 900});
 
-    aq__add_fish_to_view(&aquarium1, view, fish__create(OCTOPUS, 50, 50));
     aq__add_fish(&aquarium1, fish__create(BLOBFISH, 10, 20));
     aq__add_fish(&aquarium1, fish__create(BLOBFISH, 10, 30));
-    aq__add_fish(&aquarium1, fish__create(BLOBFISH, 10, 40));
+    aq__add_fish(&aquarium1, fish__create(OCTOPUS, 300, 300));
+    aq__add_fish(&aquarium1, fish__create(OCTOPUS, 400, 400));
 
     display_aquarium(&aquarium1);
 
     aq__remove_fish(&aquarium1, 1);
+    aq__remove_fish(&aquarium1, 3);
     display_aquarium(&aquarium1);
 
     return EXIT_SUCCESS;

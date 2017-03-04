@@ -1,6 +1,10 @@
 #ifndef POSEIDON_TOOLS_H
 #define POSEIDON_TOOLS_H
 
+#define boolean int
+#define TRUE 1
+#define FALSE 0
+
 struct position{
     int x;
     int y;
@@ -13,10 +17,7 @@ struct dimension{
 
 struct position __position(int x, int y);
 struct dimension __dimension(int width, int height);
-
-#define boolean int
-#define TRUE 1
-#define FALSE 0
+boolean check_in_screen(struct position s_pos, struct dimension dimensions, struct position position);
 
 #define LOG_HIGH 4
 #define LOG_MEDIUM 3

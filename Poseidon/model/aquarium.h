@@ -162,19 +162,15 @@ int aq__add_view(struct aquarium* aquarium, struct position s_pos, struct dimens
 struct aquarium_view* aq__get_view_by_id(struct aquarium* aquarium, int id);
 
 /**
- * To add a fish to the aquarium, but in the not-displayed fish context
+ * Tries to add the fish according to its coordinates. If coordinates match the content of a screen, then
+ * it adds it to this screen. Else, it adds to the not-displayed fishes
  * @param aquarium
  * @param fish
  */
 void aq__add_fish(struct aquarium* aquarium, struct fish fish);
 
-/**
- * To add a fish to the aquarium, but in a view (so, ideally it is supposed to be displayed)
- * @param aquarium
- * @param view_id
- * @param fish
- */
-void aq__add_fish_to_view(struct aquarium* aquarium, int view_id, struct fish fish);
+//TODO need to be reworked ...
+//void aq__add_fish_to_view(struct aquarium* aquarium, int view_id, struct fish fish);
 
 /**
  * To remove a fish from the aquarium, if it can't find it in the "not displayed" ones,

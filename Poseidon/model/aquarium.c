@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "aquarium.h"
+#include "../utility/tools.h"
 
 static int _fish_ids = 0;
 static int _views_ids = 0;
@@ -123,22 +124,43 @@ struct aquarium_view *aq__get_view_by_id(struct aquarium *aquarium, int id) {
     return NULL;
 }
 
-void aq__add_fish(struct aquarium* aquarium, struct fish fish){
+void aq__add_fish(struct aquarium *aquarium, struct fish fish) {
     CHCK_NULL(aquarium, "aquarium")
 
-    fv__add_fish(&aquarium->_fishes, fish);
+    int positions[aquarium->_current_views];
+    int founds = 0;
+    //First we try to add the fish to views, if coordinates corresponds
+    for (int i = 0; i < aquarium->_current_views; i++) {
+        if (check_in_screen(aquarium->_views[i]._starting_position, aquarium->_views[i]._dimensions, fish._position)) {
+            positions[founds++] = i;
+        }
+    }
+
+    //Then we try to add it
+    if (founds == 0) {
+        //We couldn't find any matches, so it's that it isn't in any screen ... !
+        fv__add_fish(&aquarium->_fishes, fish);
+    } else {
+        //We found it, so we add it to the views ... !
+        for (int i = 0; i < founds; i++)
+            fv__add_fish(&aquarium->_views[positions[i]]._fishes, fish);
+    }
 }
 
-void aq__add_fish_to_view(struct aquarium* aquarium, int view_id, struct fish fish){
+/*void aq__add_fish_to_view(struct aquarium *aquarium, int view_id, struct fish fish) {
     CHCK_NULL(aquarium, "aquarium")
 
-    aqv__add_fish(aq__get_view_by_id(aquarium, view_id), fish);
-}
+    if (view_id == -1) {
+        aq__add_fish(aquarium, fish);
+    } else {
+        aqv__add_fish(aq__get_view_by_id(aquarium, view_id), fish);
+    }
+}*/
 
-void aq__remove_fish(struct aquarium* aquarium, int fish_id){
+void aq__remove_fish(struct aquarium *aquarium, int fish_id) {
     //first we seek for fishes not displayed
-    for(int i=0;i<aquarium->_fishes._current;i++){
-        if(aquarium->_fishes._vector[i]._id == fish_id){
+    for (int i = 0; i < aquarium->_fishes._current; i++) {
+        if (aquarium->_fishes._vector[i]._id == fish_id) {
             fv__remove_fish(&aquarium->_fishes, fish_id);
             _console_log(LOG_MEDIUM, "Removed fish");
             return;
@@ -146,12 +168,11 @@ void aq__remove_fish(struct aquarium* aquarium, int fish_id){
     }
 
     //Then if we didn't find, we seek in views ...
-    for(int i=0;i < aquarium->_current_views;i++){
-        for(int j=0;j<aquarium->_views[i]._fishes._current;j++){
-            if(aquarium->_views[i]._fishes._vector[j]._id == fish_id){
+    for (int i = 0; i < aquarium->_current_views; i++) {
+        for (int j = 0; j < aquarium->_views[i]._fishes._current; j++) {
+            if (aquarium->_views[i]._fishes._vector[j]._id == fish_id) {
                 fv__remove_fish(&aquarium->_views[i]._fishes, fish_id);
                 _console_log(LOG_MEDIUM, "Removed fish");
-                return;
             }
         }
     }
@@ -166,22 +187,22 @@ void display_fish(struct fish *fish) {
            fish->_position.x, fish->_position.y);
 }
 
-void display_view(struct aquarium_view *aqv){
+void display_view(struct aquarium_view *aqv) {
     printf("VIEW : %d \n\t FISHES : \n", aqv->_view_id);
-    for(int i = 0;i < aqv->_fishes._current;i++){
+    for (int i = 0; i < aqv->_fishes._current; i++) {
         display_fish(&aqv->_fishes._vector[i]);
     }
     printf("END OF VIEW \n");
 }
 
-void display_aquarium(struct aquarium* aq){
+void display_aquarium(struct aquarium *aq) {
     printf("~~~~~~ AQUARIUM ~~~~~~\n");
-    for(int i=0;i<aq->_current_views;i++){
+    for (int i = 0; i < aq->_current_views; i++) {
         display_view(&aq->_views[i]);
     }
 
     printf("NOT DISPLAYED FISHES : \n");
-    for(int i = 0;i < aq->_fishes._current;i++){
+    for (int i = 0; i < aq->_fishes._current; i++) {
         display_fish(&aq->_fishes._vector[i]);
     }
     printf("~~~~~~~~~~~~~~~~~~~~~~\n");
