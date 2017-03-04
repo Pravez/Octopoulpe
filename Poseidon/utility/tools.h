@@ -1,5 +1,18 @@
-#ifndef POSEIDON_VERBOSITY_H
-#define POSEIDON_VERBOSITY_H
+#ifndef POSEIDON_TOOLS_H
+#define POSEIDON_TOOLS_H
+
+struct position{
+    int x;
+    int y;
+};
+
+struct dimension{
+    int width;
+    int height;
+};
+
+struct position __position(int x, int y);
+struct dimension __dimension(int width, int height);
 
 #define boolean int
 #define TRUE 1
@@ -24,4 +37,9 @@ void _console_log(int priority, char* messages);
 char* concatenate_strings(int qty, ...);
 char* m_strcat(char* dest, char* src);
 
-#endif //POSEIDON_VERBOSITY_H
+/**
+ * Taken from gnu.org https://www.gnu.org/software/libc/manual/html_node/Backtraces.html
+ */
+void print_trace();
+
+#endif //POSEIDON_TOOLS_H
