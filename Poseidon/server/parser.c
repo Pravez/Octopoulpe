@@ -22,8 +22,11 @@ void parse_config_file(const char* file){
     int tuple_nbr = 0;
 
     while ((read = getline(&line, &len, conf_file)) != -1) {
-        printf("Retrieved line of length %zu :\n", read);
-        printf("%s", line);
+        //printf("Retrieved line of length %zu :\n", read);
+        //printf("%s", line);
+
+        if(strcmp(line, ";") == 0)
+            break;
 
         for(int i=0;i < read;i++){
             if(line[i] != '=' && line[i] != '\n') {
@@ -45,9 +48,11 @@ void parse_config_file(const char* file){
 
     fclose(conf_file);
 
-    config_vector = _init_tvector(tuple_nbr+1);
-    for(int i = 0;i < tuple_nbr+1;i++){
+    config_vector = _init_tvector(tuple_nbr);
+    for(int i = 0;i < tuple_nbr;i++){
         _add_tuple(config_vector, temp_array[i]);
+        //if(i!=3)
+        //free(temp_array[i]._key);
     }
 }
 
