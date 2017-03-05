@@ -41,6 +41,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="View\Connect.cs" />
+    <Compile Include="View\ViewConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
