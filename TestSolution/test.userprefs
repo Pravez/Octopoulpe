@@ -1,8 +1,9 @@
 ﻿<Properties StartupConfiguration="{87259DC2-A986-482D-80F2-D42A26768DB0}|Default" StartupItem="test/test.csproj">
-  <MonoDevelop.Ide.Workbench ActiveDocument="test/TransparentForm.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="test/View/Connect.cs">
     <Files>
-      <File FileName="test/Program.cs" Line="21" Column="1" />
+      <File FileName="test/Program.cs" Line="1" Column="1" />
       <File FileName="test/TransparentForm.cs" Line="52" Column="6" />
+      <File FileName="test/View/Connect.cs" Line="16" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
