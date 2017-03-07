@@ -10,8 +10,15 @@
 /home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/bin/Debug/test.exe
 /home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/test.exe
 /home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/test.exe.mdb
-/home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.nyanpoulpy.png
-/home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.magicarpe.png
-/home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.dumby.png
-/home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.goldmagicarpe.png
-/home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.poulpy.png
+/home/lparant/S8-projects/Octopoulpe/TestSolution/test/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/home/lparant/S8-projects/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.nyanpoulpy.png
+/home/lparant/S8-projects/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.octopus.png
+/home/lparant/S8-projects/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.magicarpe.png
+/home/lparant/S8-projects/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.dumby.png
+/home/lparant/S8-projects/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.goldmagicarpe.png
+/home/lparant/S8-projects/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.poulpy.png
+/home/lparant/S8-projects/Octopoulpe/TestSolution/test/obj/x86/Debug/test.exe
+/home/lparant/S8-projects/Octopoulpe/TestSolution/test/obj/x86/Debug/test.exe.mdb
+/home/lparant/S8-projects/Octopoulpe/TestSolution/test/bin/Debug/test.exe.mdb
+/home/lparant/S8-projects/Octopoulpe/TestSolution/test/bin/Debug/test.exe
+>>>>>>> cdc8c049809d2146eb790b0a9062d7eaaf714b52
