@@ -30,9 +30,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -41,6 +43,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="View\Connect.cs" />
+    <Compile Include="View\PerPixelAlphaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\PerPixelAlphaForm.Designer.cs">
+      <DependentUpon>PerPixelAlphaForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -61,6 +69,12 @@
     <EmbeddedResource Include="images\dumby.png" />
     <EmbeddedResource Include="images\goldmagicarpe.png" />
     <EmbeddedResource Include="images\poulpy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="images\magicarpe3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="images\magicarpe2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -15,8 +15,10 @@ namespace test
             
 			TransparentForm form = new TransparentForm();
 			form.Show();
-			Application.EnableVisualStyles();
+            //form.CreateBitmapAtRuntime();
+            Application.EnableVisualStyles();
 			Application.Run(form);
-		}
+
+        }
 	}
 }
