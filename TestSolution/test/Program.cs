@@ -11,8 +11,8 @@ namespace test
 
 		public static void Main(string[] args)
 		{
-			Console.WriteLine("Hello World!");
-            
+			Console.WriteLine("Welcome Octopouple !!");
+
 			TransparentForm form = new TransparentForm();
 			form.Show();
             //form.CreateBitmapAtRuntime();
