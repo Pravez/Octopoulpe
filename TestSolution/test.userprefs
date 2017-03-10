@@ -2,10 +2,11 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="test/View/Connect.cs">
     <Files>
       <File FileName="test/View/affichage.cfg" Line="1" Column="1" />
-      <File FileName="test/View/Connect.cs" Line="4" Column="4" />
+      <File FileName="test/View/Connect.cs" Line="48" Column="18" />
+      <File FileName="test/View/ViewConfig.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

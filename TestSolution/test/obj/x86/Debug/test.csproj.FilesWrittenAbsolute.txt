@@ -27,3 +27,5 @@
 /home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.dumby.png
 /home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.goldmagicarpe.png
 /home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.poulpy.png
+/home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.magicarpe3.png
+/home/paul/Documents/Projets/2A/Octopoulpe/TestSolution/test/obj/x86/Debug/test.images.magicarpe2.png
