@@ -7,16 +7,18 @@ namespace test
 {
 	public class TransparentForm : CSWinFormLayeredWindow.PerPixelAlphaForm
 	{
-		private Image image;
+        //private Image image;
 
-        private Point position;
-
-        private int time = 0;
         private Size size;
+        private Point position;
+        private int time = 0;
 
         //attribute for moving
         private Point goal = new Point(-1, -1); // =-1 if no goal
 
+        /// <summary>  
+        ///  This function initialize the form, its image, size and position
+        /// </summary> 
         public TransparentForm(Size size)
 		{
 			InitializeComponent();
@@ -25,15 +27,16 @@ namespace test
             this.SelectBitmap(test);
 
             Console.WriteLine(Path.GetDirectoryName(Environment.CurrentDirectory));
-			//image = Image.FromStream(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("test.images.poulpy.png"));
 			position.X = 0;
 			position.Y = 0;
 
-			Application.Idle += TickWhileIdle;
-		
+			Application.Idle += TickWhileIdle;		
 		}
 
-		private void InitializeComponent()
+        /// <summary>  
+        ///  This function initialize several characteristic of the form
+        /// </summary> 
+        private void InitializeComponent()
 		{
 			this.ControlBox = false;
 			this.FormBorderStyle = FormBorderStyle.None;
@@ -42,10 +45,12 @@ namespace test
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.TopMost = true;
-            //this.BackColor = System.Drawing.Color.Transparent;
 		}
 
-		protected override void OnPaintBackground(PaintEventArgs e)
+        /// <summary>  
+        ///  This function was painting our picture on the screen, making the differents updates (obsolete for now)
+        /// </summary> 
+        protected override void OnPaintBackground(PaintEventArgs e)
         {
             /*MakeTransparent_Example1(e);
             Console.WriteLine(Path.GetDirectoryName(Environment.CurrentDirectory));
@@ -72,6 +77,9 @@ namespace test
 
         }
 
+        /// <summary>  
+        ///  This function allow the animation : it make the time running and make update consequently. (update sprite and make move)
+        /// </summary> 
         private void evolve()
 		{
             time = time +1;
@@ -104,8 +112,20 @@ namespace test
                 if (position.Equals(goal))
                     goal = new Point(-1, -1);
             }
-		}
+        }
 
+        /// <summary>  
+        ///  This function allow to start a move toward a specified position
+        /// </summary> 
+        public void move(Point p)
+        {
+            this.goal = p;
+        }
+
+
+        /// <summary>  
+        ///  The rest : it's 03:19 and I don't want to explain for now, go there : https://blogs.msdn.microsoft.com/shawnhar/2010/12/06/when-winforms-met-game-loop/
+        /// </summary> 
         System.Diagnostics.Stopwatch stopWatch = System.Diagnostics.Stopwatch.StartNew();
 
         readonly TimeSpan TargetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 60);
@@ -152,10 +172,6 @@ namespace test
             this.Refresh();
         }
 
-        public void move(Point p)
-        {
-            this.goal = p;
-        }
 
     }
 }

@@ -13,7 +13,7 @@ namespace test
 		{
 			Console.WriteLine("Welcome Octopouple !!");
 
-            Size size = new Size(100, 50);
+            Size size = new Size(100, 100);
 			TransparentForm form = new TransparentForm(size);
 			form.Show();
             //form.CreateBitmapAtRuntime();
