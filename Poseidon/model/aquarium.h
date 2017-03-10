@@ -133,6 +133,10 @@ void aqv__add_fish(struct aquarium_view* aqv, struct fish fish);
  */
 int aqv__get_fish_qty(struct aquarium_view* aqv);
 
+
+//TODO
+int aqv__remove_aquarium_view(struct aquarium_view* aqv);
+
 /////////////////////////////////////////////////
 /////             AQUARIUM                  /////
 /////////////////////////////////////////////////

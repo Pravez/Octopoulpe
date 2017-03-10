@@ -7,11 +7,14 @@
 
 #include "view.h"
 #include "../utility/file.h"
+#include "../model/aquarium.h"
 
 static char *line_read = (char *) NULL;
 const char *prompt = "Octopoulple $ > ";
 const char *delim = " ";
 int running;
+
+struct aquarium aquarium1;
 
 void display_menu() {
     printf("Welcome to "REDBOLD"Octopoulpe"RESET" main menu ! Enter a command to continue ...\n");
@@ -44,13 +47,18 @@ int handle_line(){
             string = strtok(line, delim);
             load_file(string);
         }else if(!strcmp(token, "show")){
-            //string = strtok()
+            string = strtok(line, delim);
+            display_view(aq__get_view_by_id(&aquarium1, atoi(string)));
         }else if(!strcmp(token, "addview")){
-
+            string = strtok(line, delim);
         }else if(!strcmp(token, "delview")){
-
+            string = strtok(line, delim);
+            aqv__remove_aquarium_view(aq__get_view_by_id(&aquarium1, atoi(string)));
         }else if(!strcmp(token, "save")){
-
+            string = strtok(line, delim);
+            int id = atoi(string);
+            string = strtok(line, delim);
+            write_file(string);
         }else{
             printf("\t> Unrecognized command, use 'help' or '?' to list available commands\n");
         }
