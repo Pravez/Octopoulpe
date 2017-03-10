@@ -8,20 +8,26 @@ namespace test
 	public class TransparentForm : CSWinFormLayeredWindow.PerPixelAlphaForm
 	{
 		private Image image;
-		private int x;
-		private int y;
+
+        private Point position;
+
         private int time = 0;
-		public TransparentForm()
+        private Size size;
+
+        //attribute for moving
+        private Point goal = new Point(-1, -1); // =-1 if no goal
+
+        public TransparentForm(Size size)
 		{
 			InitializeComponent();
-            Bitmap test = new Bitmap(Image.FromStream(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("test.images.magicarpe2.png")));
-           
+            Bitmap test = new Bitmap(Image.FromStream(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("test.images.magicarpe2.png")), size);
+            this.size = size;
             this.SelectBitmap(test);
 
             Console.WriteLine(Path.GetDirectoryName(Environment.CurrentDirectory));
 			//image = Image.FromStream(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("test.images.poulpy.png"));
-			x = 0;
-			y = 0;
+			position.X = 0;
+			position.Y = 0;
 
 			Application.Idle += TickWhileIdle;
 		
@@ -41,9 +47,9 @@ namespace test
 
 		protected override void OnPaintBackground(PaintEventArgs e)
         {
-            //MakeTransparent_Example1(e);
-            //Console.WriteLine(Path.GetDirectoryName(Environment.CurrentDirectory));
-            /*time++;
+            /*MakeTransparent_Example1(e);
+            Console.WriteLine(Path.GetDirectoryName(Environment.CurrentDirectory));
+            time++;
             this.Refresh();
             if (time<100)
             {
@@ -66,30 +72,38 @@ namespace test
 
         }
 
-		private void evolve()
+        private void evolve()
 		{
             time = time +1;
             if (time == 50)
             {                
-                this.SelectBitmap(new Bitmap(Image.FromStream(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("test.images.magicarpe3.png"))));
+                this.SelectBitmap(new Bitmap(Image.FromStream(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("test.images.magicarpe3.png")), size));
             }
             if (time == 100)
             {
                 time = 0;
-                this.SelectBitmap(new Bitmap(Image.FromStream(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("test.images.magicarpe2.png"))));
+                this.SelectBitmap(new Bitmap(Image.FromStream(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("test.images.magicarpe2.png")), size));
             }
 
+            if (goal.X != -1 && goal.Y != -1)
+            {
+                if (position.X == 500)
+                    this.position.X = 0;
+                else if (position.X < goal.X)
+                    this.position.X = this.position.X + 1;
+                else if (position.X > goal.X)
+                    this.position.X = this.position.X - 1;
 
-            if (x == 500)
-				this.x = 0;
-			else
-				this.x = this.x + 1;
+                if (position.Y == 600)
+                    this.position.Y = 0;
+                else if (position.Y < goal.Y)
+                    this.position.Y = this.position.Y + 1;
+                else if (position.Y > goal.X)
+                    this.position.Y = this.position.Y - 1;
 
-
-			if (y == 600)
-				this.y = 0;
-			else
-				this.y = this.y + 1;
+                if (position.Equals(goal))
+                    goal = new Point(-1, -1);
+            }
 		}
 
         System.Diagnostics.Stopwatch stopWatch = System.Diagnostics.Stopwatch.StartNew();
@@ -133,9 +147,14 @@ namespace test
         public void TickWhileIdle(object sender, EventArgs e)
 		{
 			evolve();
-			this.Location = new Point(x, y);
+            this.Location = this.position;
             this.Update();
             this.Refresh();
+        }
+
+        public void move(Point p)
+        {
+            this.goal = p;
         }
 
     }
