@@ -9,11 +9,11 @@ struct command{
 };
 
 enum menu_action{
-    ADDFISH, ADDVIEW, STATUS
+    LOAD, SHOW, ADDVIEW, DELVIEW, SAVE
 };
 
 void display_menu();
 void display_prompt();
-void do_action(enum menu_action action);
+int handle_line();
 
 #endif //POSEIDON_VIEW_H

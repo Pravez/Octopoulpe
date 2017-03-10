@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "server/parser.h"
 #include "model/aquarium.h"
+#include "view/view.h"
 
 extern struct _tvector* config_vector;
 
@@ -32,6 +33,8 @@ int main(int argc, char* argv[]){
     aq__remove_fish(&aquarium1, 1);
     aq__remove_fish(&aquarium1, 3);
     display_aquarium(&aquarium1);
+
+    display_prompt();
 
     return EXIT_SUCCESS;
 }

@@ -6,6 +6,7 @@
 
 #include "tools.h"
 
+
 struct position __position(int x, int y) {
     struct position pos = {x, y};
     return pos;
