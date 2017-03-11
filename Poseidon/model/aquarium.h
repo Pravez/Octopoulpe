@@ -105,6 +105,8 @@ struct fish* fv__get_fish_by_id(struct fish_vector* vector, int id);
  */
 struct fish* fv__get_fishes_by_type(struct fish_vector* vector, enum fish_type type);
 
+void fv__remove_vector(struct fish_vector* vector);
+
 /////////////////////////////////////////////////
 /////          AQUARIUM VIEW                /////
 /////////////////////////////////////////////////
@@ -135,7 +137,7 @@ int aqv__get_fish_qty(struct aquarium_view* aqv);
 
 
 //TODO
-int aqv__remove_aquarium_view(struct aquarium_view* aqv);
+void aqv__remove_aquarium_view(struct aquarium_view* aqv);
 
 /////////////////////////////////////////////////
 /////             AQUARIUM                  /////
@@ -183,6 +185,8 @@ void aq__add_fish(struct aquarium* aquarium, struct fish fish);
  * @param fish_id
  */
 void aq__remove_fish(struct aquarium* aquarium, int fish_id);
+
+void aq__remove_aquarium_view(struct aquarium* aquarium, int view_id);
 
 //For debug purposes
 void display_fish(struct fish* fish);
