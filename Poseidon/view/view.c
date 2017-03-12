@@ -10,7 +10,7 @@
 #include "../model/aquarium.h"
 
 static char *line_read = (char *) NULL;
-const char *prompt = "Octopoulple $ > ";
+const char *prompt = YELLOW"Octopoulple "YELLOWBOLD"$ > "RESET;
 const char *delim = " ";
 
 struct aquarium aquarium;
@@ -49,60 +49,112 @@ int handle_line() {
         display_help();
     else {
         token = strtok(line, delim);
-        char *string;
 
         if (!strcmp(token, "load")) {
-            string = strtok(NULL, delim);
-            load_file(string);
+            cmd__load_file();
         } else if (!strcmp(token, "show")) {
-            string = strtok(NULL, delim);
-            if(!strcmp(string, "aquarium")){
-                display_aquarium(&aquarium);
-            }else {
-                display_view(aq__get_view_by_id(&aquarium, atoi(string)));
-            }
-        } else if (!strcmp(token, "addview")) {
-            string = strtok(NULL, delim);
-            char *str2 = strtok(string, "x");
-
-            int width, height, off_x, off_y;
-            width = atoi(str2);
-            str2 = strtok(NULL, "+");
-            height = atoi(str2);
-            str2 = strtok(NULL, "+");
-            off_x = atoi(str2);
-            str2 = strtok(NULL, "+");
-            off_y = atoi(str2);
-
-            printf("\t> Added view with ID : %d\n",
-                   aq__add_view(&aquarium, (struct position) {off_x, off_y}, (struct dimension) {width, height}));
+            cmd__show_aquarium();
+        } else if (!strcmp(token, "add")) {
+            cmd__add();
         } else if (!strcmp(token, "list")) {
-            //list views IDs
-            struct array array = aq__get_views_ids(&aquarium);
-            if (array._length == 0) {
-                printf("\t> No aquarium created for now !\n");
-            } else {
-                int *ids = (int *) array._values;
-                for (int i = 0; i < array._length; i++) {
-                    printf("\t> Aquarium view ID n° : %d\n", ids[i]);
-                }
-                free(ids);
-            }
-        } else if (!strcmp(token, "delview")) {
-            string = strtok(NULL, delim);
-            aqv__remove_aquarium_view(aq__get_view_by_id(&aquarium, atoi(string)));
+            cmd__list();
+        } else if (!strcmp(token, "delete")) {
+            cmd__delete();
         } else if (!strcmp(token, "save")) {
-            string = strtok(NULL, delim);
-            int id = atoi(string);
-            string = strtok(NULL, delim);
-            write_file(string);
+            cmd__save_aquarium();
         } else {
             printf("\t> Unrecognized command, use 'help' or '?' to list available commands\n");
         }
     }
 
+    if(line[0] != 0){
+        add_history(line);
+    }
+
     return 1;
 }
+
+int cmd__load_file(){
+    char* string = strtok(NULL, delim);
+    load_file(string);
+
+    return 1;
+}
+
+int cmd__show_aquarium(){
+    char* string = strtok(NULL, delim);
+    if(!strcmp(string, "aquarium")){
+        display_aquarium(&aquarium);
+        return 1;
+    }else {
+        display_view(aq__get_view_by_id(&aquarium, atoi(string)));
+        return 2;
+    }
+}
+
+int cmd__add(){
+    char* string = strtok(NULL, delim);
+
+    if(!strcmp(string, "view")){
+        char *value = strtok(NULL, "x");
+
+        int width, height, off_x, off_y;
+        width = atoi(value);
+        value = strtok(NULL, "+");
+        height = atoi(value);
+        value = strtok(NULL, "+");
+        off_x = atoi(value);
+        value = strtok(NULL, "+");
+        off_y = atoi(value);
+
+        printf("\t> Added view with ID : %d\n",
+               aq__add_view(&aquarium, (struct position) {off_x, off_y}, (struct dimension) {width, height}));
+
+        return 1;
+    }else{
+        //Do other things if for instance add fish ...
+        return 0;
+    }
+}
+
+int cmd__delete(){
+    char* string = strtok(NULL, delim);
+
+    if(!strcmp(string, "view")){
+        aqv__remove_aquarium_view(aq__get_view_by_id(&aquarium, atoi(string)));
+        return 1;
+    }else{
+        //Do other stuff with delete ...
+        return 0;
+    }
+}
+
+int cmd__list(){
+    //list views IDs
+    struct array array = aq__get_views_ids(&aquarium);
+    if (array._length == 0) {
+        printf("\t> No aquarium created for now !\n");
+        return 0;
+    } else {
+        int *ids = (int *) array._values;
+        for (int i = 0; i < array._length; i++) {
+            printf("\t> Aquarium view ID n° : %d\n", ids[i]);
+        }
+        free(ids);
+
+        return 1;
+    }
+}
+
+int cmd__save_aquarium(){
+    char* string = strtok(NULL, delim);
+    int id = atoi(string);
+    string = strtok(NULL, delim);
+    write_file(string);
+
+    return 1;
+}
+
 
 void __init__(){
     aq__initialize_aquarium(&aquarium, (struct dimension){1000, 1000});
