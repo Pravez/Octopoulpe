@@ -20,6 +20,8 @@ int main(int argc, char* argv[]){
     CHK_ERROR(pthread_create(&menu_t, NULL, main_menu, NULL), "main_menu thread")
     //CHK_ERROR(pthread_create(&server_t, NULL, main_server, NULL), "server thread");
 
+    _delete_tvector(config_vector);
+
 
     /*printf("Display timeout value : %d\n", _get_value(config_vector, "fish-update-interval"));
     _delete_tvector(config_vector);

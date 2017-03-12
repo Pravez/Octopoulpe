@@ -9,41 +9,25 @@ void parse_config_file(const char* file){
     char * line = NULL;
     size_t len = 0;
     ssize_t read;
+    char* string;
 
     conf_file = fopen(file, "r");
 
     if(conf_file == NULL)
         return;
 
-    int iterator = 0;
-    char temp[30];
-
     struct _tuple temp_array[10];
     int tuple_nbr = 0;
 
-    while ((read = getline(&line, &len, conf_file)) != -1) {
-        //printf("Retrieved line of length %zu :\n", read);
-        //printf("%s", line);
-
+    while ((read = getdelim(&line, &len, '\n', conf_file)) != -1) {
         if(strcmp(line, ";") == 0)
             break;
 
-        for(int i=0;i < read;i++){
-            if(line[i] != '=' && line[i] != '\n') {
-                temp[i - iterator] = line[i];
-            }else{
-                temp[i - iterator] = '\0';
-                if(line[i] == '=') {
-                    temp_array[tuple_nbr]._key = malloc(sizeof(char) * (i - iterator));
-                    strcpy(temp_array[tuple_nbr]._key, temp);
-                    iterator = i+1;
-                }else{
-                    temp_array[tuple_nbr++]._value = atoi(temp);
-                    iterator = 0;
-                }
-            }
-
-        }
+        string = strtok(line, "=");
+        temp_array[tuple_nbr]._key = malloc(sizeof(char)*strlen(string));
+        strcpy(temp_array[tuple_nbr]._key, string);
+        string = strtok(NULL, "=");
+        temp_array[tuple_nbr++]._value = atoi(string);
     }
 
     fclose(conf_file);
@@ -51,8 +35,6 @@ void parse_config_file(const char* file){
     config_vector = _init_tvector(tuple_nbr);
     for(int i = 0;i < tuple_nbr;i++){
         _add_tuple(config_vector, temp_array[i]);
-        //if(i!=3)
-        //free(temp_array[i]._key);
     }
 }
 
