@@ -79,7 +79,7 @@ struct fish *fv__get_fishes_by_type(struct fish_vector *vector, enum fish_type t
     return NULL;
 }
 
-void fv__remove_vector(struct fish_vector* vector){
+void fv__remove_vector(struct fish_vector *vector) {
     free(vector->_vector);
 }
 
@@ -104,7 +104,7 @@ int aqv__get_fish_qty(struct aquarium_view *aqv) {
     return aqv->_fishes._current;
 }
 
-void aqv__remove_aquarium_view(struct aquarium_view* aqv){
+void aqv__remove_aquarium_view(struct aquarium_view *aqv) {
     fv__remove_vector(&aqv->_fishes);
 }
 
@@ -115,15 +115,15 @@ void aq__initialize_aquarium(struct aquarium *aquarium, struct dimension dimensi
     aquarium->_views_qty = DEFAULT_VIEWS_QUANTITY;
     aquarium->_current_views = 0;
     aquarium->_views = malloc(sizeof(struct aquarium_view) * DEFAULT_VIEWS_QUANTITY);
-    for(int i = 0;i < DEFAULT_VIEWS_QUANTITY;i++){
+    for (int i = 0; i < DEFAULT_VIEWS_QUANTITY; i++) {
         aquarium->_views[i]._view_id = -1;
     }
     fv__initialize_vector(&aquarium->_fishes, DEFAULT_FISHVECTOR_SIZE);
 }
 
 int aq__add_view(struct aquarium *aquarium, struct position s_pos, struct dimension dimensions) {
-    for(int i = 0;i < aquarium->_views_qty;i++){
-        if(aquarium->_views[i]._view_id == -1) {
+    for (int i = 0; i < aquarium->_views_qty; i++) {
+        if (aquarium->_views[i]._view_id == -1) {
             aqv__initialize_aquarium_view(&aquarium->_views[aquarium->_current_views++], s_pos, dimensions);
             break;
         }
@@ -204,30 +204,30 @@ void aq__remove_fish(struct aquarium *aquarium, int fish_id) {
     }
 }
 
-void aq__remove_aquarium_view(struct aquarium* aquarium, int view_id){
+void aq__remove_aquarium_view(struct aquarium *aquarium, int view_id) {
     int position = aq__get_view_position_by_id(aquarium, view_id);
-    struct aquarium_view* view = &aquarium->_views[position];
+    struct aquarium_view *view = &aquarium->_views[position];
 
-    for(int i = 0;i < view->_fishes._current;++i){
+    for (int i = 0; i < view->_fishes._current; ++i) {
         fv__add_fish(&aquarium->_fishes, view->_fishes._vector[i]);
     }
 
     aqv__remove_aquarium_view(view);
 
     //Here it will be considered as removed
-    for(int i = position+1;i < aquarium->_current_views;i++){
-        aquarium->_views[i-1] = aquarium->_views[i];
+    for (int i = position + 1; i < aquarium->_current_views; i++) {
+        aquarium->_views[i - 1] = aquarium->_views[i];
     }
 
     //update current_views
     aquarium->_current_views--;
 }
 
-struct array aq__get_views_ids(struct aquarium* aquarium){
+struct array aq__get_views_ids(struct aquarium *aquarium) {
     struct array array;
     array._length = aquarium->_current_views;
-    int* views = malloc(sizeof(int) * aquarium->_current_views);
-    for(int i = 0;i < aquarium->_current_views;i++){
+    int *views = malloc(sizeof(int) * aquarium->_current_views);
+    for (int i = 0; i < aquarium->_current_views; i++) {
         views[i] = aquarium->_views[i]._view_id;
     }
 
@@ -236,9 +236,9 @@ struct array aq__get_views_ids(struct aquarium* aquarium){
     return array;
 }
 
-void aq__remove_aquarium(struct aquarium* aquarium){
+void aq__remove_aquarium(struct aquarium *aquarium) {
     fv__remove_vector(&aquarium->_fishes);
-    for(int i = 0;i < aquarium->_views_qty;i++){
+    for (int i = 0; i < aquarium->_current_views; i++) {
         aqv__remove_aquarium_view(&aquarium->_views[i]);
     }
 
@@ -253,7 +253,8 @@ void display_fish(struct fish *fish) {
 }
 
 void display_view(struct aquarium_view *aqv) {
-    printf("VIEW : %d \n\t FISHES : \n", aqv->_view_id);
+    printf("VIEW : %d (%dx%d+%d+%d) \n\t FISHES : \n", aqv->_view_id, aqv->_starting_position.x,
+           aqv->_starting_position.y, aqv->_dimensions.width, aqv->_dimensions.height);
     for (int i = 0; i < aqv->_fishes._current; i++) {
         display_fish(&aqv->_fishes._vector[i]);
     }

@@ -83,16 +83,17 @@ int cmd__call(enum command cmd) {
         return 0;
     }
 
+    if(aquarium != NULL && (cmd == LOAD || cmd == INIT)){
+        printf("\t> An aquarium already exists ... Remove it ? (y/n)\n");
+        //TODO
+        return 0;
+    }
+
     switch (cmd) {
         case LOAD:
             return cmd__load_file();
         case INIT:
-            if (aquarium != NULL) {
-                printf("\t> An aquarium already exists ... Remove it ? (y/n)\n");
-                //TODO
-            } else {
-                return cmd__init_aquarium();
-            }
+            return cmd__init_aquarium();
         case SHOW:
             return cmd__show_aquarium();
         case ADD:
@@ -126,43 +127,56 @@ int cmd__init_aquarium() {
 
 int cmd__load_file() {
     char *string = strtok(NULL, delim);
-    load_file(string);
+
+    if(aquarium != NULL)
+        aq__remove_aquarium(aquarium);
+
+    aquarium = load_file(string);
 
     return 1;
 }
 
 int cmd__show_aquarium() {
     char *string = strtok(NULL, delim);
-    if (!strcmp(string, "aquarium")) {
-        display_aquarium(aquarium);
-        return 1;
-    } else {
-        display_view(aq__get_view_by_id(aquarium, atoi(string)));
-        return 2;
+    if(string != NULL) {
+        if (!strcmp(string, "aquarium")) {
+            display_aquarium(aquarium);
+            return 1;
+        } else {
+            display_view(aq__get_view_by_id(aquarium, atoi(string)));
+            return 2;
+        }
+    }else{
+        printf("\t> Please precise what thing you want to show\n");
+        return 0;
     }
 }
 
 int cmd__add() {
     char *string = strtok(NULL, delim);
+    if(string != NULL) {
+        if (!strcmp(string, "view")) {
+            char *value = strtok(NULL, "x");
 
-    if (!strcmp(string, "view")) {
-        char *value = strtok(NULL, "x");
+            int width, height, off_x, off_y;
+            off_x = atoi(value);
+            value = strtok(NULL, "+");
+            off_y = atoi(value);
+            value = strtok(NULL, "+");
+            width = atoi(value);
+            value = strtok(NULL, "+");
+            height = atoi(value);
 
-        int width, height, off_x, off_y;
-        off_x = atoi(value);
-        value = strtok(NULL, "+");
-        off_y = atoi(value);
-        value = strtok(NULL, "+");
-        width = atoi(value);
-        value = strtok(NULL, "+");
-        height = atoi(value);
+            printf("\t> Added view with ID : %d\n",
+                   aq__add_view(aquarium, (struct position) {off_x, off_y}, (struct dimension) {width, height}));
 
-        printf("\t> Added view with ID : %d\n",
-               aq__add_view(aquarium, (struct position) {off_x, off_y}, (struct dimension) {width, height}));
-
-        return 1;
-    } else {
-        //Do other things if for instance add fish ...
+            return 1;
+        } else {
+            //Do other things if for instance add fish ...
+            return 0;
+        }
+    }else{
+        printf("\t> Please precise what thing you want to add\n");
         return 0;
     }
 }
