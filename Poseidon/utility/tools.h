@@ -5,6 +5,8 @@
 #define TRUE 1
 #define FALSE 0
 
+#define CHK_ERROR(test, message) if(test < 0){ perror(message); exit(1); }
+
 struct position{
     int x;
     int y;
@@ -15,9 +17,15 @@ struct dimension{
     int height;
 };
 
+struct array{
+    int _length;
+    void* _values;
+};
+
 struct position __position(int x, int y);
 struct dimension __dimension(int width, int height);
 boolean check_in_screen(struct position s_pos, struct dimension dimensions, struct position position);
+
 
 #define LOG_HIGH 4
 #define LOG_MEDIUM 3

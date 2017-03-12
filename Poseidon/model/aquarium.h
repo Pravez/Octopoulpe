@@ -187,6 +187,7 @@ void aq__add_fish(struct aquarium* aquarium, struct fish fish);
 void aq__remove_fish(struct aquarium* aquarium, int fish_id);
 
 void aq__remove_aquarium_view(struct aquarium* aquarium, int view_id);
+struct array aq__get_views_ids(struct aquarium* aquarium);
 
 //For debug purposes
 void display_fish(struct fish* fish);

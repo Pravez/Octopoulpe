@@ -1,16 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
+
 #include "server/parser.h"
 #include "model/aquarium.h"
+#include "utility/tools.h"
 #include "view/view.h"
 
 extern struct _tvector* config_vector;
 
 int main(int argc, char* argv[]){
 
+    pthread_t menu_t;
+    pthread_t server_t;
+
+    //Job to do with config file ... (before launching server)
     parse_config_file("controller.cfg");
 
-    printf("Display timeout value : %d\n", _get_value(config_vector, "fish-update-interval"));
+    CHK_ERROR(pthread_create(&menu_t, NULL, main_menu, NULL), "main_menu thread")
+    //CHK_ERROR(pthread_create(&server_t, NULL, main_server, NULL), "server thread");
+
+
+    /*printf("Display timeout value : %d\n", _get_value(config_vector, "fish-update-interval"));
     _delete_tvector(config_vector);
 
     _set_verbosity(TRUE);
@@ -32,9 +43,10 @@ int main(int argc, char* argv[]){
 
     aq__remove_fish(&aquarium1, 1);
     aq__remove_fish(&aquarium1, 3);
-    display_aquarium(&aquarium1);
+    display_aquarium(&aquarium1);*/
 
-    display_prompt();
+    pthread_join(menu_t, NULL);
+    //pthread_join(server_t, NULL);
 
     return EXIT_SUCCESS;
 }

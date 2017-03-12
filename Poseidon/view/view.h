@@ -12,7 +12,7 @@ enum menu_action{
     LOAD, SHOW, ADDVIEW, DELVIEW, SAVE
 };
 
-void display_menu();
+void* main_menu(void *args);
 void display_prompt();
 int handle_line();
 
