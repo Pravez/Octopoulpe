@@ -1,13 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
 #include "view.h"
 #include "../utility/file.h"
-#include "../model/aquarium.h"
 
 static char *line_read = (char *) NULL;
 const char *prompt = YELLOW"Octopoulple "YELLOWBOLD"$ > "RESET;
@@ -132,6 +130,10 @@ int cmd__load_file() {
         aq__remove_aquarium(aquarium);
 
     aquarium = load_file(string);
+    if(aquarium == NULL){
+        printf("\t> Error while reading input file, are you sure it has the right format ?\n");
+        return 0;
+    }
 
     return 1;
 }

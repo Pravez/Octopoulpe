@@ -11,15 +11,20 @@ struct aquarium* load_file(char* filename){
     ssize_t read_size;
     struct aquarium_view_properties prop;
 
-    struct aquarium* aquarium;
-    aquarium = malloc(sizeof(struct aquarium));
+    struct aquarium* aquarium = NULL;
 
     read_size = getdelim(&buffer, &length, '\n', file);
-    aq__initialize_aquarium(aquarium, parse__aq_dimensions(buffer));
 
-    while((read_size = getdelim(&buffer, &length, '\n', file)) != -1){
-        prop = parse__aq_view(buffer);
-        aq__add_view(aquarium, prop._position, prop._dimensions);
+    struct dimension dims = parse__aq_dimensions(buffer);
+
+    if(dims.width != -1 && dims.height != -1) {
+        aquarium = malloc(sizeof(struct aquarium));
+        aq__initialize_aquarium(aquarium,dims);
+
+        while ((read_size = getdelim(&buffer, &length, '\n', file)) != -1) {
+            prop = parse__aq_view(buffer);
+            aq__add_view(aquarium, prop._position, prop._dimensions);
+        }
     }
 
     return aquarium;
@@ -28,9 +33,15 @@ struct aquarium* load_file(char* filename){
 struct dimension parse__aq_dimensions(char* line){
     struct dimension dim;
     char* string = strtok(line, "x");
-    dim.width = atoi(string);
-    string = strtok(NULL, "x");
-    dim.height = atoi(string);
+    if(string != NULL){
+        dim.width = atoi(string);
+        string = strtok(NULL, "x");
+        dim.height = atoi(string);
+    }else{
+        dim.height = -1;
+        dim.width = -1;
+    }
+
 
     return dim;
 }
