@@ -73,13 +73,8 @@ void connexion(int portno) {
     }
 }
 
-/*int main(int argc, char *argv[]) {
-    if (argc < PARAM) {
-    fprintf(stderr, "ERROR no port provided\n");
-    exit(1);
-  }
-  int portno = atoi(argv[1]);
-  connexion(portno);
-  return 0;
+void* server_process(void* arg){
+    int portno = *(int*)arg;
+    connexion(portno);
+    return 0;
 }
-*/

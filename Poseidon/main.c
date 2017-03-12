@@ -3,6 +3,7 @@
 #include <pthread.h>
 
 #include "server/parser.h"
+#include "server/server.h"
 #include "model/aquarium.h"
 #include "utility/tools.h"
 #include "view/view.h"
@@ -16,9 +17,10 @@ int main(int argc, char* argv[]){
 
     //Job to do with config file ... (before launching server)
     parse_config_file("controller.cfg");
+    int port = _get_value(config_vector, "controller-port");
 
     CHK_ERROR(pthread_create(&menu_t, NULL, main_menu, NULL), "main_menu thread")
-    //CHK_ERROR(pthread_create(&server_t, NULL, main_server, NULL), "server thread");
+    CHK_ERROR(pthread_create(&server_t, NULL, server_process, &port), "server thread");
 
     _delete_tvector(config_vector);
 
@@ -48,7 +50,7 @@ int main(int argc, char* argv[]){
     display_aquarium(&aquarium1);*/
 
     pthread_join(menu_t, NULL);
-    //pthread_join(server_t, NULL);
+    pthread_join(server_t, NULL);
 
     return EXIT_SUCCESS;
 }
