@@ -1,6 +1,8 @@
 #ifndef POSEIDON_VIEW_H
 #define POSEIDON_VIEW_H
 
+#include <unistd.h>
+
 #include "../utility/tools.h"
 
 enum command{

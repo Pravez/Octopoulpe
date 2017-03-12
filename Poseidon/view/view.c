@@ -7,6 +7,8 @@
 #include "view.h"
 #include "../utility/file.h"
 
+#define RETURN_ERROR_MSG(message, errcode) printf("\t> %s\n", message); return errcode;
+
 static char *line_read = (char *) NULL;
 const char *prompt = YELLOW"Octopoulple "YELLOWBOLD"$ > "RESET;
 const char *delim = " ";
@@ -214,9 +216,18 @@ int cmd__list() {
 
 int cmd__save_aquarium() {
     char *string = strtok(NULL, delim);
-    int id = atoi(string);
-    string = strtok(NULL, delim);
-    write_file(aquarium, string);
+
+    if(string != NULL){
+        //Check if the file exists
+        if(access(string, F_OK) != -1){
+            printf("\t> File exists ... Erase ? (y/n)\n");
+            //TODO
+        }else{
+            write_file(aquarium, string);
+        }
+    }else{
+        RETURN_ERROR_MSG("Please give a file name ...", 0)
+    }
 
     return 1;
 }
