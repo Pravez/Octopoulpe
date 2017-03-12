@@ -236,6 +236,15 @@ struct array aq__get_views_ids(struct aquarium* aquarium){
     return array;
 }
 
+void aq__remove_aquarium(struct aquarium* aquarium){
+    fv__remove_vector(&aquarium->_fishes);
+    for(int i = 0;i < aquarium->_views_qty;i++){
+        aqv__remove_aquarium_view(&aquarium->_views[i]);
+    }
+
+    free(aquarium->_views);
+}
+
 ///////DEBUG
 
 void display_fish(struct fish *fish) {

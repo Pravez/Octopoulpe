@@ -3,19 +3,15 @@
 
 #include "../utility/tools.h"
 
-struct command{
-    int _args;
-
-};
-
-enum menu_action{
-    LOAD, SHOW, ADDVIEW, DELVIEW, SAVE
+enum command{
+    LOAD, INIT, SHOW, ADD, DELETE, SAVE, LIST
 };
 
 void* main_menu(void *args);
-void display_prompt();
 int handle_line();
 
+int cmd__call(enum command cmd);
+int cmd__init_aquarium();
 int cmd__load_file();
 int cmd__show_aquarium();
 int cmd__add();
