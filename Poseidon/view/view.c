@@ -79,8 +79,7 @@ int handle_line() {
 
 int cmd__call(enum command cmd) {
     if (aquarium == NULL && (cmd == SAVE || cmd == ADD || cmd == LIST || cmd == DELETE || cmd == SHOW)) {
-        printf("\t> Impossible to execute this action with non-existing aquarium ... create one first.\n");
-        return 0;
+        RETURN_ERROR_MSG("Impossible to execute this action with non-existing aquarium ... create one first.", 0)
     }
 
     if(aquarium != NULL && (cmd == LOAD || cmd == INIT)){
@@ -131,11 +130,17 @@ int cmd__load_file() {
     if(aquarium != NULL)
         aq__remove_aquarium(aquarium);
 
-    aquarium = load_file(string);
-    if(aquarium == NULL){
-        printf("\t> Error while reading input file, are you sure it has the right format ?\n");
-        return 0;
+    if(access(string, F_OK) != -1){
+        aquarium = load_file(string);
+        if(aquarium == NULL){
+            RETURN_ERROR_MSG("Error while reading input file, are you sure it has the right format", 0)
+        }else{
+            printf("\t> Successfully loaded file \n");
+        }
+    }else{
+        RETURN_ERROR_MSG("Impossible to find file, please verify if it exists.", 0)
     }
+
 
     return 1;
 }
@@ -220,10 +225,16 @@ int cmd__save_aquarium() {
     if(string != NULL){
         //Check if the file exists
         if(access(string, F_OK) != -1){
-            printf("\t> File exists ... Erase ? (y/n)\n");
-            //TODO
+            printf("\t> File exists ... Erase ? (y/n) ");
+            char answer[1];
+            scanf("%s", answer);
+            if(!strcmp(answer, "y")){
+                write_file(aquarium, string);
+                printf("\t> Successfully saved aquarium in %s", string);
+            }
         }else{
             write_file(aquarium, string);
+            printf("\t> Successfully saved aquarium in %s", string);
         }
     }else{
         RETURN_ERROR_MSG("Please give a file name ...", 0)
