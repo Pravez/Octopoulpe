@@ -9,3 +9,5 @@ set(SOURCE_FILES main.c
                     utility/file.c)
 
 add_executable(Server_default ${SOURCE_FILES})
+target_link_libraries(Server_default ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(Server_default readline)

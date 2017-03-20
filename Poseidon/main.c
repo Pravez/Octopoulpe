@@ -8,6 +8,8 @@
 #include "utility/tools.h"
 #include "view/view.h"
 
+#define _GNU_SOURCE
+
 extern struct _tvector* config_vector;
 
 int main(int argc, char* argv[]){
