@@ -1,13 +1,16 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "aquarium.h"
 #include "../utility/tools.h"
 
-static int _fish_ids = 0;
-static int _views_ids = 0;
+#define _GNU_SOURCE
 
 #define CHCK_NULL(x, name) if(x == NULL){ fprintf(stderr, "FUNC %s : A VALUE IS NULL : %s\n", __func__, name); return; }
 #define CHCK_NULL_INT(x, name) if(x == NULL){ fprintf(stderr, "FUNC %s : A VALUE IS NULL : %s\n", __func__, name); return -1; }
+
+static int _fish_ids = 0;
+static int _views_ids = 0;
 
 struct fish fish__create(enum fish_type type, int x, int y) {
     struct fish f;
@@ -86,12 +89,12 @@ void fv__remove_vector(struct fish_vector *vector) {
 int aqv__initialize_aquarium_view(struct aquarium_view *aqv, struct position s_pos, struct dimension dimension) {
     CHCK_NULL_INT(aqv, "aquarium view")
 
-    aqv->_view_id = _views_ids++;
+    asprintf(aqv->_view_id, "N%d", _views_ids++);
     aqv->_starting_position = s_pos;
     aqv->_dimensions = dimension;
     fv__initialize_vector(&aqv->_fishes, DEFAULT_FISHVECTOR_SIZE);
 
-    return aqv->_view_id;
+    return _views_ids-1;
 }
 
 void aqv__add_fish(struct aquarium_view *aqv, struct fish fish) {
@@ -116,14 +119,14 @@ void aq__initialize_aquarium(struct aquarium *aquarium, struct dimension dimensi
     aquarium->_current_views = 0;
     aquarium->_views = malloc(sizeof(struct aquarium_view) * DEFAULT_VIEWS_QUANTITY);
     for (int i = 0; i < DEFAULT_VIEWS_QUANTITY; i++) {
-        aquarium->_views[i]._view_id = -1;
+        aquarium->_views[i]._view_id = NULL;
     }
     fv__initialize_vector(&aquarium->_fishes, DEFAULT_FISHVECTOR_SIZE);
 }
 
 int aq__add_view(struct aquarium *aquarium, struct position s_pos, struct dimension dimensions) {
     for (int i = 0; i < aquarium->_views_qty; i++) {
-        if (aquarium->_views[i]._view_id == -1) {
+        if (aquarium->_views[i]._view_id == NULL) {
             aqv__initialize_aquarium_view(&aquarium->_views[aquarium->_current_views++], s_pos, dimensions);
             break;
         }
@@ -132,18 +135,18 @@ int aq__add_view(struct aquarium *aquarium, struct position s_pos, struct dimens
     return _views_ids - 1;
 }
 
-struct aquarium_view *aq__get_view_by_id(struct aquarium *aquarium, int id) {
+struct aquarium_view *aq__get_view_by_id(struct aquarium *aquarium, char* id) {
     for (int i = 0; i < aquarium->_current_views; i++) {
-        if (aquarium->_views[i]._view_id == id)
+        if (!strcmp(aquarium->_views[i]._view_id,id))
             return &aquarium->_views[i];
     }
 
     return NULL;
 }
 
-int aq__get_view_position_by_id(struct aquarium *aquarium, int id) {
+int aq__get_view_position_by_id(struct aquarium *aquarium, char* id) {
     for (int i = 0; i < aquarium->_current_views; i++) {
-        if (aquarium->_views[i]._view_id == id)
+        if (!strcmp(aquarium->_views[i]._view_id, id))
             return i;
     }
 
@@ -204,7 +207,7 @@ void aq__remove_fish(struct aquarium *aquarium, int fish_id) {
     }
 }
 
-void aq__remove_aquarium_view(struct aquarium *aquarium, int view_id) {
+void aq__remove_aquarium_view(struct aquarium *aquarium, char* view_id) {
     int position = aq__get_view_position_by_id(aquarium, view_id);
     struct aquarium_view *view = &aquarium->_views[position];
 
@@ -226,7 +229,7 @@ void aq__remove_aquarium_view(struct aquarium *aquarium, int view_id) {
 struct array aq__get_views_ids(struct aquarium *aquarium) {
     struct array array;
     array._length = aquarium->_current_views;
-    int *views = malloc(sizeof(int) * aquarium->_current_views);
+    char **views = malloc(sizeof(char*) * aquarium->_current_views);
     for (int i = 0; i < aquarium->_current_views; i++) {
         views[i] = aquarium->_views[i]._view_id;
     }
@@ -245,6 +248,14 @@ void aq__remove_aquarium(struct aquarium *aquarium) {
     free(aquarium->_views);
 }
 
+char* aq__check_free_id(struct aquarium* aquarium, char* id){
+    for(int i = 0;i < aquarium->_current_views;i++){
+        if(!strcmp(aquarium->_views[i]._view_id, id)){
+            return NULL;
+        }
+    }
+}
+
 ///////DEBUG
 
 void display_fish(struct fish *fish) {
@@ -253,7 +264,7 @@ void display_fish(struct fish *fish) {
 }
 
 void display_view(struct aquarium_view *aqv) {
-    printf("VIEW : %d (%dx%d+%d+%d) \n\t FISHES : \n", aqv->_view_id, aqv->_starting_position.x,
+    printf("VIEW : %s (%dx%d+%d+%d) \n\t FISHES : \n", aqv->_view_id, aqv->_starting_position.x,
            aqv->_starting_position.y, aqv->_dimensions.width, aqv->_dimensions.height);
     for (int i = 0; i < aqv->_fishes._current; i++) {
         display_fish(&aqv->_fishes._vector[i]);

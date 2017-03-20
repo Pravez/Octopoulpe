@@ -30,7 +30,7 @@ struct fish_vector{
  * dimensions a rectangle qualifying the visible fishes into it.
  */
 struct aquarium_view{
-    int _view_id;
+    char* _view_id;
     struct position _starting_position;
     struct dimension _dimensions;
     struct fish_vector _fishes;
@@ -165,7 +165,7 @@ int aq__add_view(struct aquarium* aquarium, struct position s_pos, struct dimens
  * @param id
  * @return
  */
-struct aquarium_view* aq__get_view_by_id(struct aquarium* aquarium, int id);
+struct aquarium_view* aq__get_view_by_id(struct aquarium* aquarium, char* id);
 
 /**
  * Tries to add the fish according to its coordinates. If coordinates match the content of a screen, then
@@ -186,7 +186,7 @@ void aq__add_fish(struct aquarium* aquarium, struct fish fish);
  */
 void aq__remove_fish(struct aquarium* aquarium, int fish_id);
 
-void aq__remove_aquarium_view(struct aquarium* aquarium, int view_id);
+void aq__remove_aquarium_view(struct aquarium* aquarium, char* view_id);
 struct array aq__get_views_ids(struct aquarium* aquarium);
 void aq__remove_aquarium(struct aquarium* aquarium);
 
