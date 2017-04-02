@@ -19,8 +19,6 @@ void aq__initialize_aquarium(struct aquarium *aquarium, struct dimension dimensi
     fv__initialize_vector(&aquarium->_fishes, DEFAULT_FISHVECTOR_SIZE);
 }
 
-
-
 char* aq__add_view(struct aquarium *aquarium, struct position s_pos, struct dimension dimensions, char* id) {
     if(aq__check_free_id(aquarium, id)) {
         struct aquarium_view *view = malloc(sizeof(struct aquarium_view));
@@ -146,6 +144,9 @@ void aq__remove_aquarium(struct aquarium *aquarium) {
 }
 
 char* aq__check_free_id(struct aquarium* aquarium, char* id){
+    if(id == NULL)
+        return "OK";
+
     for(int i = 0;i < v__size(&aquarium->_views);i++){
         if(!strcmp(GET_VIEW_PTR(&aquarium->_views, i)->_id, id)){
             return NULL;

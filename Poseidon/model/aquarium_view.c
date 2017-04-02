@@ -13,7 +13,7 @@ int aqv__initialize_aquarium_view(struct aquarium_view *aqv, struct position s_p
     if(id == NULL)
         asprintf(&aqv->_id, "N%d", _views_ids++);
     else
-        asprintf(&aqv->_id, "N%s", id);
+        asprintf(&aqv->_id, "%s", id);
 
     aqv->_inner._starting_position = s_pos;
     aqv->_inner._dimensions = dimension;

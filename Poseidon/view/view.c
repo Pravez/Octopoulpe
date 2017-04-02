@@ -177,8 +177,11 @@ int cmd__add() {
             value = strtok(NULL, "+");
             height = atoi(value);
 
-            printf("\t> Added view with ID : %s\n",
-                   aq__add_view(aquarium, (struct position) {off_x, off_y}, (struct dimension) {width, height}, id));
+            char* returned = aq__add_view(aquarium, (struct position) {off_x, off_y}, (struct dimension) {width, height}, id);
+            if(returned == NULL)
+                printf("\t> Unable to add view : ID %s already taken\n", id);
+            else
+                printf("\t> Added view with ID : %s\n", returned);
 
             return 1;
         } else {
