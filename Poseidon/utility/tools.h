@@ -6,6 +6,8 @@
 #define FALSE 0
 
 #define CHK_ERROR(test, message) if(test < 0){ perror(message); exit(1); }
+#define CHCK_NULL(x, name) if(x == NULL){ fprintf(stderr, "FUNC %s : A VALUE IS NULL : %s\n", __func__, name); return; }
+#define CHCK_NULL_INT(x, name) if(x == NULL){ fprintf(stderr, "FUNC %s : A VALUE IS NULL : %s\n", __func__, name); return -1; }
 
 struct position{
     int x;
@@ -15,6 +17,11 @@ struct position{
 struct dimension{
     int width;
     int height;
+};
+
+struct bounds{
+    struct dimension _dimensions;
+    struct position _starting_position;
 };
 
 struct array{

@@ -2,7 +2,6 @@
 #include "vector.h"
 
 void v__init(struct vector *vector, size_t size) {
-    vector = malloc(sizeof(struct vector));
     vector->_current_size = 0;
     vector->_size = size;
     vector->_items = malloc(sizeof(struct vector_item) * size);
@@ -10,7 +9,6 @@ void v__init(struct vector *vector, size_t size) {
 
 void v__destroy(struct vector *vector) {
     free(vector->_items);
-    free(vector);
 }
 
 void _v__resize(struct vector *vector){
@@ -28,8 +26,14 @@ int v__add(struct vector *vector, void *data, enum TTYPE type) {
     return vector->_current_size-1;
 }
 
-int v__remove_by_data(struct vector *vector, void *data, enum TTYPE type) {
-    return 0;
+int v__remove_by_data(struct vector *vector, void *data) {
+    for(int i = 0;i < vector->_current_size;++i){
+        if(vector->_items[i]._data == data){
+            return v__remove_by_index(vector, i);
+        }
+    }
+
+    return -1;
 }
 
 int v__remove_by_index(struct vector *vector, int index) {
@@ -40,8 +44,12 @@ int v__remove_by_index(struct vector *vector, int index) {
     return vector->_current_size--;
 }
 
-struct vector_item v__get(struct vector *vector, int index) {
-    return vector->_items[index];
+int v__size(struct vector *vector){
+    return vector->_current_size;
+}
+
+struct vector_item* v__get(struct vector *vector, int index) {
+    return &vector->_items[index];
 }
 
 struct vector_item vi__create(enum TTYPE type, void *data) {

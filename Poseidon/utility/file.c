@@ -5,10 +5,11 @@ int write_file(struct aquarium *aquarium, char *filename) {
 
     fprintf(file, "%dx%d\n", aquarium->_dimensions.width, aquarium->_dimensions.height);
 
-    for (int i = 0; i < aquarium->_current_views; i++) {
-        fprintf(file, "N%d %dx%d+%d+%d\n", aquarium->_views[i]._view_id, aquarium->_views[i]._starting_position.x,
-                aquarium->_views[i]._starting_position.y, aquarium->_views[i]._dimensions.width,
-                aquarium->_views[i]._dimensions.height);
+    for (int i = 0; i < v__size(&aquarium->_views); i++) {
+        struct aquarium_view* aq_view = vi__convert_aq_view(v__get(&aquarium->_views, i));
+        fprintf(file, "N%s %dx%d+%d+%d\n", aq_view->_id, aq_view->_inner._starting_position.x,
+                aq_view->_inner._starting_position.y, aq_view->_inner._dimensions.width,
+                aq_view->_inner._dimensions.height);
     }
 
     fclose(file);
@@ -35,7 +36,7 @@ struct aquarium *load_file(char *filename) {
 
         while ((read_size = getdelim(&buffer, &length, '\n', file)) != -1) {
             prop = parse__aq_view(buffer);
-            aq__add_view(aquarium, prop._position, prop._dimensions);
+            aq__add_view(aquarium, prop._position, prop._dimensions, prop._id);
         }
     }
 
@@ -63,7 +64,7 @@ struct dimension parse__aq_dimensions(char *line) {
 
 struct aquarium_view_properties parse__aq_view(char *line) {
     struct aquarium_view_properties prop;
-    prop._id = atoi(strtok(line, " "));
+    prop._id = strtok(line, " ");
     prop._position.x = atoi(strtok(NULL, "x"));
     prop._position.y = atoi(strtok(NULL, "+"));
     prop._dimensions.width = atoi(strtok(NULL, "+"));
