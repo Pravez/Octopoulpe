@@ -28,7 +28,7 @@ void parse(char buffer[MAX], char buf_res[MAX]) {
   char *res;// = malloc(sizeof(char)*MAX);
   printf("1\n");
   while((buffer[i] != ' ') && (buffer[i] != '\0')) {
-    printf("i: %d, c: %c\n", i, buffer[i]);
+    //printf("i: %d, c: %c\n", i, buffer[i]);
     cmd[i] = buffer[i];
     ++i;
   }
@@ -45,7 +45,14 @@ void parse(char buffer[MAX], char buf_res[MAX]) {
   else
     res = strcpy(res, "Unknown command\n");
   printf("3\n");
-  buf_res = strcpy(buf_res, res); //this certainly prints garbage -> YES IT DOES
+  i = 0;
+  while(res[i] != '\0') {
+    //printf("i: %d, c: %c\n", i, res[i]);
+    buf_res[i] = res[i];
+    ++i;
+  }
+  buf_res[i] = '\0';
+  //buf_res = strcpy(buf_res, res); //this certainly prints garbage -> YES IT DOES
   printf("4\n");
   return;
 }
@@ -72,7 +79,7 @@ void * start(void* arg) {
       parse(buffer, buf_res);
       //printf("Here is the message :%s\n", buffer); //sprintf pour string
       //traitement
-      n = write(newsockfd, buf_res, sizeof(buf_res));
+      n = write(newsockfd, buf_res, strlen(buf_res));
       if (n < 0) {perror("ERROR writing to socket");exit(1);}
     }
   }
@@ -91,7 +98,7 @@ void connexion(int portno){
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_addr.s_addr = INADDR_ANY;
   serv_addr.sin_port = htons(portno);
-  if(bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) perror("ERROR on binding");
+  if(bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {perror("ERROR on binding"); exit(1);}
   listen(sockfd, 5);
   while(newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, &clilen)){
       pthread_t thread;
