@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Collections.Generic;
 
 namespace test
 {
@@ -12,6 +13,8 @@ namespace test
 		private int controllerPort; // The TCP port number listened by the controller
 		private int displayTimeoutValue; // The default value for transmitting a ping
 		private String imgDirectory; // The directory where are the fish pictures
+
+		private List<String> configInfo;
 
 		// The constructor which uses the file "affichage.cfg" to collect the informations
 		public ViewConfig ()
@@ -44,9 +47,12 @@ namespace test
 						displayTimeoutValue = Int32.Parse(infos [1]);
 					if (infos [0] == "resources")
 						imgDirectory = infos [1];
+
+					configInfo.Add (infos [0]);
+					configInfo.Add (infos [1]);
 				}
 			}
-
+				
 			// Closing the file
 			file.Close();
 		}
@@ -80,6 +86,23 @@ namespace test
 		public String getImgDirectory()
 		{
 			return imgDirectory;
+		}
+
+		public String getConfiguration(String entry)
+		{
+			Predicate<String> match = delegate (String cmp) {
+				if (cmp.CompareTo(entry) == 0)
+					return true;
+				else
+					return false;
+			};
+			int index = configInfo.FindIndex(match);
+			if (index == -1) {
+				return null;
+			} else {
+				return configInfo [index + 1];
+			}
+
 		}
 	}
 }

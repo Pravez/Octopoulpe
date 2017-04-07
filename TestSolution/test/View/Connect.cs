@@ -20,11 +20,16 @@ namespace test
 
 			vc = new ViewConfig ();
 
-			IPAddress addr = vc.getControllerAddress();
-			int port = vc.getControllerPort();
+			IPAddress addr = IPAddress.Parse(vc.getConfiguration("controller-addres"));
+			int port = Int32.Parse(vc.getConfiguration("controller-port"));
+			Console.WriteLine ("addr {0}", addr.ToString());
 
-			IPEndPoint iep = new IPEndPoint (addr, port);
-			sock.Connect (iep);
+			if (addr != null && port != null) {
+				IPEndPoint iep = new IPEndPoint (addr, port);
+				sock.Connect (iep);
+			} else {
+				
+			}
 		}
 
 		// Shuts down the connection
