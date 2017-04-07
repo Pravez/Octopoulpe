@@ -11,7 +11,7 @@
 struct aquarium_view_properties{
     struct position _position;
     struct dimension _dimensions;
-    int _id;
+    char* _id;
 };
 
 int write_file(struct aquarium* aquarium, char* filename);

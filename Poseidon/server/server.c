@@ -12,19 +12,20 @@
 #define PARAM 2
 #define CLIENTS 5
 
+#ifdef _PROCESS_
 void* server_process(void* arg){
     int portno = *(int*)arg;
     connexion(portno);
     return 0;
 }
-
+#endif //_PROCESS_
 
 void parse(char buffer[MAX], char buf_res[MAX]) {
   char cmd[MAX];
   int i = 0;
   int j = 0;
   char arg[MAX];
-  char *res;
+  char *res;// = malloc(sizeof(char)*MAX);
   printf("1\n");
   while((buffer[i] != ' ') && (buffer[i] != '\0')) {
     printf("i: %d, c: %c\n", i, buffer[i]);
@@ -40,22 +41,23 @@ void parse(char buffer[MAX], char buf_res[MAX]) {
   printf("2\n");
   arg[j+1] = '\0';
   if(strcmp(cmd, "hello") == 0)
-    res = asw__hello(arg);
+    asw__hello(arg, res);
   else
     res = strcpy(res, "Unknown command\n");
   printf("3\n");
-  buf_res = strcpy(buf_res, res); //this certainly prints garbage
+  buf_res = strcpy(buf_res, res); //this certainly prints garbage -> YES IT DOES
   printf("4\n");
   return;
 }
 
 
 void * start(void* arg) {
+
   char buffer[MAX];
   int newsockfd = *((int *) arg);
   int n;
   char buf_res[MAX];
-  
+
   bzero(buffer, 256);
   while(1) {
     n = read(newsockfd, buffer, 255);
@@ -81,15 +83,15 @@ void connexion(int portno){
   struct sockaddr_in serv_addr, cli_addr;
   int i;
   clilen = sizeof(cli_addr);
-  
+
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) {perror("ERROR opening socket"); exit(1);}
-  
+
   bzero((char *) &serv_addr, sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_addr.s_addr = INADDR_ANY;
   serv_addr.sin_port = htons(portno);
-  if(bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) error("ERROR on binding");
+  if(bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) perror("ERROR on binding");
   listen(sockfd, 5);
   while(newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, &clilen)){
       pthread_t thread;
@@ -97,6 +99,7 @@ void connexion(int portno){
   }
 }
 
+#ifndef _PROCESS_
 int main(int argc, char *argv[]) {
     if (argc < PARAM) {
     fprintf(stderr, "ERROR no port provided\n");
@@ -106,3 +109,4 @@ int main(int argc, char *argv[]) {
   connexion(portno);
   return 0;
 }
+#endif /*not _PROCESS_ */
