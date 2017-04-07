@@ -14,11 +14,7 @@ namespace Aquarium
         private int time = 0;
         public int width;
         public int height;
-        public int global_width;
-        public int global_height;
-
-        public Texture2D background;
-
+        
         // Animation representing the fish
         public Texture2D Texture1;
         public Texture2D Texture2;
@@ -43,13 +39,10 @@ namespace Aquarium
             get { return this.height; }
         }
 
-        public void Initialize(Texture2D bg, Texture2D texture1, Texture2D texture2, Vector2 position, int width, int height, int g_w, int g_h)
+        public void Initialize(Texture2D texture1, Texture2D texture2, Vector2 position, int width, int height)
         {
-            background = bg;
             Texture1 = texture1;
             Texture2 = texture2;
-            global_height = g_h;
-            global_width = g_w;
             this.width = width;
             this.height = height;
             Position = position;
@@ -86,8 +79,6 @@ namespace Aquarium
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(background, new Rectangle(0, 0, global_width, global_height), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
-
             if (time < 10)
                 spriteBatch.Draw(Texture1, new Rectangle((int)Position.X, (int)Position.Y, width, height), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
             else

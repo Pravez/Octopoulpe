@@ -11,7 +11,7 @@ namespace Aquarium
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Fish fish;
+        Fish fish, fish2;
 
         public Aquarium()
         {
@@ -29,9 +29,11 @@ namespace Aquarium
         {
             // Initialize the player class
             fish = new Fish();
+            fish2 = new Fish();
 
             base.Initialize();
             fish.setGoal(new Vector2(400, 350));
+            fish2.setGoal(new Vector2(465, 165));
         }
 
         /// <summary>
@@ -46,7 +48,8 @@ namespace Aquarium
 
             Vector2 playerPosition = new Vector2(25, 25);
 
-            fish.Initialize(Content.Load<Texture2D>("bg"), Content.Load<Texture2D>("magicarpe2"), Content.Load<Texture2D>("magicarpe3"), playerPosition, 100, 100, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            fish2.Initialize(Content.Load<Texture2D>("magicarpe2"), Content.Load<Texture2D>("magicarpe3"), playerPosition, 200, 200);
+            fish.Initialize(Content.Load<Texture2D>("magicarpe2"), Content.Load<Texture2D>("magicarpe3"), playerPosition, 200, 200);
         }
 
         /// <summary>
@@ -69,6 +72,7 @@ namespace Aquarium
                 Exit();
 
             fish.Update();
+            fish2.Update();
             base.Update(gameTime);
         }
 
@@ -83,8 +87,10 @@ namespace Aquarium
             // Start drawing
             spriteBatch.Begin();
 
+            spriteBatch.Draw(Content.Load<Texture2D>("bg"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
             // Draw the Player
             fish.Draw(spriteBatch);
+            fish2.Draw(spriteBatch);
 
             // Stop drawing
             spriteBatch.End();
