@@ -14,8 +14,8 @@ namespace Aquarium
         [STAThread]
         static void Main()
         {
-            using (var game = new Aquarium())
-                game.Run();
+            using (var aquarium = new Aquarium())
+                aquarium.Run();
         }
     }
 #endif

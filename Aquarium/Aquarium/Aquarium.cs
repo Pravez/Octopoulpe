@@ -48,8 +48,8 @@ namespace Aquarium
 
             Vector2 playerPosition = new Vector2(25, 25);
 
-            fish2.Initialize(Content.Load<Texture2D>("magicarpe2"), Content.Load<Texture2D>("magicarpe3"), playerPosition, 200, 200);
-            fish.Initialize(Content.Load<Texture2D>("magicarpe2"), Content.Load<Texture2D>("magicarpe3"), playerPosition, 200, 200);
+            fish2.Initialize(Content.Load<Texture2D>("magicarpe2"), Content.Load<Texture2D>("magicarpe3"), playerPosition, 100, 100);
+            fish.Initialize(Content.Load<Texture2D>("magicarpe2"), Content.Load<Texture2D>("magicarpe3"), playerPosition, 100, 100);
         }
 
         /// <summary>
