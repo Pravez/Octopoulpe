@@ -25,6 +25,7 @@ void * t_read(void * arg) {
   n = read(newsockfd,
 }
 */
+
 void *start(void *arg) {
     char buffer[MAX];
     int newsockfd = *((int *) arg);
@@ -32,13 +33,13 @@ void *start(void *arg) {
 
     bzero(buffer, 256);
     while (1) {
-        n = read(newsockfd, buffer, 255);
+        n = (int) read(newsockfd, buffer, 255);
         if (n < 0) {
             perror("ERROR reading from socket");
             exit(1);
         }
         printf("Here is the message :%s\n", buffer);
-        n = write(newsockfd, "I got your message", 18);
+        n = (int) write(newsockfd, "I got your message", 18);
         if (n < 0) {
             perror("ERROR writing to socket");
             exit(1);
@@ -61,8 +62,8 @@ void connexion(int portno) {
     bzero((char *) &serv_addr, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons(portno);
-    if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) error("ERROR on binding");
+    serv_addr.sin_port = htons((uint16_t) portno);
+    if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) perror("ERROR on binding");
     listen(sockfd, 5);
     while (newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen)) {
         pthread_t thread;

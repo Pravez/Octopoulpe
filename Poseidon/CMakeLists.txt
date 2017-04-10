@@ -13,7 +13,7 @@ set(SOURCE_FILES main.c
                     model/fish.c
                     model/fish.h
                     model/aquarium_view.c
-                    model/aquarium_view.h)
+                    model/aquarium_view.h utility/hashmap.c utility/hashmap.h)
 
 add_executable(Server_default ${SOURCE_FILES})
 target_link_libraries(Server_default ${CMAKE_THREAD_LIBS_INIT})
