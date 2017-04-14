@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
     printf("Display timeout value : %d\n", _get_value(config_vector, "fish-update-interval"));
     _delete_tvector(config_vector);
 
-    _set_verbosity(TRUE);
+    _set_verbosity(FALSE);
     _console_log(LOG_HIGH, "BIG PROBLEM");
     _console_log(LOG_LOW, "simple log");
 
@@ -38,9 +38,11 @@ int main(int argc, char* argv[]){
     char* view2 = aq__add_view(&aquarium1, (struct position) {100, 100}, (struct dimension) {900, 900}, NULL);
 
     aq__add_fish_to_aqv(&aquarium1, view1, fish__create(BLOBFISH, 10, 20, "jeanmi"));
-    aq__add_fish_to_aqv(&aquarium1, view1, fish__create(BLOBFISH, 10, 30, NULL));
-    aq__add_fish_to_aqv(&aquarium1, view2, fish__create(OCTOPUS, 300, 300, NULL));
-    aq__add_fish_to_aqv(&aquarium1, view2, fish__create(OCTOPUS, 400, 400, NULL));
+    aq__add_fish_to_aqv(&aquarium1, view1, fish__create(BLOBFISH, 10, 30, "jeanma"));
+    aq__add_fish_to_aqv(&aquarium1, view2, fish__create(OCTOPUS, 300, 300, "jeanmo"));
+    aq__add_fish_to_aqv(&aquarium1, view2, fish__create(OCTOPUS, 400, 400, "jeanbite"));
+
+    aq__remove_fish(&aquarium1, "jeanbite");
 
     display_aquarium(&aquarium1);
 /*

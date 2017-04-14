@@ -6,7 +6,6 @@
 
 #define _GNU_SOURCE
 
-#define DEFAULT_FISHVECTOR_SIZE 10
 #define DEFAULT_VIEWS_QUANTITY 5
 
 #define GET_VIEW_PTR(vector, position) vi__convert_aq_view(v__get(vector, position))
@@ -41,41 +40,18 @@ struct aquarium_view *aq__get_view_by_id(struct aquarium *aquarium, char* id) {
     return NULL;
 }
 
-void aq__add_fish_to_aqv(struct aquarium* aq, char* id, struct fish fish){
+void aq__add_fish_to_aqv(struct aquarium* aq, char* id, struct fish* fish){
     struct aquarium_view* aqv = aq__get_view_by_id(aq, id);
     CHK_ERROR(aqv, "Unable to add fish to NULL view")
 
-    aqv__add_fish(aqv, fish._id, fish._type, fish._position);
+    aqv__add_fish(aqv, fish);
 }
-
-/*void aq__add_fish(struct aquarium *aquarium, struct fish fish) {
-    CHCK_NULL(aquarium, "aquarium")
-
-    int positions[aquarium->_current_views];
-    int founds = 0;
-    //First we try to add the fish to views, if coordinates corresponds
-    for (int i = 0; i < aquarium->_current_views; i++) {
-        if (check_in_screen(aquarium->_views[i]._starting_position, aquarium->_views[i]._dimensions, fish._position)) {
-            positions[founds++] = i;
-        }
-    }
-
-    //Then we try to add it
-    if (founds == 0) {
-        //We couldn't find any matches, so it's that it isn't in any screen ... !
-        fv__add_fish(&aquarium->_fishes, fish);
-    } else {
-        //We found it, so we add it to the views ... !
-        for (int i = 0; i < founds; i++)
-            fv__add_fish(&aquarium->_views[positions[i]]._fishes, fish);
-    }
-}*/
 
 void aq__remove_fish(struct aquarium *aquarium, char* fish_id) {
     //first we seek for fishes not displayed
-    struct fish* found_fish = NULL;
-    if(hashmap_get(aquarium->_fishes, fish_id, (any_t *) found_fish) == MAP_OK){
-        hashmap_remove(aquarium->_fishes, found_fish->_id);
+    void* found_fish = malloc(sizeof(struct fish**));
+    if(hashmap_get(aquarium->_fishes, fish_id, found_fish) == MAP_OK){
+        hashmap_remove(aquarium->_fishes, (*(struct fish**) found_fish)->_id);
         _console_log(LOG_MEDIUM, "Removed fish");
     }
 
@@ -83,8 +59,8 @@ void aq__remove_fish(struct aquarium *aquarium, char* fish_id) {
     for (int j = 0; j < v__size(&aquarium->_views); j++) {
         struct aquarium_view* view = GET_VIEW_PTR(&aquarium->_views, j);
         if(view != NULL){
-            if(hashmap_get(view->_fishes, fish_id, (any_t *) found_fish) == MAP_OK){
-                hashmap_remove(view->_fishes, found_fish->_id);
+            if(hashmap_get(view->_fishes, fish_id, found_fish) == MAP_OK){
+                hashmap_remove(view->_fishes, (*(struct fish**) found_fish)->_id);
                 _console_log(LOG_MEDIUM, "Removed fish");
             }
         }

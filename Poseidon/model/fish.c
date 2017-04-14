@@ -7,14 +7,14 @@
 static int _fish_ids = 0;
 
 
-struct fish fish__create(enum fish_type type, int x, int y, char* id) {
-    struct fish f;
+struct fish* fish__create(enum fish_type type, int x, int y, char* id) {
+    struct fish* f = malloc(sizeof(struct fish));
     if(id == NULL)
-        asprintf(f._id, "%s%d", get_type_string(type), _fish_ids++);
+        asprintf(f->_id, "%s%d", get_type_string(type), _fish_ids++);
     else
-        f._id = id;
-    f._position = __position(x, y);
-    f._type = type;
+        f->_id = id;
+    f->_position = __position(x, y);
+    f->_type = type;
 
     return f;
 }

@@ -13,7 +13,7 @@ struct fish {
     char *_id;
 };
 
-struct fish fish__create(enum fish_type type, int x, int y, char* id);
+struct fish* fish__create(enum fish_type type, int x, int y, char* id);
 int fish__free(any_t fish, any_t nothing);
 
 #endif //POSEIDON_FISH_H

@@ -166,7 +166,7 @@ unsigned long crc32(const unsigned char *s, unsigned int len)
  */
 unsigned int hashmap_hash_int(hashmap_map * m, char* keystring){
 
-    unsigned long key = crc32((unsigned char*)(keystring), strlen(keystring));
+    unsigned long key = crc32((unsigned char*)(keystring), (unsigned int) strlen(keystring));
 
     /* Robert Jenkins' 32 bit Mix Function */
     key += (key << 12);
@@ -181,7 +181,7 @@ unsigned int hashmap_hash_int(hashmap_map * m, char* keystring){
     /* Knuth's Multiplicative Method */
     key = (key >> 3) * 2654435761;
 
-    return key % m->table_size;
+    return (unsigned int) (key % m->table_size);
 }
 
 /*

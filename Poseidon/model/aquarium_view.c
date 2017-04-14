@@ -22,15 +22,10 @@ int aqv__initialize_aquarium_view(struct aquarium_view *aqv, struct position s_p
     return _views_ids-1;
 }
 
-void aqv__add_fish(struct aquarium_view *aqv, char* id, enum fish_type type, struct position position) {
+void aqv__add_fish(struct aquarium_view *aqv, struct fish* fish) {
     CHCK_NULL(aqv, "aquarium view")
 
-    struct fish* new_fish = malloc(sizeof(struct fish));
-    new_fish->_id = id;
-    new_fish->_position = position;
-    new_fish->_type = type;
-
-    hashmap_put(aqv->_fishes, new_fish->_id, new_fish);
+    hashmap_put(aqv->_fishes, fish->_id, fish);
 }
 
 int aqv__get_fish_qty(struct aquarium_view *aqv) {
