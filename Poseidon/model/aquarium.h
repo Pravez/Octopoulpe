@@ -10,7 +10,7 @@
 struct aquarium{
     struct dimension _dimensions;
     struct vector _views;
-    struct fish_vector _fishes;
+    map_t _fishes;
 };
 
 void aq__initialize_aquarium(struct aquarium* aquarium, struct dimension dimension);
