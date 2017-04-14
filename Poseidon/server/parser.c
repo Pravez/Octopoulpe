@@ -35,6 +35,7 @@ void parse_config_file(const char* file){
     config_vector = _init_tvector(tuple_nbr);
     for(int i = 0;i < tuple_nbr;i++){
         _add_tuple(config_vector, temp_array[i]);
+        free(temp_array[i]._key);
     }
 }
 

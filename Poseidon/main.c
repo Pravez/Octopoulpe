@@ -50,8 +50,8 @@ int main(int argc, char* argv[]){
     aq__remove_fish(&aquarium1, 3);
     display_aquarium(&aquarium1);*/
 
-    pthread_join(menu_t, NULL);
-    pthread_join(server_t, NULL);
+    //pthread_join(menu_t, NULL);
+    //pthread_join(server_t, NULL);
 
     return EXIT_SUCCESS;
 }

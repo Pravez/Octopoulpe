@@ -65,6 +65,11 @@ void aq__remove_fish(struct aquarium *aquarium, char* fish_id) {
             }
         }
     }
+
+    if(found_fish != NULL){
+        free(*(struct fish**) found_fish);
+        free(found_fish);
+    }
 }
 
 int get_aquarium_view_position(struct aquarium* aquarium, char* view_id){
