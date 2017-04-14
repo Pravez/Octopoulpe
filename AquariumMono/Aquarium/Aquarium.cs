@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace Aquarium
 {
@@ -11,7 +12,7 @@ namespace Aquarium
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Fish fish, fish2;
+        List<Fish> fishes;
 
         public Aquarium()
         {
@@ -27,13 +28,18 @@ namespace Aquarium
         /// </summary>
         protected override void Initialize()
         {
-            // Initialize the player class
-            fish = new Fish();
-            fish2 = new Fish();
+            // Initialize the aquarium class
+            fishes = new List<Fish>();
+
+            AddFish("magicarpe2", new Vector2(0,0), new Vector2(100, 100));
+            AddFish("magicarpe2", new Vector2(50, 50), new Vector2(100, 100));
+            //fishes.Add(new Fish());
+            //fishes.Add(new Fish());
 
             base.Initialize();
-            fish.setGoal(new Vector2(400, 350));
-            fish2.setGoal(new Vector2(465, 165));
+
+            fishes[0].setGoal(new Vector2(400, 350));
+            fishes[1].setGoal(new Vector2(465, 165));
         }
 
         /// <summary>
@@ -48,8 +54,10 @@ namespace Aquarium
 
             Vector2 playerPosition = new Vector2(25, 25);
 
-            fish2.Initialize(Content.Load<Texture2D>("magicarpe2"), Content.Load<Texture2D>("magicarpe3"), playerPosition, 100, 100);
-            fish.Initialize(Content.Load<Texture2D>("magicarpe2"), Content.Load<Texture2D>("magicarpe3"), playerPosition, 100, 100);
+           /* foreach (Fish f in fishes)
+            {
+                f.Initialize(Content.Load<Texture2D>("magicarpe2"), Content.Load<Texture2D>("magicarpe3"), playerPosition, 100, 100);
+            }*/
         }
 
         /// <summary>
@@ -71,8 +79,10 @@ namespace Aquarium
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            fish.Update();
-            fish2.Update();
+            foreach (Fish f in fishes)
+            {
+                f.Update();
+            }
             base.Update(gameTime);
         }
 
@@ -88,14 +98,27 @@ namespace Aquarium
             spriteBatch.Begin();
 
             spriteBatch.Draw(Content.Load<Texture2D>("bg"), new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
-            // Draw the Player
-            fish.Draw(spriteBatch);
-            fish2.Draw(spriteBatch);
+            // Draw the fishes
+            foreach (Fish f in fishes)
+            {
+                f.Draw(spriteBatch);
+            }
 
             // Stop drawing
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        protected void AddFish(string name, Vector2 position, Vector2 size)
+        {
+            fishes.Add(new Fish());
+            fishes[fishes.Count-1].Initialize(Content.Load<Texture2D>(name), Content.Load<Texture2D>(name + "_"), position, (int)size.X, (int)size.Y);
+        }
+
+        protected void DeleteFish(string name)
+        {
+
         }
     }
 }

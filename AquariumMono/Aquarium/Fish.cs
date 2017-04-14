@@ -22,6 +22,7 @@ namespace Aquarium
         // Position of the Fish relative to the upper left side of the screen
         public Vector2 Position;
         public Vector2 Goal;
+        public Vector2 FakeGoal;
 
         // State of the fish
         public bool Displayed;
@@ -47,7 +48,7 @@ namespace Aquarium
             this.height = height;
             Position = position;
             Displayed = false;
-            Goal = new Vector2(0, 0);
+            Goal = new Vector2(-1, -1);
         }
 
         public void setGoal(Vector2 goal)
@@ -57,20 +58,63 @@ namespace Aquarium
 
         public void Update()
         {
+            Console.WriteLine(Goal.X + " et " + Goal.Y);
+
+
             if (Goal.X != -1 && Goal.Y != -1)
             {
-                if (Position.X > Goal.X)
-                    Position.X = Position.X - 1;
-                else if (Position.X < Goal.X)
-                    Position.X = Position.X + 1;
+                if (FakeGoal.Equals(new Vector2(-1, -1)))
+                {
+                    if (Position.X > Goal.X)
+                        Position.X = Position.X - 1;
+                    else if (Position.X < Goal.X)
+                        Position.X = Position.X + 1;
 
-                if (Position.Y > Goal.Y)
-                    Position.Y = Position.Y - 1;
-                else if (Position.Y < Goal.Y)
-                    Position.Y = Position.Y + 1;
+                    if (Position.Y > Goal.Y)
+                        Position.Y = Position.Y - 1;
+                    else if (Position.Y < Goal.Y)
+                        Position.Y = Position.Y + 1;
+                }
+                else
+                {
+                    if (Position.X > FakeGoal.X)
+                        Position.X = Position.X - 1;
+                    else if (Position.X < FakeGoal.X)
+                        Position.X = Position.X + 1;
+
+                    if (Position.Y > FakeGoal.Y)
+                        Position.Y = Position.Y - 1;
+                    else if (Position.Y < FakeGoal.Y)
+                        Position.Y = Position.Y + 1;
+
+                } 
+                Random rnd = new Random();
+                int pos = rnd.Next(1, 4);
+                if (Position.Equals(FakeGoal))
+                {
+                    FakeGoal = new Vector2(-1, -1);
+                }
 
                 if (Position.Equals(Goal))
+                {
                     Goal = new Vector2(-1, -1);
+                    FakeGoal = new Vector2(-1, -1);
+                }
+                else if (Position.X == Goal.X)
+                {
+                    if (pos == 1)
+                        FakeGoal = new Vector2(Goal.X-10,Goal.Y);
+                    else if (pos == 2)
+                        FakeGoal = new Vector2(Goal.X+10, Goal.Y);
+
+                }
+                else if (Position.Y == Goal.Y)
+                {
+                    if (pos == 1)
+                        FakeGoal = new Vector2(Goal.X, Goal.Y-10);
+                    else if (pos == 2)
+                        FakeGoal = new Vector2(Goal.X, Goal.Y+10);
+                }
             }
 
             time = (time + 1) % 20;
