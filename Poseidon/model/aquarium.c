@@ -6,7 +6,6 @@
 
 #define _GNU_SOURCE
 
-#define DEFAULT_FISHVECTOR_SIZE 10
 #define DEFAULT_VIEWS_QUANTITY 5
 
 #define GET_VIEW_PTR(vector, position) vi__convert_aq_view(v__get(vector, position))
@@ -16,7 +15,7 @@ void aq__initialize_aquarium(struct aquarium *aquarium, struct dimension dimensi
 
     aquarium->_dimensions = dimension;
     v__init(&aquarium->_views, DEFAULT_VIEWS_QUANTITY);
-    fv__initialize_vector(&aquarium->_fishes, DEFAULT_FISHVECTOR_SIZE);
+    aquarium->_fishes = hashmap_new();
 }
 
 char* aq__add_view(struct aquarium *aquarium, struct position s_pos, struct dimension dimensions, char* id) {
@@ -41,55 +40,28 @@ struct aquarium_view *aq__get_view_by_id(struct aquarium *aquarium, char* id) {
     return NULL;
 }
 
-void aq__add_fish_to_aqv(struct aquarium* aq, char* id, struct fish fish){
+void aq__add_fish_to_aqv(struct aquarium* aq, char* id, struct fish* fish){
     struct aquarium_view* aqv = aq__get_view_by_id(aq, id);
     CHK_ERROR(aqv, "Unable to add fish to NULL view")
 
     aqv__add_fish(aqv, fish);
 }
 
-/*void aq__add_fish(struct aquarium *aquarium, struct fish fish) {
-    CHCK_NULL(aquarium, "aquarium")
-
-    int positions[aquarium->_current_views];
-    int founds = 0;
-    //First we try to add the fish to views, if coordinates corresponds
-    for (int i = 0; i < aquarium->_current_views; i++) {
-        if (check_in_screen(aquarium->_views[i]._starting_position, aquarium->_views[i]._dimensions, fish._position)) {
-            positions[founds++] = i;
-        }
-    }
-
-    //Then we try to add it
-    if (founds == 0) {
-        //We couldn't find any matches, so it's that it isn't in any screen ... !
-        fv__add_fish(&aquarium->_fishes, fish);
-    } else {
-        //We found it, so we add it to the views ... !
-        for (int i = 0; i < founds; i++)
-            fv__add_fish(&aquarium->_views[positions[i]]._fishes, fish);
-    }
-}*/
-
 void aq__remove_fish(struct aquarium *aquarium, char* fish_id) {
     //first we seek for fishes not displayed
-    for (int i = 0; i < aquarium->_fishes._current; i++) {
-        if (!strcmp(aquarium->_fishes._vector[i]._id, fish_id)) {
-            fv__remove_fish(&aquarium->_fishes, fish_id);
-            _console_log(LOG_MEDIUM, "Removed fish");
-            return;
-        }
+    void* found_fish = malloc(sizeof(struct fish**));
+    if(hashmap_get(aquarium->_fishes, fish_id, found_fish) == MAP_OK){
+        hashmap_remove(aquarium->_fishes, (*(struct fish**) found_fish)->_id);
+        _console_log(LOG_MEDIUM, "Removed fish");
     }
 
     //Then if we didn't find, we seek in views ...
     for (int j = 0; j < v__size(&aquarium->_views); j++) {
         struct aquarium_view* view = GET_VIEW_PTR(&aquarium->_views, j);
         if(view != NULL){
-            for(int i = 0; i < view->_fishes._current;i++){
-                if(!strcmp(view->_fishes._vector[i]._id, fish_id)){
-                    fv__remove_fish(&view->_fishes, fish_id);
-                    _console_log(LOG_MEDIUM, "Removed fish");
-                }
+            if(hashmap_get(view->_fishes, fish_id, found_fish) == MAP_OK){
+                hashmap_remove(view->_fishes, (*(struct fish**) found_fish)->_id);
+                _console_log(LOG_MEDIUM, "Removed fish");
             }
         }
     }
@@ -105,13 +77,20 @@ int get_aquarium_view_position(struct aquarium* aquarium, char* view_id){
     return -1;
 }
 
+int removal_iterator(any_t aquarium,any_t fish){
+    struct aquarium* aqua = aquarium;
+    struct fish* f = fish;
+    if(aquarium == NULL)
+        return MAP_MISSING;
+
+    return hashmap_put(aqua->_fishes, f->_id, f);
+}
+
 void aq__remove_aquarium_view(struct aquarium *aquarium, char* view_id) {
 
     struct aquarium_view *view = aq__get_view_by_id(aquarium, view_id);
 
-    for (int i = 0; i < view->_fishes._current; ++i) {
-        fv__add_fish(&aquarium->_fishes, view->_fishes._vector[i]);
-    }
+    hashmap_iterate(aquarium->_fishes, (PFany) removal_iterator, aquarium);
 
     v__remove_by_data(&aquarium->_views, view);
     aqv__remove_aquarium_view(view);
@@ -134,7 +113,8 @@ struct array aq__get_views_ids(struct aquarium *aquarium) {
 }
 
 void aq__remove_aquarium(struct aquarium *aquarium) {
-    fv__remove_vector(&aquarium->_fishes);
+    hashmap_iterate(aquarium->_fishes, (PFany) fish__free, NULL);
+    hashmap_free(aquarium->_fishes);
 
     for (int i = 0; i < v__size(&aquarium->_views); i++) {
         aqv__remove_aquarium_view(GET_VIEW_PTR(&aquarium->_views, i));
@@ -163,12 +143,15 @@ void display_fish(struct fish *fish) {
            fish->_position.x, fish->_position.y);
 }
 
+int iterate_fishes(any_t nothing, any_t fish){
+    display_fish(fish);
+    return MAP_OK;
+}
+
 void display_view(struct aquarium_view *aqv) {
     printf("VIEW : %s (%dx%d+%d+%d) \n\t FISHES : \n", aqv->_id, aqv->_inner._starting_position.x,
            aqv->_inner._starting_position.y, aqv->_inner._dimensions.width, aqv->_inner._dimensions.height);
-    for (int i = 0; i < aqv->_fishes._current; i++) {
-        display_fish(&aqv->_fishes._vector[i]);
-    }
+    hashmap_iterate(aqv->_fishes, (PFany) iterate_fishes, NULL);
     printf("END OF VIEW \n");
 }
 
@@ -181,8 +164,6 @@ void display_aquarium(struct aquarium *aq) {
     }
 
     printf("NOT DISPLAYED FISHES : \n");
-    for (int i = 0; i < aq->_fishes._current; i++) {
-        display_fish(&aq->_fishes._vector[i]);
-    }
+    hashmap_iterate(aq->_fishes, (PFany) iterate_fishes, NULL);
     printf("~~~~~~~~~~~~~~~~~~~~~~\n");
 }

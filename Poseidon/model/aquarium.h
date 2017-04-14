@@ -10,7 +10,7 @@
 struct aquarium{
     struct dimension _dimensions;
     struct vector _views;
-    struct fish_vector _fishes;
+    map_t _fishes;
 };
 
 void aq__initialize_aquarium(struct aquarium* aquarium, struct dimension dimension);
@@ -21,7 +21,7 @@ struct aquarium_view* aq__get_view_by_id(struct aquarium* aquarium, char* id);
 void aq__remove_aquarium_view(struct aquarium* aquarium, char* view_id);
 
 //void aq__add_fish(struct aquarium* aquarium, struct fish fish);
-void aq__add_fish_to_aqv(struct aquarium* aq, char* id, struct fish fish);
+void aq__add_fish_to_aqv(struct aquarium* aq, char* id, struct fish* fish);
 void aq__remove_fish(struct aquarium *aquarium, char* fish_id);
 struct array aq__get_views_ids(struct aquarium* aquarium);
 

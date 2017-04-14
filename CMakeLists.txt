@@ -6,7 +6,7 @@ include_directories(/usr/include/readline)
 
 find_package(Threads REQUIRED)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wall -lreadline -lpthread")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wall -lreadline -lpthread -D_PROCESS_")
 
 
 add_subdirectory(Poseidon)

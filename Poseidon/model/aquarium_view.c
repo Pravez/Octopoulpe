@@ -17,21 +17,21 @@ int aqv__initialize_aquarium_view(struct aquarium_view *aqv, struct position s_p
 
     aqv->_inner._starting_position = s_pos;
     aqv->_inner._dimensions = dimension;
-    fv__initialize_vector(&aqv->_fishes, DEF_FISHES_SIZE);
+    aqv->_fishes = hashmap_new();
 
     return _views_ids-1;
 }
 
-void aqv__add_fish(struct aquarium_view *aqv, struct fish fish) {
+void aqv__add_fish(struct aquarium_view *aqv, struct fish* fish) {
     CHCK_NULL(aqv, "aquarium view")
 
-    fv__add_fish(&aqv->_fishes, fish);
+    hashmap_put(aqv->_fishes, fish->_id, fish);
 }
 
 int aqv__get_fish_qty(struct aquarium_view *aqv) {
-    return aqv->_fishes._current;
+    return hashmap_length(aqv->_fishes);
 }
 
 void aqv__remove_aquarium_view(struct aquarium_view *aqv) {
-    fv__remove_vector(&aqv->_fishes);
+    hashmap_free(aqv->_fishes);
 }
