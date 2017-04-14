@@ -2,7 +2,6 @@
 set(SOURCE_FILES main.c
                     server/parser.c
                     server/server.c
-                    server/answer.c
                     utility/tools.c
                     utility/fish_type.c
                     view/view.c

@@ -4,8 +4,6 @@
 #include "aquarium.h"
 #include "aquarium.h"
 
-#define _GNU_SOURCE
-
 #define DEFAULT_VIEWS_QUANTITY 5
 
 #define GET_VIEW_PTR(vector, position) vi__convert_aq_view(v__get(vector, position))

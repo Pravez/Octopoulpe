@@ -3,7 +3,6 @@
 #include "../utility/tools.h"
 #include "aquarium_view.h"
 
-#define _GNU_SOURCE
 
 static int _views_ids = 0;
 

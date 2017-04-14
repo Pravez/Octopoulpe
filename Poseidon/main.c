@@ -8,8 +8,6 @@
 #include "utility/tools.h"
 #include "view/view.h"
 
-#define _GNU_SOURCE
-
 extern struct _tvector* config_vector;
 struct aquarium aquarium1;
 

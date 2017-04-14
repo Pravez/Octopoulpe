@@ -47,7 +47,7 @@ void _delete_tvector(struct _tvector* vector);
  * @param vector
  * @param tuple
  */
-void _add_tuple(struct _tvector* vector, struct _tuple tuple);
+void _add_tuple(struct _tvector* vector, char* key, int value);
 
 /**
  * to create a tuple, with a pair key-value

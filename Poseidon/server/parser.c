@@ -16,27 +16,23 @@ void parse_config_file(const char* file){
     if(conf_file == NULL)
         return;
 
-    struct _tuple temp_array[10];
-    int tuple_nbr = 0;
+    config_vector = _init_tvector(3);
+    char* temp_string;
+    int temp_int;
+
 
     while ((read = getdelim(&line, &len, '\n', conf_file)) != -1) {
         if(strcmp(line, ";") == 0)
             break;
 
         string = strtok(line, "=");
-        temp_array[tuple_nbr]._key = malloc(sizeof(char)*strlen(string));
-        strcpy(temp_array[tuple_nbr]._key, string);
+        asprintf(&temp_string, "%s", string);
         string = strtok(NULL, "=");
-        temp_array[tuple_nbr++]._value = atoi(string);
+        temp_int = atoi(string);
+        _add_tuple(config_vector, temp_string, temp_int);
     }
 
     fclose(conf_file);
-
-    config_vector = _init_tvector(tuple_nbr);
-    for(int i = 0;i < tuple_nbr;i++){
-        _add_tuple(config_vector, temp_array[i]);
-        free(temp_array[i]._key);
-    }
 }
 
 struct _tvector* _init_tvector(int size){
@@ -56,8 +52,9 @@ void _delete_tvector(struct _tvector* vector){
     free(vector);
 }
 
-void _add_tuple(struct _tvector* vector, struct _tuple tuple){
-    vector->_vector[vector->_ptr_current++] = tuple;
+void _add_tuple(struct _tvector* vector, char* key, int value){
+    asprintf(&vector->_vector[vector->_ptr_current]._key, "%s", key);
+    vector->_vector[vector->_ptr_current++]._value = value;
 }
 
 struct _tuple _create_tuple(char* key, int value){
