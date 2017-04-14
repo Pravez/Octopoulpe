@@ -25,7 +25,7 @@ void aq__add_fish_to_aqv(struct aquarium* aq, char* id, struct fish* fish);
 void aq__remove_fish(struct aquarium *aquarium, char* fish_id);
 struct array aq__get_views_ids(struct aquarium* aquarium);
 
-char* aq__check_free_id(struct aquarium* aquarium, char* id);
+int aq__check_free_id(struct aquarium* aquarium, char* id);
 
 //For debug purposes
 void display_fish(struct fish* fish);
