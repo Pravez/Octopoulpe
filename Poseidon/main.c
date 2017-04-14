@@ -11,11 +11,18 @@
 #define _GNU_SOURCE
 
 extern struct _tvector* config_vector;
+struct aquarium aquarium1;
 
 int main(int argc, char* argv[]){
 
     pthread_t menu_t;
     pthread_t server_t;
+
+    // Initialisation of the aquarium
+    aq__initialize_aquarium(&aquarium1, (struct dimension) {1000, 1000});
+    
+    char* view1 = aq__add_view(&aquarium1, (struct position) {250, 250}, (struct dimension) {500, 500}, NULL);
+    char* view2 = aq__add_view(&aquarium1, (struct position) {100, 100}, (struct dimension) {900, 900}, NULL);
 
     //Job to do with config file ... (before launching server)
     parse_config_file("controller.cfg");
@@ -30,12 +37,6 @@ int main(int argc, char* argv[]){
     _set_verbosity(TRUE);
     _console_log(LOG_HIGH, "BIG PROBLEM");
     _console_log(LOG_LOW, "simple log");
-
-    struct aquarium aquarium1;
-    aq__initialize_aquarium(&aquarium1, (struct dimension) {1000, 1000});
-
-    char* view1 = aq__add_view(&aquarium1, (struct position) {250, 250}, (struct dimension) {500, 500}, NULL);
-    char* view2 = aq__add_view(&aquarium1, (struct position) {100, 100}, (struct dimension) {900, 900}, NULL);
 
     aq__add_fish_to_aqv(&aquarium1, view1, fish__create(BLOBFISH, 10, 20, "jeanmi"));
     aq__add_fish_to_aqv(&aquarium1, view1, fish__create(BLOBFISH, 10, 30, NULL));

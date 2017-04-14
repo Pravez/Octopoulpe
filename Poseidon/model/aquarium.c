@@ -143,17 +143,17 @@ void aq__remove_aquarium(struct aquarium *aquarium) {
     v__destroy(&aquarium->_views);
 }
 
-char* aq__check_free_id(struct aquarium* aquarium, char* id){
+int aq__check_free_id(struct aquarium* aquarium, char* id){
     if(id == NULL)
-        return "OK";
+        return 0;
 
     for(int i = 0;i < v__size(&aquarium->_views);i++){
         if(!strcmp(GET_VIEW_PTR(&aquarium->_views, i)->_id, id)){
-            return NULL;
+            return 0;
         }
     }
 
-    return id;
+    return 1;
 }
 
 ///////DEBUG
