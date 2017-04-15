@@ -8,8 +8,10 @@
 #include "server.h"
 #include "answer.h"
 
-#define MAX 256
 #define PARAM 2
+#define LISTEN_QUEUE 10
+#define CHOSE_AUTOMATICALLY 0
+#define BUFFER_SIZE 256
 
 #define CHK_ERROR(test, msg) if(test < 0){ perror(msg); exit(1);}
 
@@ -26,11 +28,11 @@ void *server_process(void *arg) {
 }
 #endif //_PROCESS_
 
-void parse(char buffer[MAX], char buf_res[MAX]) {
-    char cmd[MAX];
+void parse(char buffer[BUFFER_SIZE], char buf_res[BUFFER_SIZE]) {
+    char cmd[BUFFER_SIZE];
     int i = 0;
     int j = 0;
-    char arg[MAX];
+    char arg[BUFFER_SIZE];
     char *res;// = malloc(sizeof(char)*MAX);
     printf("1\n");
     while ((buffer[i] != ' ') && (buffer[i] != '\0')) {
@@ -66,14 +68,14 @@ void parse(char buffer[MAX], char buf_res[MAX]) {
 
 void *start(void *arg) {
 
-    char buffer[MAX];
+    char buffer[BUFFER_SIZE];
     int newsockfd = *((int *) arg);
     int n;
-    char buf_res[MAX];
+    char buf_res[BUFFER_SIZE];
 
-    bzero(buffer, 256);
+    bzero(buffer, BUFFER_SIZE);
     while (1) {
-        n = read(newsockfd, buffer, 255);
+        n = read(newsockfd, buffer, BUFFER_SIZE-1);
         printf("n: %d\n", n);
         CHK_ERROR(n, "Error reading from socket")
         else if (n == 2) { //fix the segfault in case of empty message
@@ -96,7 +98,7 @@ void wait_connection(int portno) {
 
     clilen = sizeof(client_addr);
 
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    sockfd = socket(AF_INET, SOCK_STREAM, CHOSE_AUTOMATICALLY);
     CHK_ERROR(sockfd, "Error opening socket")
 
     bzero((char *) &server_addr, sizeof(server_addr));
@@ -106,7 +108,7 @@ void wait_connection(int portno) {
     server_addr.sin_port = htons((uint16_t) portno);
     CHK_ERROR(bind(sockfd, (struct sockaddr *) &server_addr, sizeof(server_addr)), "Error on binding")
 
-    listen(sockfd, 5);
+    listen(sockfd, LISTEN_QUEUE);
 
     while ((newsockfd = accept(sockfd, (struct sockaddr *) &client_addr, (socklen_t *) &clilen))) {
         struct thread_entry* en = malloc(sizeof(struct thread_entry));
