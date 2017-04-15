@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <pthread.h>
@@ -11,18 +10,20 @@
 
 #define MAX 256
 #define PARAM 2
-#define CLIENTS 5
 
 #define CHK_ERROR(test, msg) if(test < 0){ perror(msg); exit(1);}
 
 #ifdef _PROCESS_
-
 void *server_process(void *arg) {
     int portno = *(int *) arg;
-    connexion(portno);
+    //Initializing list
+    thread_head = LIST_HEAD_INITIALIZER(thread_head);
+    LIST_INIT(&thread_head);
+
+    //Then we launch listening
+    wait_connection(portno);
     return 0;
 }
-
 #endif //_PROCESS_
 
 void parse(char buffer[MAX], char buf_res[MAX]) {
@@ -89,24 +90,29 @@ void *start(void *arg) {
     }
 }
 
-void connexion(int portno) {
+void wait_connection(int portno) {
     int sockfd, newsockfd, clilen;
-    struct sockaddr_in serv_addr, cli_addr;
-    int i;
-    clilen = sizeof(cli_addr);
+    struct sockaddr_in server_addr, client_addr;
+
+    clilen = sizeof(client_addr);
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     CHK_ERROR(sockfd, "Error opening socket")
 
-    bzero((char *) &serv_addr, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons(portno);
-    CHK_ERROR(bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)), "Error on binding")
+    bzero((char *) &server_addr, sizeof(server_addr));
+
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = INADDR_ANY;
+    server_addr.sin_port = htons((uint16_t) portno);
+    CHK_ERROR(bind(sockfd, (struct sockaddr *) &server_addr, sizeof(server_addr)), "Error on binding")
+
     listen(sockfd, 5);
-    while (newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen)) {
-        pthread_t thread;
-        CHK_ERROR(pthread_create(&thread, NULL, start, &newsockfd) < 0, "Error creating thread")
+
+    while ((newsockfd = accept(sockfd, (struct sockaddr *) &client_addr, (socklen_t *) &clilen))) {
+        struct thread_entry* en = malloc(sizeof(struct thread_entry));
+        LIST_INSERT_HEAD(&thread_head, en, entries);
+
+        CHK_ERROR(pthread_create(en->_thread, NULL, start, &newsockfd) < 0, "Error creating thread")
     }
 }
 
@@ -117,7 +123,7 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
   int portno = atoi(argv[1]);
-  connexion(portno);
+  wait_connection(portno);
   return 0;
 }
 #endif /*not _PROCESS_ */
