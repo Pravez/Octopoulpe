@@ -6,12 +6,12 @@
 #define HELLO_SUCCESS 0
 #define HELLO_FAILURE 1
 
-typedef struct client {
-char * id;
-LIST_ENTRY(client) entries;
-} client;
+struct client {
+    char * id;
+    LIST_ENTRY(client) entries;
+};
 
-int asw__hello(char * arg, char * res, client *cli);
+int asw__hello(char * arg, char * res, struct client *cli);
 void asw__get_fishes(char * arg, char * res);
 void asw__get_fishes_continuously(char * arg, char * res);
 void asw__ping(char * arg, char * res);

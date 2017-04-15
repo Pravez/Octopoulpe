@@ -41,7 +41,7 @@ void parse(char buffer[MAX], char buf_res[MAX]) {
   printf("2\n");
   arg[j+1] = '\0';
   if(strcmp(cmd, "hello") == 0)
-    asw__hello(arg, res);
+    asw__hello(arg, res, NULL);
   else
     res = strcpy(res, "Unknown command\n");
   printf("3\n");
