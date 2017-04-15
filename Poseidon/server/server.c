@@ -7,19 +7,21 @@
 #include <pthread.h>
 #include "server.h"
 #include "answer.h"
+#include "../utility/tools.h"
 
 #define PARAM 2
 #define LISTEN_QUEUE 10
 #define CHOSE_AUTOMATICALLY 0
-#define BUFFER_SIZE 256
 
-#define CHK_ERROR(test, msg) if(test < 0){ perror(msg); exit(1);}
+LIST_HEAD(listhead, thread_entry) thread_head = LIST_HEAD_INITIALIZER(thread_head);
+
+static const char* delim = " ";
+
 
 #ifdef _PROCESS_
 void *server_process(void *arg) {
     int portno = *(int *) arg;
     //Initializing list
-    thread_head = LIST_HEAD_INITIALIZER(thread_head);
     LIST_INIT(&thread_head);
 
     //Then we launch listening
@@ -28,14 +30,40 @@ void *server_process(void *arg) {
 }
 #endif //_PROCESS_
 
-void parse(char buffer[BUFFER_SIZE], char buf_res[BUFFER_SIZE]) {
-    char cmd[BUFFER_SIZE];
+
+
+char* parse(char buffer[BUFFER_SIZE]) {
     int i = 0;
     int j = 0;
     char arg[BUFFER_SIZE];
     char *res;// = malloc(sizeof(char)*MAX);
-    printf("1\n");
-    while ((buffer[i] != ' ') && (buffer[i] != '\0')) {
+
+    char* cmd;
+    asprintf(&cmd, "%s", buffer);
+
+    char *token = strtok(cmd, delim);
+    if(!strcmp(token, "hello")){
+        return check_client_id();
+    }else if(!strcmp(token, "getFishes")){
+
+    }else if(!strcmp(token, "getFishesContinuously")){
+
+    }else if(!strcmp(token, "log")){
+
+    }else if(!strcmp(token, "ping")){
+
+    }else if(!strcmp(token, "addFish")){
+
+    }else if(!strcmp(token, "delFish")){
+
+    }else if(!strcmp(token, "startFish")){
+
+    }
+
+    return "Unknown command\n";
+
+    //Je crois que tout ça devient assez obsolète (et fastidieux)
+    /*while ((buffer[i] != ' ') && (buffer[i] != '\0')) {
         //printf("i: %d, c: %c\n", i, buffer[i]);
         cmd[i] = buffer[i];
         ++i;
@@ -49,7 +77,6 @@ void parse(char buffer[BUFFER_SIZE], char buf_res[BUFFER_SIZE]) {
     printf("2\n");
     arg[j + 1] = '\0';
     if (strcmp(cmd, "hello") == 0)
-        asw__hello(arg, res, NULL);
     else
         res = strcpy(res, "Unknown command\n");
     printf("3\n");
@@ -61,8 +88,14 @@ void parse(char buffer[BUFFER_SIZE], char buf_res[BUFFER_SIZE]) {
     }
     buf_res[i] = '\0';
     //buf_res = strcpy(buf_res, res); //this certainly prints garbage -> YES IT DOES
-    printf("4\n");
-    return;
+    printf("4\n");*/
+}
+
+char* check_client_id(){
+    char* id = strtok(NULL, delim);
+    //Verify ID here
+    //asw__hello(id, res, NULL);
+    return "greeting or not ?";
 }
 
 
@@ -71,7 +104,7 @@ void *start(void *arg) {
     char buffer[BUFFER_SIZE];
     int newsockfd = *((int *) arg);
     int n;
-    char buf_res[BUFFER_SIZE];
+    char* response;
 
     bzero(buffer, BUFFER_SIZE);
     while (1) {
@@ -82,11 +115,11 @@ void *start(void *arg) {
             n = write(newsockfd, "\n", 1);
             CHK_ERROR(n, "Error writing to socket")
         } else {
-            n = write(newsockfd, "Parsing your command...\n", 25);
-            parse(buffer, buf_res);
-            //printf("Here is the message :%s\n", buffer); //sprintf pour string
+            //ça sert à rien d'écrire ça, ça va juste obliger à parser encore plus coté client
+            //n = write(newsockfd, "Parsing your command...\n", 25);
+            response = parse(buffer);
             //traitement
-            n = write(newsockfd, buf_res, strlen(buf_res));
+            n = write(newsockfd, response, strlen(response));
             CHK_ERROR(n, "Error writing to socket")
         }
     }
@@ -114,7 +147,7 @@ void wait_connection(int portno) {
         struct thread_entry* en = malloc(sizeof(struct thread_entry));
         LIST_INSERT_HEAD(&thread_head, en, entries);
 
-        CHK_ERROR(pthread_create(en->_thread, NULL, start, &newsockfd) < 0, "Error creating thread")
+        CHK_ERROR(pthread_create(&en->_thread, NULL, start, &newsockfd), "Error creating thread")
     }
 }
 

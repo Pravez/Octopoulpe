@@ -11,7 +11,7 @@
 
 static char *line_read = (char *) NULL;
 const char *prompt = YELLOW"Octopoulple "YELLOWBOLD"$ > "RESET;
-const char *delim = " ";
+static const char *delim = " ";
 
 struct aquarium *aquarium;
 
