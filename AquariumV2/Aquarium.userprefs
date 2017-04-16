@@ -1,0 +1,18 @@
+﻿<Properties StartupConfiguration="{FD44C8D0-0D9A-4D4F-896B-2583BDE0BB96}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="AquariumV2/app.manifest">
+    <Files>
+      <File FileName="AquariumV2/Program.cs" Line="1" Column="1" />
+      <File FileName="AquariumV2/Aquarium.cs" Line="116" Column="1" />
+      <File FileName="AquariumV2/Content/Content.mgcb" Line="1" Column="1" />
+      <File FileName="AquariumV2/Properties/AssemblyInfo.cs" Line="1" Column="1" />
+      <File FileName="AquariumV2/app.manifest" Line="14" Column="20" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.AquariumV2 PreferredExecutionTarget="MonoDevelop.Default" />
+  <MultiItemStartupConfigurations />
+</Properties>
