@@ -6,6 +6,7 @@
 
 #include "view.h"
 #include "../utility/file.h"
+#include "../server/interface.h"
 
 #define RETURN_ERROR_MSG(message, errcode) printf("\t> %s\n", message); return errcode;
 
@@ -13,7 +14,7 @@ static char *line_read = (char *) NULL;
 const char *prompt = YELLOW"Octopoulple "YELLOWBOLD"$ > "RESET;
 static const char *delim = " ";
 
-struct aquarium *aquarium;
+extern struct aquarium* aquarium;
 
 void display_menu() {
     printf("Welcome to "REDBOLD"Octopoulpe"RESET" main menu ! Enter a command to continue ...\n");
@@ -120,8 +121,6 @@ int cmd__init_aquarium() {
     aquarium = malloc(sizeof(struct aquarium));
     aq__initialize_aquarium(aquarium, (struct dimension) {width, height});
     printf("\t> Initialized new aquarium with dimensions %dx%d\n", width, height);
-
-
 
     return 1;
 }

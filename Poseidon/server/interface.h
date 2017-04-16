@@ -5,8 +5,6 @@
 #define ID_ERROR 1 //for example
 //etc...
 
-//struct aquarium;
-
 /**
  * @fn     aquarium_load
  * @brief  loading an aquarium with path file

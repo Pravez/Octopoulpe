@@ -7,7 +7,8 @@
 
 #include "../utility/tools.h"
 
-extern struct aquarium *aquarium1;
+extern struct aquarium *aquarium;
+
 LIST_HEAD(clientlist, client) clients;
 
 char *available_id(char *wanted) {

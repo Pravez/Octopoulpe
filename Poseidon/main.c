@@ -11,6 +11,9 @@
 #include "server/answer.h"
 
 extern struct _tvector* config_vector;
+struct aquarium* aquarium;
+
+//For testing
 struct aquarium aquarium1;
 
 int main(int argc, char* argv[]){
