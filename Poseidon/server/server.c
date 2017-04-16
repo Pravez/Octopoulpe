@@ -150,7 +150,7 @@ void wait_connection(int portno) {
         CHK_ERROR(pthread_create(&en->_thread, NULL, start, &newsockfd), "Error creating thread")
     }
 }
-
+/*
 #ifndef _PROCESS_
 int main(int argc, char *argv[]) {
     if (argc < PARAM) {
@@ -161,4 +161,5 @@ int main(int argc, char *argv[]) {
   wait_connection(portno);
   return 0;
 }
-#endif /*not _PROCESS_ */
+#endif
+*/

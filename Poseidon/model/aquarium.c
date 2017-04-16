@@ -3,6 +3,7 @@
 #include <string.h>
 #include "aquarium.h"
 #include "aquarium.h"
+#include "../server/answer.h"
 
 #define DEFAULT_VIEWS_QUANTITY 5
 
@@ -14,6 +15,7 @@ void aq__initialize_aquarium(struct aquarium *aquarium, struct dimension dimensi
     aquarium->_dimensions = dimension;
     v__init(&aquarium->_views, DEFAULT_VIEWS_QUANTITY);
     aquarium->_fishes = hashmap_new();
+    asw__init_aquarium();
 }
 
 char* aq__add_view(struct aquarium *aquarium, struct position s_pos, struct dimension dimensions, char* id) {
@@ -21,6 +23,8 @@ char* aq__add_view(struct aquarium *aquarium, struct position s_pos, struct dime
         struct aquarium_view *view = malloc(sizeof(struct aquarium_view));
         aqv__initialize_aquarium_view(view, s_pos, dimensions, id);
         v__add(&aquarium->_views, view, AQ_VIEW);
+
+        asw__add_view(id); // Update the controller
 
         return view->_id;
     }else{
@@ -100,6 +104,8 @@ void aq__remove_aquarium_view(struct aquarium *aquarium, char* view_id) {
 
     free(view);
 
+    asw__remove_view(view_id);
+
 }
 
 struct array aq__get_views_ids(struct aquarium *aquarium) {
@@ -124,6 +130,8 @@ void aq__remove_aquarium(struct aquarium *aquarium) {
     }
 
     v__destroy(&aquarium->_views);
+
+    asw__remove_aquarium();
 }
 
 int aq__check_free_id(struct aquarium* aquarium, char* id){

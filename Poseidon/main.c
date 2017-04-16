@@ -8,11 +8,12 @@
 #include "utility/tools.h"
 #include "view/view.h"
 
+#include "server/answer.h"
+
 extern struct _tvector* config_vector;
 struct aquarium aquarium1;
 
 int main(int argc, char* argv[]){
-
     pthread_t menu_t;
     pthread_t server_t;
 
@@ -44,10 +45,10 @@ int main(int argc, char* argv[]){
     aq__remove_fish(&aquarium1, "jeanbite");
 
     display_aquarium(&aquarium1);
-/*
-    aq__remove_fish(&aquarium1, );
+
+    aq__remove_fish(&aquarium1, 1);
     aq__remove_fish(&aquarium1, 3);
-    display_aquarium(&aquarium1);*/
+    display_aquarium(&aquarium1);
 
     pthread_join(menu_t, NULL);
     pthread_join(server_t, NULL);

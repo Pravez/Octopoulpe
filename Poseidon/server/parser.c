@@ -8,7 +8,7 @@ void parse_config_file(const char* file){
     FILE* conf_file;
     char * line = NULL;
     size_t len = 0;
-    ssize_t read;
+    size_t read;
     char* string;
 
     conf_file = fopen(file, "r");

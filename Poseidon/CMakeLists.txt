@@ -7,8 +7,8 @@ set(SOURCE_FILES main.c
                     utility/fish_type.c
                     view/view.c
                     utility/file.c
-        model/aquarium.c
-        model/aquarium.h
+                    model/aquarium.c
+                    model/aquarium.h
                     utility/vector.c
                     utility/vector.h
                     model/fish.c

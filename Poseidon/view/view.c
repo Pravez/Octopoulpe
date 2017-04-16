@@ -121,6 +121,8 @@ int cmd__init_aquarium() {
     aq__initialize_aquarium(aquarium, (struct dimension) {width, height});
     printf("\t> Initialized new aquarium with dimensions %dx%d\n", width, height);
 
+
+
     return 1;
 }
 
