@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <pthread.h>
 
 #define INITIAL_SIZE (256)
 #define MAX_CHAIN_LENGTH (8)
@@ -15,6 +16,7 @@ typedef struct _hashmap_element{
     char* key;
     int in_use;
     any_t data;
+    pthread_mutex_t mutex;
 } hashmap_element;
 
 /* A hashmap has some maximum size and current size,
@@ -23,6 +25,7 @@ typedef struct _hashmap_map{
     int table_size;
     int size;
     hashmap_element *data;
+    pthread_mutex_t hash_mutex;
 } hashmap_map;
 
 /*
@@ -37,6 +40,7 @@ map_t hashmap_new() {
 
     m->table_size = INITIAL_SIZE;
     m->size = 0;
+    m->hash_mutex = PTHREAD_MUTEX_INITIALIZER;
 
     return m;
     err:
@@ -225,8 +229,11 @@ int hashmap_rehash(map_t in){
 
     /* Setup the new elements */
     hashmap_map *m = (hashmap_map *) in;
+    //We lock the entire map
+    pthread_mutex_lock(&m->hash_mutex);
+
     hashmap_element* temp = (hashmap_element *)
-            calloc(2 * m->table_size, sizeof(hashmap_element));
+            calloc((size_t) (2 * m->table_size), sizeof(hashmap_element));
     if(!temp) return MAP_OMEM;
 
     /* Update the array */
@@ -252,6 +259,8 @@ int hashmap_rehash(map_t in){
 
     free(curr);
 
+    pthread_mutex_unlock(&m->hash_mutex);
+
     return MAP_OK;
 }
 
@@ -275,9 +284,13 @@ int hashmap_put(map_t in, char* key, any_t value){
     }
 
     /* Set the data */
+    m->data[index].mutex = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_lock(&m->data[index].mutex);
     m->data[index].data = value;
     m->data[index].key = key;
     m->data[index].in_use = 1;
+    pthread_mutex_unlock(&m->data[index].mutex);
+
     m->size++;
 
     return MAP_OK;
@@ -335,8 +348,10 @@ int hashmap_iterate(map_t in, PFany f, any_t item) {
     /* Linear probing */
     for(i = 0; i< m->table_size; i++)
         if(m->data[i].in_use != 0) {
+            pthread_mutex_lock(&m->data[i].mutex);
             any_t data = (any_t) (m->data[i].data);
             int status = f(item, data);
+            pthread_mutex_unlock(&m->data[i].mutex);
             if (status != MAP_OK) {
                 return status;
             }
