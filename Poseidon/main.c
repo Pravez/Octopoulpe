@@ -59,16 +59,26 @@ int main(int argc, char* argv[]){
 
     return EXIT_SUCCESS;
     */
+
     // To test : a false aquarium1
     aq__initialize_aquarium(&aquarium1, (struct dimension) {1000, 1000});
     aq__add_view(&aquarium1, (struct position) {250, 250}, (struct dimension) {500, 500}, "Cookie");
     aq__add_view(&aquarium1, (struct position) {100, 100}, (struct dimension) {900, 900}, "Donald");
     // end of the test
 
-    char res[256];
+    char * res = malloc(sizeof(400));
     struct client *henry = malloc(sizeof(struct client));
     henry->id = NULL;
-    asw__hello("in as Cookie\n", res, henry);
-    printf("######### res #########\n%s#######################\n", res);
+    asw__hello("\n", res, henry);
+    printf("res\t%s", res);
+    asw__hello("\n", res, henry);
+    printf("res\t%s", res);
+    asw__hello("\n", res, henry);
+    printf("res\t%s", res);
+
+    aq__add_fish_to_aqv(&aquarium1,"Cookie",fish__create(BLOBFISH, 10, 20, "Bibi",4,5));
+    aq__add_fish_to_aqv(&aquarium1,"Cookie",fish__create(BLOBFISH, 40, 50, "Bobo",4,5));
+
+    asw__get_fishes("\n",res,henry);
     return EXIT_SUCCESS;
 }

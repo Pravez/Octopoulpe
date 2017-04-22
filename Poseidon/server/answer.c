@@ -4,7 +4,6 @@
 #include <string.h>
 #include "answer.h"
 #include "../model/aquarium.h"
-
 #include "../utility/tools.h"
 
 extern struct aquarium *aquarium1;
@@ -18,7 +17,7 @@ LIST_HEAD(clientlist, client) clients;
  *                      NULL                        if none of the view identifier is available
  *                      an other view identifier    else
  */
-char *available_id(char *wanted) {
+struct aquarium_view *available_id(char *wanted) {
         struct client *first_available_id = NULL;
         struct client *client;
         LIST_FOREACH(client, &clients, entries) {
@@ -27,8 +26,7 @@ char *available_id(char *wanted) {
             {
                 if (!strcmp(wanted, client->id) && client->is_free) {
                     client->is_free=0;
-                    char res[100] = "greeting ";
-                    return strcat(strcat(res,wanted),"\n");
+                    return client->aqv;
                 }
             }
 
@@ -46,13 +44,19 @@ char *available_id(char *wanted) {
         if(first_available_id != NULL)
         {
             first_available_id->is_free=0;
-            char res[100] = "greeting ";
-            return strcat(strcat(res,first_available_id->id),"\n");
+            return first_available_id->aqv;
         }
         else
         {
-            return "no greeting\n";
+            return NULL;
         }
+}
+
+
+int sprintf_fish(any_t res, any_t fish){
+    struct fish * cpy = (struct fish *) fish;
+    printf("FISH : %s \n\t \n\t coordinates : %d, %d\n", cpy->_id, cpy->_position.x, cpy->_position.y);
+    return MAP_OK;
 }
 
 /* Functions for the server thread */
@@ -68,7 +72,7 @@ char *available_id(char *wanted) {
  *                      HELLO_FAILURE       else
  */
 int asw__hello(char *arg, char *res, struct client *cli) {
-    char * id;
+    struct aquarium_view * id;
     char * argv[4];
     char * cpy = malloc(100*4); // Copy of arg needed, else segfault with strtok
     strcpy(cpy,arg);
@@ -88,18 +92,20 @@ int asw__hello(char *arg, char *res, struct client *cli) {
     // Incorrect syntax for the command
     else
     {
-        strcpy(res, "Invalid syntax for 'hello'. Corrects syntaxes are :\n'hello in as <wanted id>'\n'hello'\n");
+        sprintf(res, "Invalid syntax for 'hello'. Corrects syntaxes are :\n'hello in as <wanted id>'\n'hello'\n");
         return HELLO_FAILURE;
     }
 
-    strcpy(res, id);
     // Successful request
-    if(strcmp(id,"no greeting\n")) {
-        cli->id =malloc(sizeof(char)*(strlen(id)+1));
-        strcpy(cli->id,id); cli->is_free = 0;
+    if(id != NULL) {
+        cli->id =malloc(sizeof(char)*(strlen(id->_id)+1));
+        strcpy(cli->id,id->_id); cli->is_free = 0;
+        cli->aqv=id;
+        sprintf(res,"greeting %s\n",id->_id);
         return HELLO_SUCCESS;
     }
     // Failed request
+    strcpy(res,"no greeting\n");
     return HELLO_FAILURE;
 }
 
@@ -118,7 +124,7 @@ int asw__hello(char *arg, char *res, struct client *cli) {
  */
 void asw__get_fishes(char * arg, char * res, struct client *cli)
 {
-
+    hashmap_iterate(cli->aqv->_fishes, (PFany) sprintf_fish, res);
 }
 
 /* Functions for the aquarium */
