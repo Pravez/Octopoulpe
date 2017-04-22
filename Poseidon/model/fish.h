@@ -11,6 +11,7 @@ struct fish {
     enum fish_type _type;
     struct position _position;
     char *_id;
+    int _velocity;
 };
 
 struct fish* fish__create(enum fish_type type, int x, int y, char* id);

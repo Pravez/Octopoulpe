@@ -10,8 +10,8 @@
 #define CHCK_NULL_INT(x, name) if(x == NULL){ fprintf(stderr, "FUNC %s : A VALUE IS NULL : %s\n", __func__, name); return -1; }
 
 struct position{
-    int x;
-    int y;
+    unsigned int x;
+    unsigned int y;
 };
 
 struct dimension{
@@ -52,6 +52,9 @@ void _set_verbosity(int value);
 void _console_log(int priority, char* messages);
 char* concatenate_strings(int qty, ...);
 char* m_strcat(char* dest, char* src);
+
+unsigned int add_to_coordinate(int start, int val);
+struct position add_to_position(struct position p, int x, int y);
 
 /**
  * Taken from gnu.org https://www.gnu.org/software/libc/manual/html_node/Backtraces.html

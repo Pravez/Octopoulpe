@@ -7,6 +7,7 @@
 #include "model/aquarium.h"
 #include "utility/tools.h"
 #include "view/view.h"
+#include "utility/data.h"
 
 #include "server/answer.h"
 
@@ -21,7 +22,7 @@ int main(int argc, char* argv[]){
     pthread_t server_t;
 
     // Initialisation of the aquarium
-    aq__initialize_aquarium(&aquarium1, (struct dimension) {1000, 1000});
+    aq__initialize_aquarium(&aquarium1, AQUARIUM_SIZE);
     
     char* view1 = aq__add_view(&aquarium1, (struct position) {250, 250}, (struct dimension) {500, 500}, NULL);
     char* view2 = aq__add_view(&aquarium1, (struct position) {100, 100}, (struct dimension) {900, 900}, NULL);

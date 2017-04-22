@@ -17,10 +17,10 @@ struct dimension __dimension(int width, int height) {
     return dim;
 }
 
-boolean check_in_screen(struct position s_pos, struct dimension dimensions, struct position position){
-    if(position.x >= s_pos.x && position.y >= s_pos.y){
+boolean check_in_screen(struct position s_pos, struct dimension dimensions, struct position position) {
+    if (position.x >= s_pos.x && position.y >= s_pos.y) {
         struct position e_pos = __position(s_pos.x + dimensions.width, s_pos.y + dimensions.height); //end_position
-        if(position.x <= e_pos.x && position.y <= e_pos.y)
+        if (position.x <= e_pos.x && position.y <= e_pos.y)
             return TRUE;
     }
 
@@ -93,4 +93,21 @@ void print_trace() {
         printf("%s\n", strings[i]);
 
     free(strings);
+}
+
+unsigned int add_to_coordinate(int start, int val){
+    if(start + val > 1000)
+        return (unsigned int) (1000 - (start + val));
+    else if(start + val < 0)
+        return (unsigned int) (1000 + (start + val));
+    else
+        return (unsigned int) (start + val);
+}
+
+struct position add_to_position(struct position p, int x, int y) {
+    struct position new;
+    new.x = add_to_coordinate(p.x, x);
+    new.y = add_to_coordinate(p.y, y);
+
+    return new;
 }

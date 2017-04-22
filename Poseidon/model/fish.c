@@ -13,6 +13,7 @@ struct fish* fish__create(enum fish_type type, int x, int y, char* id) {
         f->_id = id;
     f->_position = __position(x, y);
     f->_type = type;
+    f->_velocity = 1;
 
     return f;
 }
