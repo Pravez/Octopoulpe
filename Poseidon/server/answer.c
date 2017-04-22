@@ -7,9 +7,10 @@
 
 #include "../utility/tools.h"
 
-extern struct aquarium *aquarium;
+extern struct aquarium *aquarium1;
 LIST_HEAD(clientlist, client) clients;
 
+/* Auxiliar functions*/
 /**
  * @brief available_id  returns an available view identifier
  * @param wanted        the wanted view identifier, could be NULL
@@ -54,6 +55,7 @@ char *available_id(char *wanted) {
         }
 }
 
+/* Functions for the server thread */
 /**
  * @brief asw__hello    the handler for the "hello" command from the client
  * @param arg           the end of the command which represents the arguments, should finish with '\n'
@@ -135,12 +137,13 @@ void asw__init_aquarium()
  * @param id the view identifier of the view added
  * Has to be called by aq__add_view()
  */
-void asw__add_view(char *id)
+void asw__add_view(struct aquarium_view *view)
 {
     struct client * cli = malloc(sizeof(struct client));
-    cli->id = malloc(sizeof(char) * (strlen(id) + 1));
-    strcpy(cli->id, id);
+    cli->id = malloc(sizeof(char) * (strlen(view->_id) + 1));
+    strcpy(cli->id, view->_id);
     cli->is_free=1;
+    cli->aqv=view;
     LIST_INSERT_HEAD(&clients, cli, entries);
 }
 

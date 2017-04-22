@@ -9,6 +9,7 @@
 struct client {
     char * id;
     int is_free;
+    struct aquarium_view *aqv;
     LIST_ENTRY(client) entries;
 };
 /* Functions for the server thread */
@@ -48,7 +49,7 @@ void asw__start_fish(char * arg, char * res);
 
 /* Functions for the aquarium */
 void asw__init_aquarium(void);
-void asw__add_view(char *id);
+void asw__add_view(struct aquarium_view * view);
 void asw__remove_view(char *id);
 void asw__remove_aquarium(void);
 
