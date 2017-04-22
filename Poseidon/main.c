@@ -17,17 +17,18 @@ struct aquarium* aquarium;
 struct aquarium aquarium1;
 
 int main(int argc, char* argv[]){
+    /*
     pthread_t menu_t;
     pthread_t server_t;
 
     // Initialisation of the aquarium
     aq__initialize_aquarium(&aquarium1, (struct dimension) {1000, 1000});
     
-    char* view1 = aq__add_view(&aquarium1, (struct position) {250, 250}, (struct dimension) {500, 500}, NULL);
-    char* view2 = aq__add_view(&aquarium1, (struct position) {100, 100}, (struct dimension) {900, 900}, NULL);
+    char* view1 = aq__add_view(&aquarium1, (struct position) {250, 250}, (struct dimension) {500, 500}, "N1");
+    char* view2 = aq__add_view(&aquarium1, (struct position) {100, 100}, (struct dimension) {900, 900}, "N2");
 
     //Job to do with config file ... (before launching server)
-    parse_config_file("controller.cfg");
+    parse_config_file("/home/lparant/S8-projects/Octopoulpe/Poseidon/controller.cfg"); // How to add a .cfg file to the CMakefile ?
     int port = _get_value(config_vector, "controller-port");
 
     CHK_ERROR(pthread_create(&menu_t, NULL, main_menu, NULL), "main_menu thread")
@@ -56,5 +57,18 @@ int main(int argc, char* argv[]){
     pthread_join(menu_t, NULL);
     pthread_join(server_t, NULL);
 
+    return EXIT_SUCCESS;
+    */
+    // To test : a false aquarium1
+    aq__initialize_aquarium(&aquarium1, (struct dimension) {1000, 1000});
+    aq__add_view(&aquarium1, (struct position) {250, 250}, (struct dimension) {500, 500}, "Cookie");
+    aq__add_view(&aquarium1, (struct position) {100, 100}, (struct dimension) {900, 900}, "Donald");
+    // end of the test
+
+    char res[256];
+    struct client *henry = malloc(sizeof(struct client));
+    henry->id = NULL;
+    asw__hello("in as Cookie\n", res, henry);
+    printf("######### res #########\n%s#######################\n", res);
     return EXIT_SUCCESS;
 }

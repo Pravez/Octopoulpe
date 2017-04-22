@@ -40,7 +40,7 @@ map_t hashmap_new() {
 
     m->table_size = INITIAL_SIZE;
     m->size = 0;
-    m->hash_mutex = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_init (&(m->hash_mutex), NULL); //m->hash_mutex = PTHREAD_MUTEX_INITIALIZER;
 
     return m;
     err:
@@ -284,7 +284,7 @@ int hashmap_put(map_t in, char* key, any_t value){
     }
 
     /* Set the data */
-    m->data[index].mutex = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_init (&(m->data[index].mutex), NULL); // m->data[index].mutex = PTHREAD_MUTEX_INITIALIZER;
     pthread_mutex_lock(&m->data[index].mutex);
     m->data[index].data = value;
     m->data[index].key = key;

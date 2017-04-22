@@ -8,11 +8,16 @@
 #include "../utility/tools.h"
 
 extern struct aquarium *aquarium;
-
 LIST_HEAD(clientlist, client) clients;
 
+/**
+ * @brief available_id  returns an available view identifier
+ * @param wanted        the wanted view identifier, could be NULL
+ * @return              wanted                      if available (and not NULL)
+ *                      NULL                        if none of the view identifier is available
+ *                      an other view identifier    else
+ */
 char *available_id(char *wanted) {
-        printf("wanted : #%s#\n",wanted);
         struct client *first_available_id = NULL;
         struct client *client;
         LIST_FOREACH(client, &clients, entries) {
@@ -49,6 +54,17 @@ char *available_id(char *wanted) {
         }
 }
 
+/**
+ * @brief asw__hello    the handler for the "hello" command from the client
+ * @param arg           the end of the command which represents the arguments, should finish with '\n'
+ * @param res           the string used to communicate the answer
+ *                      "greeting <VIEW IDENTIFIER>\n"  with an available view identifier
+ *                      "no greeting\n"                 if none of the view identifier was available
+ *                      The command syntax            if the arguments were incorrect
+ * @param cli           the client who has made the command
+ * @return              HELLO_SUCCESS       if a view identifier was attributed to the client
+ *                      HELLO_FAILURE       else
+ */
 int asw__hello(char *arg, char *res, struct client *cli) {
     char * id;
     char * argv[4];
@@ -85,17 +101,42 @@ int asw__hello(char *arg, char *res, struct client *cli) {
     return HELLO_FAILURE;
 }
 
+/**
+ * @brief asw__get_fishes   the handler for the "hello" command from the client
+ * @param arg               the end of the command which represents the arguments, should finish with '\n'
+ * @param res               the string used to communicate the answer
+ *                          "list [<FISH_NAME> at <POS%_X>x<POS%_Y>,<FISH_WIDTH>x<FISH_HEIGHT>,<SEC>] [<...>]\n"
+ *                          FISH_NAME   the name of the fish (an identifier)
+ *                          POS%_X      the new horizontal position in percentage of the screen width
+ *                          POS%_Y      the new vertical position in percentage of the screen height
+ *                          FISH_WIDTH  the width of the picture used to show the fish on the screen
+ *                          FISH_HEIGHT the height of the picture used to show the fish on the screen
+ *                          SEC         how many seconds has to last the move from the current position to the new one
+ *                                      if SEC equals 0, the fish is shown immediately
+ */
+void asw__get_fishes(char * arg, char * res, struct client *cli)
+{
+
+}
+
 /* Functions for the aquarium */
+/**
+ * @brief asw__init_aquarium initializes the list of the viewsof the aquarium
+ * Has to be called by aq__initialize_aquarium();
+ */
 void asw__init_aquarium()
 {
-    printf("init aquarium\n");
     struct clientlist *clientp;
     LIST_INIT(&clients);
 }
 
+/**
+ * @brief asw__add_view adds the identifier view to the view identifier list
+ * @param id the view identifier of the view added
+ * Has to be called by aq__add_view()
+ */
 void asw__add_view(char *id)
 {
-    printf("add view: %s\n",id);
     struct client * cli = malloc(sizeof(struct client));
     cli->id = malloc(sizeof(char) * (strlen(id) + 1));
     strcpy(cli->id, id);
@@ -103,6 +144,11 @@ void asw__add_view(char *id)
     LIST_INSERT_HEAD(&clients, cli, entries);
 }
 
+/**
+ * @brief asw__remove_view removes the identifier view from the view identifier list
+ * @param id the view identifier of the view removed
+ * Has to be called by aq__remove_aquarium_view();
+ */
 void asw__remove_view(char *id)
 {
     struct client *j;
@@ -117,6 +163,10 @@ void asw__remove_view(char *id)
     }
 }
 
+/**
+ * @brief asw__remove_aquarium frees the list used to manipulate the aquarium
+ * Has to be called by aq__remove_aquarium();
+ */
 void asw__remove_aquarium()
 {
     struct client *client;
@@ -128,7 +178,6 @@ void asw__remove_aquarium()
 }
 
 /*
-#ifndef _PROCESS_
 int main(int argc, char *argv[]) {
     // To test : a false aquarium1
     aq__initialize_aquarium(&aquarium1, (struct dimension) {1000, 1000});
@@ -143,5 +192,4 @@ int main(int argc, char *argv[]) {
     printf("######### res #########\n%s", res);
     return 0;
 }
-#endif
 */
