@@ -11,27 +11,34 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Aquarium extends Application {
 
     int timer = 0;
+    ArrayList<Fish> fishes;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        final URL imageURL = getClass().getResource("magicarpe.png");
-        final Image image = new Image(imageURL.toExternalForm());
+        //final URL imageURL = getClass().getResource("magicarpe.png");
+        //final Image image = new Image(imageURL.toExternalForm());
 
-        final ImageView imageView = new ImageView(image);
+        fishes = new ArrayList<Fish>();
+
+        Fish f = new Fish(0, 0, 100, 100, "magicarpe");
+        fishes.add(f);
+        /*final ImageView imageView = new ImageView(image);
         imageView.setFitHeight(100);
-        imageView.setFitWidth(100);
+        imageView.setFitWidth(100);*/
 
-        final Pane rooti = new Pane();
-        rooti.getChildren().setAll(imageView);
+        final Pane root = new Pane();
+        root.getChildren().setAll(fishes.get(0).get_View(0));
 
         //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(rooti, 300, 275));
+        primaryStage.setTitle("Aquarium");
+        primaryStage.setScene(new Scene(root, 600, 550));
 
         primaryStage.show();
 
@@ -39,27 +46,25 @@ public class Aquarium extends Application {
             @Override
             public void handle(long now) {
                 timer++;
+
+                if (timer%25 == 0) {
+                    root.getChildren().setAll(fishes.get(0).get_View(1));
+                }
+                if (timer%50 == 0)
+                    root.getChildren().setAll(fishes.get(0).get_View(0));
+
                 if (timer == 100) {
-                    imageView.setX(100);
-                    imageView.setY(100);
+                    fishes.get(0).setGoal(100, 100);
                 }
                 if (timer == 200) {
-                    imageView.setX(0);
-                    imageView.setY(0);
+                    //fishes.get(0).setGoal(0, 0);
                     timer=0;
                 }
+
+                for (Fish f : fishes) {
+                    f.update(timer);
+                }
             }
-                /*final double width = 0.5 * primaryStage.getWidth();
-                final double height = 0.5 * primaryStage.getHeight();
-                final double radius = Math.sqrt(2) * Math.max(width, height);
-                for (int i=0; i<STAR_COUNT; i++) {
-                    final Node node = nodes[i];
-                    final double angle = angles[i];
-                    final long t = (now - start[i]) % 2000000000;
-                    final double d = t * radius / 2000000000.0;
-                    node.setTranslateX(Math.cos(angle) * d + width);
-                    node.setTranslateY(Math.sin(angle) * d + height);
-                }*/
         }.start();
 
     }
