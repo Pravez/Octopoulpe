@@ -6,7 +6,7 @@
 #include "../model/aquarium.h"
 #include "../utility/tools.h"
 
-extern struct aquarium *aquarium1;
+extern struct aquarium *aquarium;
 LIST_HEAD(clientlist, client) clients;
 
 /* Auxiliar functions*/
@@ -55,14 +55,12 @@ struct aquarium_view *available_id(char *wanted) {
 
 int sprintf_fish(any_t res, any_t fish)
 {
-    // sec, cpy->_cover.x and cpy->_cover.y have to be replaced with values obtained by the mobility function
-    int sec = 5;
     struct fish * cpy = (struct fish *) fish;
+    double sec = cpy->_speed_rate;
     char * info_fish = malloc(sizeof(char)*(27 + strlen(cpy->_id)));
-    sprintf(info_fish," [%s at %dx%d,%dx%d,%d]",cpy->_id,
+    sprintf(info_fish," [%s at %dx%d,%dx%d,%f]",cpy->_id,
             (int)cpy->_current.x, (int)cpy->_current.y,
-            cpy->_cover.width, cpy->_cover.height,
-                                                  sec);
+            cpy->_cover.width, cpy->_cover.height, sec);
     strcat((char *)res,info_fish);
     return MAP_OK;
 }
@@ -132,9 +130,33 @@ int asw__hello(char *arg, char *res, struct client *cli) {
  */
 void asw__get_fishes(char * arg, char * res, struct client *cli)
 {
-    sprintf(res,"list");
-    hashmap_iterate(cli->aqv->_fishes, (PFany) sprintf_fish, res);
-    strcat(res,"\n");
+    if(strcmp(arg,"\n")==0 || strcmp(arg," \n")==0)
+    {
+        sprintf(res,"list");
+        hashmap_iterate(cli->aqv->_fishes, (PFany) sprintf_fish, res);
+        strcat(res,"\n");
+    }
+    else
+        strcpy(res,"Invalid syntax for 'getFishesContinuously'. No argument allowed : 'getFishesContinuously\n'\n");
+}
+
+/**
+ * @brief asw__log
+ * @param arg
+ * @param res
+ * @param cli
+ */
+void asw__log(char * arg, char * res, struct client *cli)
+{
+    // Get the view identifier available
+    struct client *client;
+    LIST_FOREACH(client, &clients, entries) {
+       if (!strcmp(cli->id, client->id)) {
+            client->is_free=1;
+        }
+    }
+    free(cli->id);
+    strcpy(res,"bye\n");
 }
 
 /* Functions for the aquarium */
@@ -198,17 +220,28 @@ void asw__remove_aquarium()
 
 /*
 int main(int argc, char *argv[]) {
-    // To test : a false aquarium1
-    aq__initialize_aquarium(&aquarium1, (struct dimension) {1000, 1000});
-    aq__add_view(&aquarium1, (struct position) {250, 250}, (struct dimension) {500, 500}, "Cookie");
-    aq__add_view(&aquarium1, (struct position) {100, 100}, (struct dimension) {900, 900}, "Donald");
+// To test : a false aquarium
+    aq__initialize_aquarium(&aquarium, (struct dimension) {1000, 1000});
+    aq__add_view(&aquarium, (struct position) {250, 250}, (struct dimension) {500, 500}, "Cookie");
+    aq__add_view(&aquarium, (struct position) {100, 100}, (struct dimension) {900, 900}, "Donald");
     // end of the test
 
-    char res[256];
+    char * res = malloc(sizeof(400));
     struct client *henry = malloc(sizeof(struct client));
     henry->id = NULL;
-    asw__hello("in as Cookie\n", res, henry);
-    printf("######### res #########\n%s", res);
-    return 0;
+    asw__hello("\n", res, henry);
+    printf("main\t%s", res);
+    asw__hello("\n", res, henry);
+    printf("main\t%s", res);
+    asw__hello("\n", res, henry);
+    printf("main\t%s", res);
+
+    // Henry a la vue "Cookie"
+    aq__add_fish_to_aqv(&aquarium,"Cookie",fish__create(BLOBFISH, 10, 20, "Bibi",4,5));
+    aq__add_fish_to_aqv(&aquarium,"Cookie",fish__create(BLOBFISH, 40, 50, "Bobo",4,5));
+
+    asw__get_fishes("\n",res,henry);
+    printf("main\t%s",res);
+    return EXIT_SUCCESS;
 }
 */
