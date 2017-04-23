@@ -6,6 +6,7 @@
 #include "world.h"
 #include "../model/aquarium.h"
 #include "../model/fish.h"
+#include "../utility/vector.h"
 
 static double update_rate;
 extern struct aquarium* aquarium;
@@ -73,12 +74,30 @@ int update_fishes(any_t nothing, any_t item){
     return MAP_OK;
 }
 
-void update(){
-    hashmap_iterate(aquarium->_fishes, (PFany) update_fishes, NULL);
+int update_fishes_position(any_t data, any_t item) {
+    struct aquarium_view* aqv = (struct aquarium_view*)data;
+    struct fish* fish = (struct fish*) item;
+
+    if(!in_bounds(aqv->_inner._starting_position, aqv->_inner._dimensions, fish->_current)){
+        aqv__remove_fish(aqv, fish);
+    }
+
+    return MAP_OK;
 }
 
 void update_views(){
-    //Here we update fishes in views (calculate if fishes are always in views etc ...)
+    for(int i = 0;i < aquarium->_views._current_size;i++){
+        struct aquarium_view* aqv = GET_VIEW_PTR(&aquarium->_views, i);
+        hashmap_iterate(aquarium->_fishes, (PFany) update_fishes_position, aqv);
+
+        //Works need to be continued here ...
+    }
+}
+
+void update(){
+    hashmap_iterate(aquarium->_fishes, (PFany) update_fishes, NULL);
+    update_views();
+
 }
 
 int world_loop(){
@@ -89,7 +108,6 @@ int world_loop(){
     while(run){
         update();
 
-        update_views();
         usleep((unsigned int) (update_rate*1000));
     }
 

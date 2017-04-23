@@ -3,6 +3,8 @@
 
 #define INV_INT 32765
 
+#define GET_VIEW_PTR(vector, position) vi__convert_aq_view(v__get(vector, position))
+
 struct aquarium_view;
 struct fish;
 

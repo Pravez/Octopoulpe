@@ -31,6 +31,12 @@ void aqv__add_fish(struct aquarium_view *aqv, struct fish *fish) {
     hashmap_put(aqv->_fishes, fish->_id, fish);
 }
 
+void aqv__remove_fish(struct aquarium_view *aqv, struct fish* fish){
+    CHCK_NULL(aqv, "aquarium view")
+
+    hashmap_remove(aqv->_fishes, fish->_id);
+}
+
 int aqv__get_fish_qty(struct aquarium_view *aqv) {
     return hashmap_length(aqv->_fishes);
 }

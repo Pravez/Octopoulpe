@@ -5,6 +5,7 @@
 #include <execinfo.h>
 
 #include "tools.h"
+#include "data.h"
 
 
 struct position __position(int x, int y) {
@@ -95,23 +96,28 @@ void print_trace() {
     free(strings);
 }
 
-double add_to_coordinate(double start, double val){
-    if(start + val > 1000)
-        return (1000 - (start + val));
+double add_to_coordinate(double start, double val, int max_value){
+    if(start + val > max_value)
+        return (max_value - (start + val));
     else if(start + val < 0)
-        return (1000 + (start + val));
+        return (max_value + (start + val));
     else
         return (start + val);
 }
 
 struct position add_to_position(struct position p, double x, double y) {
     struct position new;
-    new.x = add_to_coordinate(p.x, x);
-    new.y = add_to_coordinate(p.y, y);
+    new.x = add_to_coordinate(p.x, x, AQUARIUM_WIDTH);
+    new.y = add_to_coordinate(p.y, y, AQUARIUM_HEIGHT);
 
     return new;
 }
 
 int position_equals(struct position pos1, struct position pos2){
     return ((int)pos1.x == (int)pos2.x) && ((int)pos1.y == (int)pos2.y);
+}
+
+int in_bounds(struct position starting_point, struct dimension dim, struct position pos){
+    return (pos.x >= starting_point.x && pos.x <= starting_point.x + dim.width)
+            && (pos.y >= starting_point.y && pos.y <= starting_point.y + dim.height);
 }

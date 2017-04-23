@@ -7,8 +7,6 @@
 
 #define DEFAULT_VIEWS_QUANTITY 5
 
-#define GET_VIEW_PTR(vector, position) vi__convert_aq_view(v__get(vector, position))
-
 void aq__initialize_aquarium(struct aquarium *aquarium, struct dimension dimension) {
     CHCK_NULL(aquarium, "aquarium")
 
