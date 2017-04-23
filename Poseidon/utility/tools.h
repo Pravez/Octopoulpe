@@ -8,29 +8,38 @@
 #define CHK_ERROR(test, message) if(test < 0){ perror(message); exit(1); }
 #define CHCK_NULL(x, name) if(x == NULL){ fprintf(stderr, "FUNC %s : A VALUE IS NULL : %s\n", __func__, name); return; }
 #define CHCK_NULL_INT(x, name) if(x == NULL){ fprintf(stderr, "FUNC %s : A VALUE IS NULL : %s\n", __func__, name); return -1; }
+#define RAND_IN_RANGE(range, min) rand() % range + min
 
-struct position{
-    unsigned int x;
-    unsigned int y;
+
+struct position {
+    double x;
+    double y;
 };
 
-struct dimension{
+struct movement {
+    int x;
+    int y;
+};
+
+struct dimension {
     int width;
     int height;
 };
 
-struct bounds{
+struct bounds {
     struct dimension _dimensions;
     struct position _starting_position;
 };
 
-struct array{
+struct array {
     int _length;
-    void* _values;
+    void *_values;
 };
 
 struct position __position(int x, int y);
+
 struct dimension __dimension(int width, int height);
+
 boolean check_in_screen(struct position s_pos, struct dimension dimensions, struct position position);
 
 
@@ -49,12 +58,17 @@ boolean check_in_screen(struct position s_pos, struct dimension dimensions, stru
 boolean verbosity;
 
 void _set_verbosity(int value);
-void _console_log(int priority, char* messages);
-char* concatenate_strings(int qty, ...);
-char* m_strcat(char* dest, char* src);
 
-unsigned int add_to_coordinate(int start, int val);
-struct position add_to_position(struct position p, int x, int y);
+void _console_log(int priority, char *messages);
+
+char *concatenate_strings(int qty, ...);
+
+char *m_strcat(char *dest, char *src);
+
+double add_to_coordinate(double start, double val);
+
+struct position add_to_position(struct position p, double x, double y);
+int position_equals(struct position pos1, struct position pos2);
 
 /**
  * Taken from gnu.org https://www.gnu.org/software/libc/manual/html_node/Backtraces.html

@@ -3,6 +3,10 @@
 
 #include "tools.h"
 
-struct dimension AQUARIUM_SIZE = {1000, 1000};
+#define AQUARIUM_WIDTH 1000
+#define AQUARIUM_HEIGHT 1000
+#define AQUARIUM_DIMENSIONS (struct dimension){AQUARIUM_WIDTH, AQUARIUM_HEIGHT}
+
+#define FISH_SPEEDRATE 0.1
 
 #endif //POSEIDON_DATA_H

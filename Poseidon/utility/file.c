@@ -7,8 +7,8 @@ int write_file(struct aquarium *aquarium, char *filename) {
 
     for (int i = 0; i < v__size(&aquarium->_views); i++) {
         struct aquarium_view* aq_view = vi__convert_aq_view(v__get(&aquarium->_views, i));
-        fprintf(file, "N%s %dx%d+%d+%d\n", aq_view->_id, aq_view->_inner._starting_position.x,
-                aq_view->_inner._starting_position.y, aq_view->_inner._dimensions.width,
+        fprintf(file, "N%s %dx%d+%d+%d\n", aq_view->_id, (int)aq_view->_inner._starting_position.x,
+                (int)aq_view->_inner._starting_position.y, aq_view->_inner._dimensions.width,
                 aq_view->_inner._dimensions.height);
     }
 

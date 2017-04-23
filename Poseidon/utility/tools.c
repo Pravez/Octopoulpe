@@ -95,19 +95,23 @@ void print_trace() {
     free(strings);
 }
 
-unsigned int add_to_coordinate(int start, int val){
+double add_to_coordinate(double start, double val){
     if(start + val > 1000)
-        return (unsigned int) (1000 - (start + val));
+        return (1000 - (start + val));
     else if(start + val < 0)
-        return (unsigned int) (1000 + (start + val));
+        return (1000 + (start + val));
     else
-        return (unsigned int) (start + val);
+        return (start + val);
 }
 
-struct position add_to_position(struct position p, int x, int y) {
+struct position add_to_position(struct position p, double x, double y) {
     struct position new;
     new.x = add_to_coordinate(p.x, x);
     new.y = add_to_coordinate(p.y, y);
 
     return new;
+}
+
+int position_equals(struct position pos1, struct position pos2){
+    return ((int)pos1.x == (int)pos2.x) && ((int)pos1.y == (int)pos2.y);
 }
