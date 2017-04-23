@@ -46,6 +46,8 @@ void aq__add_fish_to_aqv(struct aquarium* aq, char* id, struct fish* fish){
     struct aquarium_view* aqv = aq__get_view_by_id(aq, id);
     CHK_ERROR(aqv, "Unable to add fish to NULL view")
 
+    //First we add it to the whole aquarium, and after, to the little view
+    hashmap_put(aq->_fishes, fish->_id, fish);
     aqv__add_fish(aqv, fish);
 }
 
@@ -151,7 +153,7 @@ int aq__check_free_id(struct aquarium* aquarium, char* id){
 
 void display_fish(struct fish *fish) {
     printf("FISH : %s \n\t type : %s \n\t coordinates : %d, %d\n", fish->_id, get_type_string(fish->_type),
-           fish->_position.x, fish->_position.y);
+           (int)fish->_current.x, (int)fish->_current.y);
 }
 
 int iterate_fishes(any_t nothing, any_t fish){
@@ -160,8 +162,8 @@ int iterate_fishes(any_t nothing, any_t fish){
 }
 
 void display_view(struct aquarium_view *aqv) {
-    printf("VIEW : %s (%dx%d+%d+%d) \n\t FISHES : \n", aqv->_id, aqv->_inner._starting_position.x,
-           aqv->_inner._starting_position.y, aqv->_inner._dimensions.width, aqv->_inner._dimensions.height);
+    printf("VIEW : %s (%dx%d+%d+%d) \n\t FISHES : \n", aqv->_id, (int)aqv->_inner._starting_position.x,
+           (int)aqv->_inner._starting_position.y, aqv->_inner._dimensions.width, aqv->_inner._dimensions.height);
     hashmap_iterate(aqv->_fishes, (PFany) iterate_fishes, NULL);
     printf("END OF VIEW \n");
 }

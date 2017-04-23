@@ -60,8 +60,8 @@ int sprintf_fish(any_t res, any_t fish)
     struct fish * cpy = (struct fish *) fish;
     char * info_fish = malloc(sizeof(char)*(27 + strlen(cpy->_id)));
     sprintf(info_fish," [%s at %dx%d,%dx%d,%d]",cpy->_id,
-                                                  cpy->_position.x, cpy->_position.y,
-                                                  cpy->_cover.x, cpy->_cover.y,
+            (int)cpy->_current.x, (int)cpy->_current.y,
+            cpy->_cover.width, cpy->_cover.height,
                                                   sec);
     strcat((char *)res,info_fish);
     return MAP_OK;

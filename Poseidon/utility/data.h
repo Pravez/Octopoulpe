@@ -1,0 +1,12 @@
+#ifndef POSEIDON_DATA_H
+#define POSEIDON_DATA_H
+
+#include "tools.h"
+
+#define AQUARIUM_WIDTH 1000
+#define AQUARIUM_HEIGHT 1000
+#define AQUARIUM_DIMENSIONS (struct dimension){AQUARIUM_WIDTH, AQUARIUM_HEIGHT}
+
+#define FISH_SPEEDRATE 0.1
+
+#endif //POSEIDON_DATA_H
