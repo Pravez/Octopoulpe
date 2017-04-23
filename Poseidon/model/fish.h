@@ -14,11 +14,11 @@ enum MOVING_STRATEGY{
 
 struct fish {
     enum fish_type _type;
+    struct position _cover;
     struct position _current;
     struct position _goal;
     enum MOVING_STRATEGY _strategy;
     char *_id;
-    double _speed_rate;
 };
 
 struct fish* fish__create(enum fish_type type, int x, int y, char* id, enum MOVING_STRATEGY strategy);

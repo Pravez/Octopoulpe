@@ -24,7 +24,7 @@ char* aq__add_view(struct aquarium *aquarium, struct position s_pos, struct dime
         aqv__initialize_aquarium_view(view, s_pos, dimensions, id);
         v__add(&aquarium->_views, view, AQ_VIEW);
 
-        asw__add_view(id); // Update the controller
+        asw__add_view(view); // Update the controller
 
         return view->_id;
     }else{

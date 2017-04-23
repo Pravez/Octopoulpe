@@ -4,15 +4,20 @@
 #include <string.h>
 #include "answer.h"
 #include "../model/aquarium.h"
-
 #include "../utility/tools.h"
 
-extern struct aquarium *aquarium;
-
+extern struct aquarium *aquarium1;
 LIST_HEAD(clientlist, client) clients;
 
-char *available_id(char *wanted) {
-        printf("wanted : #%s#\n",wanted);
+/* Auxiliar functions*/
+/**
+ * @brief available_id  returns an available view identifier
+ * @param wanted        the wanted view identifier, could be NULL
+ * @return              wanted                      if available (and not NULL)
+ *                      NULL                        if none of the view identifier is available
+ *                      an other view identifier    else
+ */
+struct aquarium_view *available_id(char *wanted) {
         struct client *first_available_id = NULL;
         struct client *client;
         LIST_FOREACH(client, &clients, entries) {
@@ -21,8 +26,7 @@ char *available_id(char *wanted) {
             {
                 if (!strcmp(wanted, client->id) && client->is_free) {
                     client->is_free=0;
-                    char res[100] = "greeting ";
-                    return strcat(strcat(res,wanted),"\n");
+                    return client->aqv;
                 }
             }
 
@@ -40,17 +44,43 @@ char *available_id(char *wanted) {
         if(first_available_id != NULL)
         {
             first_available_id->is_free=0;
-            char res[100] = "greeting ";
-            return strcat(strcat(res,first_available_id->id),"\n");
+            return first_available_id->aqv;
         }
         else
         {
-            return "no greeting\n";
+            return NULL;
         }
 }
 
+
+int sprintf_fish(any_t res, any_t fish)
+{
+    // sec, cpy->_cover.x and cpy->_cover.y have to be replaced with values obtained by the mobility function
+    int sec = 5;
+    struct fish * cpy = (struct fish *) fish;
+    char * info_fish = malloc(sizeof(char)*(27 + strlen(cpy->_id)));
+    sprintf(info_fish," [%s at %dx%d,%dx%d,%d]",cpy->_id,
+                                                  cpy->_position.x, cpy->_position.y,
+                                                  cpy->_cover.x, cpy->_cover.y,
+                                                  sec);
+    strcat((char *)res,info_fish);
+    return MAP_OK;
+}
+
+/* Functions for the server thread */
+/**
+ * @brief asw__hello    the handler for the "hello" command from the client
+ * @param arg           the end of the command which represents the arguments, should finish with '\n'
+ * @param res           the string used to communicate the answer
+ *                      "greeting <VIEW IDENTIFIER>\n"  with an available view identifier
+ *                      "no greeting\n"                 if none of the view identifier was available
+ *                      The command syntax            if the arguments were incorrect
+ * @param cli           the client who has made the command
+ * @return              HELLO_SUCCESS       if a view identifier was attributed to the client
+ *                      HELLO_FAILURE       else
+ */
 int asw__hello(char *arg, char *res, struct client *cli) {
-    char * id;
+    struct aquarium_view * id;
     char * argv[4];
     char * cpy = malloc(100*4); // Copy of arg needed, else segfault with strtok
     strcpy(cpy,arg);
@@ -70,39 +100,74 @@ int asw__hello(char *arg, char *res, struct client *cli) {
     // Incorrect syntax for the command
     else
     {
-        strcpy(res, "Invalid syntax for 'hello'. Corrects syntaxes are :\n'hello in as <wanted id>'\n'hello'\n");
+        sprintf(res, "Invalid syntax for 'hello'. Corrects syntaxes are :\n'hello in as <wanted id>'\n'hello'\n");
         return HELLO_FAILURE;
     }
 
-    strcpy(res, id);
     // Successful request
-    if(strcmp(id,"no greeting\n")) {
-        cli->id =malloc(sizeof(char)*(strlen(id)+1));
-        strcpy(cli->id,id); cli->is_free = 0;
+    if(id != NULL) {
+        cli->id =malloc(sizeof(char)*(strlen(id->_id)+1));
+        strcpy(cli->id,id->_id); cli->is_free = 0;
+        cli->aqv=id;
+        sprintf(res,"greeting %s\n",id->_id);
         return HELLO_SUCCESS;
     }
     // Failed request
+    strcpy(res,"no greeting\n");
     return HELLO_FAILURE;
 }
 
+/**
+ * @brief asw__get_fishes   the handler for the "hello" command from the client
+ * @param arg               the end of the command which represents the arguments, should finish with '\n'
+ * @param res               the string used to communicate the answer
+ *                          "list [<FISH_NAME> at <POS%_X>x<POS%_Y>,<FISH_WIDTH>x<FISH_HEIGHT>,<SEC>] [<...>]\n"
+ *                          FISH_NAME   the name of the fish (an identifier)
+ *                          POS%_X      the new horizontal position in percentage of the screen width
+ *                          POS%_Y      the new vertical position in percentage of the screen height
+ *                          FISH_WIDTH  the width of the picture used to show the fish on the screen
+ *                          FISH_HEIGHT the height of the picture used to show the fish on the screen
+ *                          SEC         how many seconds has to last the move from the current position to the new one
+ *                                      if SEC equals 0, the fish is shown immediately
+ */
+void asw__get_fishes(char * arg, char * res, struct client *cli)
+{
+    sprintf(res,"list");
+    hashmap_iterate(cli->aqv->_fishes, (PFany) sprintf_fish, res);
+    strcat(res,"\n");
+}
+
 /* Functions for the aquarium */
+/**
+ * @brief asw__init_aquarium initializes the list of the viewsof the aquarium
+ * Has to be called by aq__initialize_aquarium();
+ */
 void asw__init_aquarium()
 {
-    printf("init aquarium\n");
     struct clientlist *clientp;
     LIST_INIT(&clients);
 }
 
-void asw__add_view(char *id)
+/**
+ * @brief asw__add_view adds the identifier view to the view identifier list
+ * @param id the view identifier of the view added
+ * Has to be called by aq__add_view()
+ */
+void asw__add_view(struct aquarium_view *view)
 {
-    printf("add view: %s\n",id);
     struct client * cli = malloc(sizeof(struct client));
-    cli->id = malloc(sizeof(char) * (strlen(id) + 1));
-    strcpy(cli->id, id);
+    cli->id = malloc(sizeof(char) * (strlen(view->_id) + 1));
+    strcpy(cli->id, view->_id);
     cli->is_free=1;
+    cli->aqv=view;
     LIST_INSERT_HEAD(&clients, cli, entries);
 }
 
+/**
+ * @brief asw__remove_view removes the identifier view from the view identifier list
+ * @param id the view identifier of the view removed
+ * Has to be called by aq__remove_aquarium_view();
+ */
 void asw__remove_view(char *id)
 {
     struct client *j;
@@ -117,6 +182,10 @@ void asw__remove_view(char *id)
     }
 }
 
+/**
+ * @brief asw__remove_aquarium frees the list used to manipulate the aquarium
+ * Has to be called by aq__remove_aquarium();
+ */
 void asw__remove_aquarium()
 {
     struct client *client;
@@ -128,7 +197,6 @@ void asw__remove_aquarium()
 }
 
 /*
-#ifndef _PROCESS_
 int main(int argc, char *argv[]) {
     // To test : a false aquarium1
     aq__initialize_aquarium(&aquarium1, (struct dimension) {1000, 1000});
@@ -143,5 +211,4 @@ int main(int argc, char *argv[]) {
     printf("######### res #########\n%s", res);
     return 0;
 }
-#endif
 */
