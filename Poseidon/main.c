@@ -33,7 +33,7 @@ int main(int argc, char* argv[]){
 
     CHK_ERROR(pthread_create(&world_t, NULL, world_process , NULL), "world thread");
     CHK_ERROR(pthread_create(&menu_t, NULL, main_menu, NULL), "main_menu thread")
-    //CHK_ERROR(pthread_create(&server_t, NULL, server_process, &port), "server thread");
+    CHK_ERROR(pthread_create(&server_t, NULL, server_process, &port), "server thread");
 
     printf("Display timeout value : %d\n", _get_value(config_vector, "fish-update-interval"));
     _delete_tvector(config_vector);
@@ -42,10 +42,12 @@ int main(int argc, char* argv[]){
     _console_log(LOG_HIGH, "BIG PROBLEM");
     _console_log(LOG_LOW, "simple log");
 
-    aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 20, "jeanmi", HANDV));
-    aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 30, "jeanma", HANDV));
-    aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 300, 300, "jeanmo", HANDV));
-    aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 400, 400, "jeanbite", HANDV));
+    struct dimension def = (struct dimension){1, 1};
+
+    aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 20, "jeanmi", HANDV, def));
+    aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 30, "jeanma", HANDV, def));
+    aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 300, 300, "jeanmo", HANDV, def));
+    aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 400, 400, "jeanbite", HANDV, def));
 
     //aq__remove_fish(aquarium, "jeanbite");
 
@@ -56,7 +58,7 @@ int main(int argc, char* argv[]){
     display_aquarium(aquarium);
 
     pthread_join(menu_t, NULL);
-    //pthread_join(server_t, NULL);
+    pthread_join(server_t, NULL);
     pthread_join(world_t, NULL);
 
     return EXIT_SUCCESS;
