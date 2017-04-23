@@ -137,26 +137,35 @@ void asw__get_fishes(char * arg, char * res, struct client *cli)
         strcat(res,"\n");
     }
     else
-        strcpy(res,"Invalid syntax for 'getFishesContinuously'. No argument allowed : 'getFishesContinuously\n'\n");
+        strcpy(res,"Invalid syntax for 'getFishesContinuously'.\nNo argument allowed : 'getFishesContinuously'\n");
 }
 
 /**
- * @brief asw__log
- * @param arg
- * @param res
- * @param cli
+ * @brief asw__log frees the ressources allocated to manipulate the client informations
+ * @param arg should be "out\n" or "out \n"
+ * @param res the string "bye\n"
+ * @param cli the client structure
+ * @return LOGOUT_SUCCESS on success and LOGOUT_FAILURE on fail
  */
-void asw__log(char * arg, char * res, struct client *cli)
+int asw__log(char * arg, char * res, struct client *cli)
 {
-    // Get the view identifier available
-    struct client *client;
-    LIST_FOREACH(client, &clients, entries) {
-       if (!strcmp(cli->id, client->id)) {
-            client->is_free=1;
+    if(strcmp(arg,"out\n")==0 || strcmp(arg,"out \n")==0)
+    {
+        // Get the view identifier available
+        struct client *client;
+        LIST_FOREACH(client, &clients, entries) {
+            if (!strcmp(cli->id, client->id)) {
+                client->is_free=1;
+            }
         }
+        free(cli->id);
+        strcpy(res,"bye\n");
+        return LOGOUT_SUCCESS;
     }
-    free(cli->id);
-    strcpy(res,"bye\n");
+    else
+        strcpy(res,"Invalid syntax for 'log'.\nCorrect syntax : 'log out'\n");
+
+    return LOGOUT_FAILURE;
 }
 
 /* Functions for the aquarium */
