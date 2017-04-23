@@ -53,9 +53,17 @@ struct aquarium_view *available_id(char *wanted) {
 }
 
 
-int sprintf_fish(any_t res, any_t fish){
+int sprintf_fish(any_t res, any_t fish)
+{
+    // sec, cpy->_cover.x and cpy->_cover.y have to be replaced with values obtained by the mobility function
+    int sec = 5;
     struct fish * cpy = (struct fish *) fish;
-    printf("FISH : %s \n\t \n\t coordinates : %d, %d\n", cpy->_id, cpy->_position.x, cpy->_position.y);
+    char * info_fish = malloc(sizeof(char)*(27 + strlen(cpy->_id)));
+    sprintf(info_fish," [%s at %dx%d,%dx%d,%d]",cpy->_id,
+                                                  cpy->_position.x, cpy->_position.y,
+                                                  cpy->_cover.x, cpy->_cover.y,
+                                                  sec);
+    strcat((char *)res,info_fish);
     return MAP_OK;
 }
 
@@ -124,7 +132,9 @@ int asw__hello(char *arg, char *res, struct client *cli) {
  */
 void asw__get_fishes(char * arg, char * res, struct client *cli)
 {
+    sprintf(res,"list");
     hashmap_iterate(cli->aqv->_fishes, (PFany) sprintf_fish, res);
+    strcat(res,"\n");
 }
 
 /* Functions for the aquarium */

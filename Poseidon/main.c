@@ -70,15 +70,17 @@ int main(int argc, char* argv[]){
     struct client *henry = malloc(sizeof(struct client));
     henry->id = NULL;
     asw__hello("\n", res, henry);
-    printf("res\t%s", res);
+    printf("main\t%s", res);
     asw__hello("\n", res, henry);
-    printf("res\t%s", res);
+    printf("main\t%s", res);
     asw__hello("\n", res, henry);
-    printf("res\t%s", res);
+    printf("main\t%s", res);
 
+    // Henry a la vue "Cookie"
     aq__add_fish_to_aqv(&aquarium1,"Cookie",fish__create(BLOBFISH, 10, 20, "Bibi",4,5));
     aq__add_fish_to_aqv(&aquarium1,"Cookie",fish__create(BLOBFISH, 40, 50, "Bobo",4,5));
 
     asw__get_fishes("\n",res,henry);
+    printf("main\t%s",res);
     return EXIT_SUCCESS;
 }
