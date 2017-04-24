@@ -30,31 +30,32 @@ int world_init(){
     return 0;
 }
 
-struct position determine_new_position(struct position previous){
-    return (struct position){(unsigned int)RAND_IN_RANGE(1000, 0), (unsigned int)RAND_IN_RANGE(1000, 0)};
+struct position determine_new_position(struct position previous, struct fish* fish){
+    switch(fish->_strategy) {
+        case HORIZONTAL:
+            return (struct position) {(unsigned int) RAND_IN_RANGE(1000, 0), previous.y};
+        case VERTICAL:
+            return (struct position) {previous.x , (unsigned int) RAND_IN_RANGE(1000, 0)};
+        case RANDOM:
+            return (struct position) {(unsigned int) RAND_IN_RANGE(1000, 0), (unsigned int) RAND_IN_RANGE(1000, 0)};
+    }
 }
 
 struct movement next_movement(struct fish* fish){
     struct movement movement = (struct movement){0, 0};
-    switch(fish->_strategy){
-        case HANDV:
-            if(fish->_current.x - fish->_goal.x > 0)
-                movement.x = -1;
-            else if(fish->_current.x - fish->_goal.x < 0)
-                movement.x = 1;
-            else
-                movement.x = 0;
+    if(fish->_current.x - fish->_goal.x > 0)
+        movement.x = -1;
+    else if(fish->_current.x - fish->_goal.x < 0)
+        movement.x = 1;
+    else
+        movement.x = 0;
 
-            if(fish->_current.y - fish->_goal.y > 0)
-                movement.y = -1;
-            else if(fish->_current.y - fish->_goal.y < 0)
-                movement.y = 1;
-            else
-                movement.y = 0;
-            break;
-        case RANDOM:break;
-    }
-
+    if(fish->_current.y - fish->_goal.y > 0)
+        movement.y = -1;
+    else if(fish->_current.y - fish->_goal.y < 0)
+        movement.y = 1;
+    else
+        movement.y = 0;
     return movement;
 }
 
@@ -71,7 +72,7 @@ int update_fishes(any_t nothing, any_t item){
         fprintf(stderr, "Fish %s is at %d, %d\n", fish->_id, (int) fish->_current.x, (int) fish->_current.y);
 
         if (position_equals(fish->_current, fish->_goal)) {
-            fish->_goal = determine_new_position(fish->_goal);
+            fish->_goal = determine_new_position(fish->_goal, fish);
             fprintf(stderr, "Fish %s has new goal ! : %d, %d\n", fish->_id, (int) fish->_goal.x, (int) fish->_goal.y);
         }
     }

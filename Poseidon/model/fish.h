@@ -9,7 +9,7 @@
 #include "../utility/data.h"
 
 enum MOVING_STRATEGY{
-    HANDV, RANDOM
+    HORIZONTAL, VERTICAL, RANDOM
 };
 
 struct fish {
