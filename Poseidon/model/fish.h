@@ -17,6 +17,7 @@ struct fish {
     struct dimension _cover;
     struct position _current;
     struct position _goal;
+    struct position _next_position;
     enum MOVING_STRATEGY _strategy;
     double _speed_rate;
     char *_id;

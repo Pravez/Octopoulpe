@@ -24,7 +24,7 @@ void * world_process(void *pVoid){
 
 int world_init(){
     srand((unsigned int) time(NULL));
-    update_rate = 1.0/60;
+    update_rate = 1.0/1.0;
     world_initialized = 1;
 
     return 0;
@@ -65,6 +65,8 @@ int update_fishes(any_t nothing, any_t item){
 
     struct position newpos = add_to_position(fish->_current, (movement.x*fish->_speed_rate)*update_rate, (movement.y*fish->_speed_rate)*update_rate);
     fish->_current = newpos;
+
+    fprintf(stderr, "Fish %s is at %d, %d\n", fish->_id, (int)fish->_current.x, (int)fish->_current.y);
 
     if(position_equals(fish->_current, fish->_goal)){
         fish->_goal = determine_new_position(fish->_goal);

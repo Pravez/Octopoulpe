@@ -16,7 +16,7 @@ extern struct _tvector* config_vector;
 struct aquarium* aquarium;
 
 int main(int argc, char* argv[]){
-    /*
+
     pthread_t menu_t;
     pthread_t server_t;
     pthread_t world_t;
@@ -46,9 +46,9 @@ int main(int argc, char* argv[]){
     struct dimension def = (struct dimension){1, 1};
 
     aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 20, "jeanmi", HANDV, def));
-    aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 30, "jeanma", HANDV, def));
-    aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 300, 300, "jeanmo", HANDV, def));
-    aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 400, 400, "jeanbite", HANDV, def));
+    //aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 30, "jeanma", HANDV, def));
+    //aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 300, 300, "jeanmo", HANDV, def));
+    //aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 400, 400, "jeanbite", HANDV, def));
 
     //aq__remove_fish(aquarium, "jeanbite");
 
@@ -63,9 +63,9 @@ int main(int argc, char* argv[]){
     pthread_join(world_t, NULL);
 
     return EXIT_SUCCESS;
-    */
+
     // To test : a false aquarium
-        aquarium = malloc(sizeof(struct aquarium));
+    /*    aquarium = malloc(sizeof(struct aquarium));
         aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
         aq__add_view(aquarium, (struct position) {250, 250}, (struct dimension) {500, 500}, "Cookie");
         aq__add_view(aquarium, (struct position) {100, 100}, (struct dimension) {900, 900}, "Donald");
@@ -91,5 +91,5 @@ int main(int argc, char* argv[]){
 
         asw__log("out\n",res,henry);
         printf("main\t%s",res);
-        return EXIT_SUCCESS;
+        return EXIT_SUCCESS;*/
 }
