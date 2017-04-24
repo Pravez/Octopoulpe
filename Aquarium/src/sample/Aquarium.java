@@ -58,7 +58,12 @@ public class Aquarium extends Application {
                 }
                 if (timer == 200) {
                     //fishes.get(0).setGoal(0, 0);
-                    timer=0;
+                    addFish("magicarpe", 350, 200, 100, 100);
+                    //timer=0;
+                }
+                if (timer == 400) {
+                  removeFish(fishes.get(1));
+                  timer = 0;
                 }
 
                 for (Fish f : fishes) {
@@ -69,6 +74,14 @@ public class Aquarium extends Application {
 
     }
 
+    public void addFish(String name, int x, int y, int w, int h) {
+              Fish f = new Fish(x, y, w, h, name);
+              fishes.add(f);
+    }
+
+    public void removeFish(Fish f) {
+              fishes.remove(f);
+    }
 
     public static void main(String[] args) {
         launch(args);
