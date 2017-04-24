@@ -109,9 +109,9 @@ void *start(void *arg) {
             response = parse(buffer);
             //traitement
             //read the result from the pipe and write it
-            if() {//check if the pipe is not empty
+            /*if() {//check if the pipe is not empty
               n = write(newsockfd, ...)
-            }
+            }*/
             n = write(newsockfd, response, strlen(response));
             CHK_ERROR(n, "Error writing to socket");
             if(!strcmp(response, "no greeting")) {

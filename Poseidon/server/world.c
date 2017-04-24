@@ -9,65 +9,88 @@
 #include "../utility/vector.h"
 
 static double update_rate;
-extern struct aquarium* aquarium;
+extern struct aquarium *aquarium;
 
 int world_initialized;
 static int run;
 
 
-void * world_process(void *pVoid){
+void *world_process(void *pVoid) {
     world_init();
     world_loop();
 
     return NULL;
 }
 
-int world_init(){
+int world_init() {
     srand((unsigned int) time(NULL));
-    update_rate = 1.0/1.0;
+    update_rate = SPEED_RATE < 0 ? 1.0/SPEED_RATE : SPEED_RATE;
     world_initialized = 1;
 
     return 0;
 }
 
-struct position determine_new_position(struct position previous, struct fish* fish){
-    switch(fish->_strategy) {
+struct position determine_new_position(struct position previous, struct fish *fish) {
+    switch (fish->_strategy) {
         case HORIZONTAL:
             return (struct position) {(unsigned int) RAND_IN_RANGE(1000, 0), previous.y};
         case VERTICAL:
-            return (struct position) {previous.x , (unsigned int) RAND_IN_RANGE(1000, 0)};
+            return (struct position) {previous.x, (unsigned int) RAND_IN_RANGE(1000, 0)};
         case RANDOM:
             return (struct position) {(unsigned int) RAND_IN_RANGE(1000, 0), (unsigned int) RAND_IN_RANGE(1000, 0)};
     }
+
+    return (struct position) {-1, -1};
 }
 
-struct movement next_movement(struct fish* fish){
-    struct movement movement = (struct movement){0, 0};
-    if(fish->_current.x - fish->_goal.x > 0)
+struct movement next_movement(struct fish *fish) {
+    struct movement movement = (struct movement) {0, 0};
+    if (fish->_current.x - fish->_goal.x > 0)
         movement.x = -1;
-    else if(fish->_current.x - fish->_goal.x < 0)
+    else if (fish->_current.x - fish->_goal.x < 0)
         movement.x = 1;
     else
         movement.x = 0;
 
-    if(fish->_current.y - fish->_goal.y > 0)
+    if (fish->_current.y - fish->_goal.y > 0)
         movement.y = -1;
-    else if(fish->_current.y - fish->_goal.y < 0)
+    else if (fish->_current.y - fish->_goal.y < 0)
         movement.y = 1;
     else
         movement.y = 0;
     return movement;
 }
 
-int update_fishes(any_t nothing, any_t item){
+void update_view_content(struct aquarium_view *aqv, struct fish *fish) {
+    if (hashmap_get(aqv->_fishes, fish->_id, NULL) == MAP_OK) {
+        if (!in_bounds(aqv->_inner._starting_position, aqv->_inner._dimensions, fish->_current)) {
+            aqv__remove_fish(aqv, fish);
+        }
+    } else {
+        if (in_bounds(aqv->_inner._starting_position, aqv->_inner._dimensions, fish->_current)) {
+            aqv__add_fish(aqv, fish);
+        }
+    }
+}
 
-    struct fish* fish = (struct fish*)item;
-    if(fish->_running) {
+int update_fishes(any_t nothing, any_t item) {
+
+    struct fish *fish = (struct fish *) item;
+    struct aquarium_view *aqv;
+
+    if (fish->_running) {
         struct movement movement = next_movement(fish);
 
         struct position newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate) * update_rate,
                                                  (movement.y * fish->_speed_rate) * update_rate);
         fish->_current = newpos;
+        fish->_next_position =
+                fish->_speed_rate < (1 / 30) ? add_to_position(newpos, (movement.x * fish->_speed_rate) * update_rate,
+                                                               (movement.y * fish->_speed_rate) * update_rate)
+                                             : newpos;
+
+        //TODO test if new position*2 is after the position in itself
+
 
         fprintf(stderr, "Fish %s is at %d, %d\n", fish->_id, (int) fish->_current.x, (int) fish->_current.y);
 
@@ -77,44 +100,28 @@ int update_fishes(any_t nothing, any_t item){
         }
     }
 
-    return MAP_OK;
-}
-
-int update_fishes_position(any_t data, any_t item) {
-    struct aquarium_view* aqv = (struct aquarium_view*)data;
-    struct fish* fish = (struct fish*) item;
-
-    if(!in_bounds(aqv->_inner._starting_position, aqv->_inner._dimensions, fish->_current)){
-        aqv__remove_fish(aqv, fish);
+    //Here we test fishes are always on good views
+    for (int i = 0; i < aquarium->_views._current_size; i++) {
+        aqv = GET_VIEW_PTR(&aquarium->_views, i);
+        update_view_content(aqv, fish);
     }
 
     return MAP_OK;
 }
 
-void update_views(){
-    for(int i = 0;i < aquarium->_views._current_size;i++){
-        struct aquarium_view* aqv = GET_VIEW_PTR(&aquarium->_views, i);
-        hashmap_iterate(aquarium->_fishes, (PFany) update_fishes_position, aqv);
-
-        //Works need to be continued here ...
-    }
-}
-
-void update(){
+void update() {
     hashmap_iterate(aquarium->_fishes, (PFany) update_fishes, NULL);
-    update_views();
-
 }
 
-int world_loop(){
+int world_loop() {
 
     run = 1;
 
     //Need to implement an alarm to stop the while true
-    while(run){
+    while (run) {
         update();
 
-        usleep((unsigned int) (update_rate*1000));
+        usleep((unsigned int) (update_rate * 1000));
     }
 
     return 1;

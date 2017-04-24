@@ -32,6 +32,8 @@ int main(int argc, char* argv[]){
     parse_config_file("controller.cfg");
     int port = _get_value(config_vector, "controller-port");
 
+    SPEED_RATE = _get_value(config_vector, "fish-update-interval");
+
     CHK_ERROR(pthread_create(&world_t, NULL, world_process , NULL), "world thread");
     CHK_ERROR(pthread_create(&menu_t, NULL, main_menu, NULL), "main_menu thread")
     CHK_ERROR(pthread_create(&server_t, NULL, server_process, &port), "server thread");
@@ -45,10 +47,10 @@ int main(int argc, char* argv[]){
 
     struct dimension def = (struct dimension){1, 1};
 
-    aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 20, "jeanmi", HANDV, def));
-    //aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 30, "jeanma", HANDV, def));
-    //aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 300, 300, "jeanmo", HANDV, def));
-    //aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 400, 400, "jeanbite", HANDV, def));
+    aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 20, "jeanmi", HORIZONTAL, def, SPEED_RATE));
+    //aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 30, "jeanma", HORIZONTAL, def));
+    //aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 300, 300, "jeanmo", HORIZONTAL, def));
+    //aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 400, 400, "jeanbite", HORIZONTAL, def));
 
     //aq__remove_fish(aquarium, "jeanbite");
 

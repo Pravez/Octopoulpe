@@ -6,7 +6,7 @@
 static int _fish_ids = 0;
 
 
-struct fish* fish__create(enum fish_type type, int x, int y, char* id, enum MOVING_STRATEGY strategy, struct dimension dimension) {
+struct fish* fish__create(enum fish_type type, int x, int y, char* id, enum MOVING_STRATEGY strategy, struct dimension dimension, double speed_rate) {
     struct fish* f = malloc(sizeof(struct fish));
     if(id == NULL)
         asprintf(&f->_id, "%s%d", get_type_string(type), _fish_ids++);
@@ -16,7 +16,7 @@ struct fish* fish__create(enum fish_type type, int x, int y, char* id, enum MOVI
     f->_goal = __position(x, y);
     f->_cover = dimension;
     f->_type = type;
-    f->_speed_rate = FISH_SPEEDRATE;
+    f->_speed_rate = speed_rate;
     f->_strategy = strategy;
     f->_running = 0;
 

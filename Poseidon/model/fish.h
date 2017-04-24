@@ -24,7 +24,7 @@ struct fish {
     int _running;
 };
 
-struct fish* fish__create(enum fish_type type, int x, int y, char* id, enum MOVING_STRATEGY strategy, struct dimension dimension);
+struct fish* fish__create(enum fish_type type, int x, int y, char* id, enum MOVING_STRATEGY strategy, struct dimension dimension, double speed_rate);
 int fish__free(any_t fish, any_t nothing);
 void fish__set_position(struct fish* fish, struct position newpos);
 void fish__add_to_position(struct fish* fish, int x, int y);
