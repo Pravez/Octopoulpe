@@ -17,6 +17,18 @@ LIST_HEAD(listhead, thread_entry) thread_head = LIST_HEAD_INITIALIZER(thread_hea
 
 static const char* delim = " ";
 
+//for testing time = 0
+void *get_fishes_continuously(void *time) {
+  int delay = (int) time;
+  char *res;
+  while(1) {
+    sleep(delay);
+    asw__get_fishes(NULL, res, NULL);
+    //lock
+    write(com[1], res, strlen(res));
+    //unlock
+  }
+}
 
 #ifdef _PROCESS_
 void *server_process(void *arg) {
@@ -33,10 +45,8 @@ void *server_process(void *arg) {
 
 
 char* parse(char buffer[BUFFER_SIZE]) {
-    int i = 0;
-    int j = 0;
     char arg[BUFFER_SIZE];
-    char *res;// = malloc(sizeof(char)*MAX);
+    //char *res;// = malloc(sizeof(char)*MAX);
 
     char* cmd;
     asprintf(&cmd, "%s", buffer);
@@ -47,7 +57,13 @@ char* parse(char buffer[BUFFER_SIZE]) {
     }else if(!strcmp(token, "getFishes")){
 
     }else if(!strcmp(token, "getFishesContinuously")){
-
+      //create a pipe
+      int com[2];
+      pipe(com, O_NONBLOCK);
+      //launch thread
+      //where should I write ? A new pipe ? -> quite a good idea !
+      pthread_t moult_fishes;
+      pthread_create(&moult_fishes, NULL, get_fishes_continuously, 0);
     }else if(!strcmp(token, "log")){
 
     }else if(!strcmp(token, "ping")){
@@ -62,40 +78,13 @@ char* parse(char buffer[BUFFER_SIZE]) {
 
     return "Unknown command\n";
 
-    //Je crois que tout ça devient assez obsolète (et fastidieux)
-    /*while ((buffer[i] != ' ') && (buffer[i] != '\0')) {
-        //printf("i: %d, c: %c\n", i, buffer[i]);
-        cmd[i] = buffer[i];
-        ++i;
-    }
-    //give just the end of the command to the function
-    while ((buffer[i + j] != '\0') && (buffer[i + j] != '\n')) {
-        printf("i+j: %d, c: %c\n", i + j, buffer[i + j]);
-        arg[j] = buffer[i + j];
-        j++;
-    }
-    printf("2\n");
-    arg[j + 1] = '\0';
-    if (strcmp(cmd, "hello") == 0)
-    else
-        res = strcpy(res, "Unknown command\n");
-    printf("3\n");
-    i = 0;
-    while (res[i] != '\0') {
-        //printf("i: %d, c: %c\n", i, res[i]);
-        buf_res[i] = res[i];
-        ++i;
-    }
-    buf_res[i] = '\0';
-    //buf_res = strcpy(buf_res, res); //this certainly prints garbage -> YES IT DOES
-    printf("4\n");*/
 }
 
 char* check_client_id(){
     char* id = strtok(NULL, delim);
     //Verify ID here
     //asw__hello(id, res, NULL);
-    return "greeting or not ?";
+    return "no greeting";
 }
 
 
@@ -109,18 +98,20 @@ void *start(void *arg) {
     bzero(buffer, BUFFER_SIZE);
     while (1) {
         n = read(newsockfd, buffer, BUFFER_SIZE-1);
-        printf("n: %d\n", n);
+        //printf("n: %d\n", n);
         CHK_ERROR(n, "Error reading from socket")
         else if (n == 2) { //fix the segfault in case of empty message
             n = write(newsockfd, "\n", 1);
             CHK_ERROR(n, "Error writing to socket")
         } else {
-            //ça sert à rien d'écrire ça, ça va juste obliger à parser encore plus coté client
-            //n = write(newsockfd, "Parsing your command...\n", 25);
             response = parse(buffer);
             //traitement
             n = write(newsockfd, response, strlen(response));
-            CHK_ERROR(n, "Error writing to socket")
+            CHK_ERROR(n, "Error writing to socket");
+            if(!strcmp(response, "no greeting")) {
+                pthread_exit(NULL);
+            }
+
         }
     }
 }
@@ -146,11 +137,11 @@ void wait_connection(int portno) {
     while ((newsockfd = accept(sockfd, (struct sockaddr *) &client_addr, (socklen_t *) &clilen))) {
         struct thread_entry* en = malloc(sizeof(struct thread_entry));
         LIST_INSERT_HEAD(&thread_head, en, entries);
-
-        CHK_ERROR(pthread_create(&en->_thread, NULL, start, &newsockfd), "Error creating thread")
+        CHK_ERROR(pthread_create(&en->_thread, NULL, start, &newsockfd), "Error creating thread") //when do we destroy the thread ?
+        //close(newsockfd);
     }
 }
-/*
+
 #ifndef _PROCESS_
 int main(int argc, char *argv[]) {
     if (argc < PARAM) {
@@ -162,4 +153,3 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 #endif
-*/
