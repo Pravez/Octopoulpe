@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -16,6 +17,7 @@
 LIST_HEAD(listhead, thread_entry) thread_head = LIST_HEAD_INITIALIZER(thread_head);
 
 static const char* delim = " ";
+static int com[2];
 
 //for testing time = 0
 void *get_fishes_continuously(void *time) {
@@ -24,7 +26,7 @@ void *get_fishes_continuously(void *time) {
   while(1) {
     sleep(delay);
     asw__get_fishes(NULL, res, NULL);
-    //lock
+    //lock ?
     write(com[1], res, strlen(res));
     //unlock
   }
@@ -58,8 +60,7 @@ char* parse(char buffer[BUFFER_SIZE]) {
 
     }else if(!strcmp(token, "getFishesContinuously")){
       //create a pipe
-      int com[2];
-      pipe(com, O_NONBLOCK);
+      pipe(com);
       //launch thread
       //where should I write ? A new pipe ? -> quite a good idea !
       pthread_t moult_fishes;
@@ -94,7 +95,8 @@ void *start(void *arg) {
     int newsockfd = *((int *) arg);
     int n;
     char* response;
-
+    //create a pipe to communicate between threads
+    int com[2];
     bzero(buffer, BUFFER_SIZE);
     while (1) {
         n = read(newsockfd, buffer, BUFFER_SIZE-1);
@@ -106,6 +108,7 @@ void *start(void *arg) {
         } else {
             response = parse(buffer);
             //traitement
+            //read the result from the pipe and write it
             n = write(newsockfd, response, strlen(response));
             CHK_ERROR(n, "Error writing to socket");
             if(!strcmp(response, "no greeting")) {
