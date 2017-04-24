@@ -61,16 +61,19 @@ struct movement next_movement(struct fish* fish){
 int update_fishes(any_t nothing, any_t item){
 
     struct fish* fish = (struct fish*)item;
-    struct movement movement = next_movement(fish);
+    if(fish->_running) {
+        struct movement movement = next_movement(fish);
 
-    struct position newpos = add_to_position(fish->_current, (movement.x*fish->_speed_rate)*update_rate, (movement.y*fish->_speed_rate)*update_rate);
-    fish->_current = newpos;
+        struct position newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate) * update_rate,
+                                                 (movement.y * fish->_speed_rate) * update_rate);
+        fish->_current = newpos;
 
-    fprintf(stderr, "Fish %s is at %d, %d\n", fish->_id, (int)fish->_current.x, (int)fish->_current.y);
+        fprintf(stderr, "Fish %s is at %d, %d\n", fish->_id, (int) fish->_current.x, (int) fish->_current.y);
 
-    if(position_equals(fish->_current, fish->_goal)){
-        fish->_goal = determine_new_position(fish->_goal);
-        fprintf(stderr, "Fish %s has new goal ! : %d, %d\n", fish->_id, (int)fish->_goal.x, (int)fish->_goal.y);
+        if (position_equals(fish->_current, fish->_goal)) {
+            fish->_goal = determine_new_position(fish->_goal);
+            fprintf(stderr, "Fish %s has new goal ! : %d, %d\n", fish->_id, (int) fish->_goal.x, (int) fish->_goal.y);
+        }
     }
 
     return MAP_OK;

@@ -21,6 +21,7 @@ struct fish {
     enum MOVING_STRATEGY _strategy;
     double _speed_rate;
     char *_id;
+    int _running;
 };
 
 struct fish* fish__create(enum fish_type type, int x, int y, char* id, enum MOVING_STRATEGY strategy, struct dimension dimension);

@@ -18,6 +18,7 @@ struct fish* fish__create(enum fish_type type, int x, int y, char* id, enum MOVI
     f->_type = type;
     f->_speed_rate = FISH_SPEEDRATE;
     f->_strategy = strategy;
+    f->_running = 0;
 
     return f;
 }
