@@ -2,22 +2,20 @@ package sample;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class Aquarium extends Application {
 
     int timer = 0;
     ArrayList<Fish> fishes;
+
+    final Pane root = new Pane();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -29,12 +27,9 @@ public class Aquarium extends Application {
 
         Fish f = new Fish(0, 0, 100, 100, "magicarpe");
         fishes.add(f);
-        /*final ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(100);
-        imageView.setFitWidth(100);*/
 
-        final Pane root = new Pane();
-        root.getChildren().setAll(fishes.get(0).get_View(0));
+        //root = new Pane();
+        root.getChildren().setAll(getAllViews(0));
 
         //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Aquarium");
@@ -48,22 +43,25 @@ public class Aquarium extends Application {
                 timer++;
 
                 if (timer%25 == 0) {
-                    root.getChildren().setAll(fishes.get(0).get_View(1));
+                    root.getChildren().setAll(getAllViews(1));
                 }
                 if (timer%50 == 0)
-                    root.getChildren().setAll(fishes.get(0).get_View(0));
+                    root.getChildren().setAll(getAllViews(0));
 
                 if (timer == 100) {
                     fishes.get(0).setGoal(100, 100);
                 }
-                if (timer == 200) {
+                if (timer == 200 || timer == 600) {
                     //fishes.get(0).setGoal(0, 0);
                     addFish("magicarpe", 350, 200, 100, 100);
+                    //primaryStage.setScene(new Scene(root, 600, 550));
                     //timer=0;
                 }
-                if (timer == 400) {
-                  removeFish(fishes.get(1));
+                if (timer == 400 || timer == 800) {
+                    if (timer == 800) {
+                  //removeFish(fishes.get(1));
                   timer = 0;
+                    }
                 }
 
                 for (Fish f : fishes) {
@@ -74,9 +72,19 @@ public class Aquarium extends Application {
 
     }
 
+    public Collection<ImageView> getAllViews(int nb) {
+        ArrayList<ImageView> res = new ArrayList<ImageView>();
+        for(Fish f : fishes) {
+            res.add(f.get_View(nb));
+        }
+
+        return res;
+    }
+
     public void addFish(String name, int x, int y, int w, int h) {
               Fish f = new Fish(x, y, w, h, name);
               fishes.add(f);
+              root.getChildren().setAll(getAllViews(0));
     }
 
     public void removeFish(Fish f) {
