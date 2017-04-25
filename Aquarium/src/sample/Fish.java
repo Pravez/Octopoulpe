@@ -28,8 +28,11 @@ public class Fish {
         this.y = y;
         goal = new Point(-1, -1);
 
-        final URL url1 = getClass().getResource( s + ".png");
-        final URL url2 = getClass().getResource(s + "2.png");
+        int index = s.indexOf('_');
+        String pictureFile = (index == -1) ? new String(s) : new String(s.substring(0, index)) ;
+
+        final URL url1 = getClass().getResource( pictureFile + ".png");
+        final URL url2 = getClass().getResource(pictureFile + "2.png");
         final Image img1 = new Image(url1.toExternalForm());
         final Image img2 = new Image(url2.toExternalForm());
 

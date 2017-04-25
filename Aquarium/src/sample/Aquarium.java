@@ -2,8 +2,12 @@ package sample;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -13,29 +17,54 @@ import java.util.Collection;
 public class Aquarium extends Application {
 
     int timer = 0;
+    int konamiCode = 0;
     ArrayList<Fish> fishes;
 
-    final Pane root = new Pane();
+    final Pane aquarium = new Pane();
 
+    //final Pane entry = new Pane();
+    //Stage Entry;
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        //final URL imageURL = getClass().getResource("magicarpe.png");
-        //final Image image = new Image(imageURL.toExternalForm());
+        //tmp initialisation of fish
 
         fishes = new ArrayList<Fish>();
-
         Fish f = new Fish(0, 0, 100, 100, "magicarpe");
         fishes.add(f);
 
-        //root = new Pane();
-        root.getChildren().setAll(getAllViews(0));
-
-        //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        //initialisation of the aquarium
+        aquarium.getChildren().setAll(getAllViews(0));
         primaryStage.setTitle("Aquarium");
-        primaryStage.setScene(new Scene(root, 600, 550));
+        primaryStage.setScene(new Scene(aquarium, 600, 550));
 
         primaryStage.show();
+
+        //KONAMI CODE
+        aquarium.requestFocus();
+        aquarium.setOnKeyReleased(new EventHandler<KeyEvent>(){
+            public void handle(KeyEvent ke){
+                if (ke.getCode() == KeyCode.UP && (konamiCode == 0 || konamiCode == 1)) {
+                    konamiCode++;
+                }
+                else if (ke.getCode() == KeyCode.DOWN&& (konamiCode == 2 || konamiCode == 3)) {
+                    konamiCode++;
+                }
+                else if (ke.getCode() == KeyCode.LEFT&& (konamiCode == 4 || konamiCode == 6)) {
+                    konamiCode++;
+                }
+                else if (ke.getCode() == KeyCode.RIGHT&& (konamiCode == 5 || konamiCode == 7)){
+                    konamiCode++;
+                }
+                else if (ke.getCode() == KeyCode.B&& konamiCode == 8 ){
+                    konamiCode++;
+                }
+                else if (ke.getCode() == KeyCode.A&& konamiCode == 9 ){
+                    System.out.println("KO-KO-KO-KONAMI COOOOOOOOOODE !!!");
+                    konamiCode=0;
+                }
+            }
+        });
 
         new AnimationTimer() {
             @Override
@@ -43,10 +72,10 @@ public class Aquarium extends Application {
                 timer++;
 
                 if (timer%25 == 0) {
-                    root.getChildren().setAll(getAllViews(1));
+                    aquarium.getChildren().setAll(getAllViews(1));
                 }
                 if (timer%50 == 0)
-                    root.getChildren().setAll(getAllViews(0));
+                    aquarium.getChildren().setAll(getAllViews(0));
 
                 if (timer == 100) {
                     fishes.get(0).setGoal(100, 100);
@@ -72,6 +101,8 @@ public class Aquarium extends Application {
 
     }
 
+
+
     public Collection<ImageView> getAllViews(int nb) {
         ArrayList<ImageView> res = new ArrayList<ImageView>();
         for(Fish f : fishes) {
@@ -84,7 +115,7 @@ public class Aquarium extends Application {
     public void addFish(String name, int x, int y, int w, int h) {
               Fish f = new Fish(x, y, w, h, name);
               fishes.add(f);
-              root.getChildren().setAll(getAllViews(0));
+              aquarium.getChildren().setAll(getAllViews(0));
     }
 
     public void removeFish(Fish f) {
