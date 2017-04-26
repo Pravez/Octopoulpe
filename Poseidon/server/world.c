@@ -121,7 +121,8 @@ int world_loop() {
     while (run) {
         update();
 
-        usleep((unsigned int) (update_rate * 1000));
+        sleep((unsigned int) update_rate);
+        //usleep((unsigned int) (update_rate * 1000));
     }
 
     return 1;
