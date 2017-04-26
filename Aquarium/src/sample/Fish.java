@@ -24,8 +24,14 @@ public class Fish {
         name = s;
         goal = new Point(-1, -1);
 
+        initImage(s, w, h);
+    }
+
+    private void initImage(String s, int w, int h) {
         int index = s.indexOf('_');
-        String pictureFile = (index == -1) ? new String(s) : new String(s.substring(0, index)) ;
+        String pictureFile = (index == -1) ? new String(s) : new String(s.substring(0, index));
+
+        
 
         final URL url1 = getClass().getResource( pictureFile + ".png");
         final URL url2 = getClass().getResource(pictureFile + "2.png");
