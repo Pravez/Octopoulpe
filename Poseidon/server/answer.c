@@ -18,50 +18,39 @@ LIST_HEAD(clientlist, client) clients;
  *                      an other view identifier    else
  */
 struct aquarium_view *available_id(char *wanted) {
-        struct client *first_available_id = NULL;
-        struct client *client;
-        LIST_FOREACH(client, &clients, entries) {
-            // The wanted id exists and is available
-            if(wanted != NULL)
-            {
-                if (!strcmp(wanted, client->id) && client->is_free) {
-                    client->is_free=0;
-                    return client->aqv;
-                }
+    struct client *first_available_id = NULL;
+    struct client *client;
+    LIST_FOREACH(client, &clients, entries) {
+        // The wanted id exists and is available
+        if (wanted != NULL) {
+            if (!strcmp(wanted, client->id) && client->is_free) {
+                client->is_free = 0;
+                return client->aqv;
             }
-
-            // Use the first available id
-            if (client->is_free && first_available_id == NULL)
-            {
-                first_available_id = client;
-            }
-
-
         }
-
-
-        // The wanted id was not in the aquarium or not available but one id is available
-        if(first_available_id != NULL)
-        {
-            first_available_id->is_free=0;
-            return first_available_id->aqv;
+        // Use the first available id
+        if (client->is_free && first_available_id == NULL) {
+            first_available_id = client;
         }
-        else
-        {
-            return NULL;
-        }
+    }
+    // The wanted id was not in the aquarium or not available but one id is available
+    if (first_available_id != NULL) {
+        first_available_id->is_free = 0;
+        return first_available_id->aqv;
+    } else {
+        return NULL;
+    }
 }
 
 
-int sprintf_fish(any_t res, any_t fish)
-{
-    struct fish * cpy = (struct fish *) fish;
+int sprintf_fish(any_t res, any_t fish) {
+    struct fish *cpy = (struct fish *) fish;
     double sec = cpy->_speed_rate;
-    char * info_fish = malloc(sizeof(char)*(27 + strlen(cpy->_id)));
-    sprintf(info_fish," [%s at %dx%d,%dx%d,%f]",cpy->_id,
-            (int)cpy->_current.x, (int)cpy->_current.y,
+    char *info_fish = malloc(sizeof(char) * (27 + strlen(cpy->_id)));
+    sprintf(info_fish, " [%s at %dx%d,%dx%d,%f]", cpy->_id,
+            (int) cpy->_current.x, (int) cpy->_current.y,
             cpy->_cover.width, cpy->_cover.height, sec);
-    strcat((char *)res,info_fish);
+    strcat((char *) res, info_fish);
     return MAP_OK;
 }
 
@@ -77,41 +66,45 @@ int sprintf_fish(any_t res, any_t fish)
  * @return              HELLO_SUCCESS       if a view identifier was attributed to the client
  *                      HELLO_FAILURE       else
  */
-int asw__hello(char *arg, char *res, struct client *cli) {
-    struct aquarium_view * id;
-    char * argv[4];
-    char * cpy = malloc(100*4); // Copy of arg needed, else segfault with strtok
-    strcpy(cpy,arg);
+int asw__hello(char *arg, char **res, struct client *cli) {
+    struct aquarium_view *id;
 
-    argv[0] = strtok(cpy," "); // in
-    argv[1] = strtok(NULL," "); // as
-    argv[2] = strtok(NULL,"\n"); // wanted id
+    if(arg != NULL) {
+        char *argv[4];
+        char *cpy = malloc(100 * 4); // Copy of arg needed, else segfault with strtok
+        strcpy(cpy, arg);
 
-    free(cpy);
+        argv[0] = strtok(cpy, " "); // in
+        argv[1] = strtok(NULL, " "); // as
+        argv[2] = strtok(NULL, "\n"); // wanted id
 
-    // Seeking for an available id
-    if((!strcmp(argv[0],"in") && !strcmp(argv[1],"as") && (argv[2]!=NULL) && strcmp(argv[2]," ")) || !strcmp(argv[0],"\n") || !strcmp(argv[0]," \n"))
-    {
-        id = available_id(strtok(argv[2]," "));
-    }
+        free(cpy);
 
-    // Incorrect syntax for the command
-    else
-    {
-        sprintf(res, "Invalid syntax for 'hello'. Corrects syntaxes are :\n'hello in as <wanted id>'\n'hello'\n");
-        return HELLO_FAILURE;
+        // Seeking for an available id
+        if ((!strcmp(argv[0], "in") && !strcmp(argv[1], "as") && (argv[2] != NULL) && strcmp(argv[2], " ")) ||
+            !strcmp(argv[0], "\n") || !strcmp(argv[0], " \n")) {
+            id = available_id(strtok(argv[2], " "));
+        }
+            // Incorrect syntax for the command
+        else {
+            asprintf(res, "Invalid syntax for 'hello'. Corrects syntaxes are :\n'hello in as <wanted id>'\n'hello'\n");
+            return HELLO_FAILURE;
+        }
+    }else{
+        id = available_id(NULL);
     }
 
     // Successful request
-    if(id != NULL) {
-        cli->id =malloc(sizeof(char)*(strlen(id->_id)+1));
-        strcpy(cli->id,id->_id); cli->is_free = 0;
-        cli->aqv=id;
-        sprintf(res,"greeting %s\n",id->_id);
+    if (id != NULL) {
+        cli->id = malloc(sizeof(char) * (strlen(id->_id) + 1));
+        strcpy(cli->id, id->_id);
+        cli->is_free = 0;
+        cli->aqv = id;
+        asprintf(res, "greeting %s\n", id->_id);
         return HELLO_SUCCESS;
     }
     // Failed request
-    strcpy(res,"no greeting\n");
+    asprintf(res, "no greeting\n");
     return HELLO_FAILURE;
 }
 
@@ -128,16 +121,13 @@ int asw__hello(char *arg, char *res, struct client *cli) {
  *                          SEC         how many seconds has to last the move from the current position to the new one
  *                                      if SEC equals 0, the fish is shown immediately
  */
-void asw__get_fishes(char * arg, char * res, struct client *cli)
-{
-    if(strcmp(arg,"\n")==0 || strcmp(arg," \n")==0)
-    {
-        sprintf(res,"list");
+void asw__get_fishes(char *arg, char *res, struct client *cli) {
+    if (strcmp(arg, "\n") == 0 || strcmp(arg, " \n") == 0) {
+        sprintf(res, "list");
         hashmap_iterate(cli->aqv->_fishes, (PFany) sprintf_fish, res);
-        strcat(res,"\n");
-    }
-    else
-        strcpy(res,"Invalid syntax for 'getFishesContinuously'.\nNo argument allowed : 'getFishesContinuously'\n");
+        strcat(res, "\n");
+    } else
+        strcpy(res, "Invalid syntax for 'getFishesContinuously'.\nNo argument allowed : 'getFishesContinuously'\n");
 }
 
 /**
@@ -147,23 +137,20 @@ void asw__get_fishes(char * arg, char * res, struct client *cli)
  * @param cli the client structure
  * @return LOGOUT_SUCCESS on success and LOGOUT_FAILURE on fail
  */
-int asw__log(char * arg, char * res, struct client *cli)
-{
-    if(strcmp(arg,"out\n")==0 || strcmp(arg,"out \n")==0)
-    {
+int asw__log(char *arg, char *res, struct client *cli) {
+    if (strcmp(arg, "out\n") == 0 || strcmp(arg, "out \n") == 0) {
         // Get the view identifier available
         struct client *client;
         LIST_FOREACH(client, &clients, entries) {
             if (!strcmp(cli->id, client->id)) {
-                client->is_free=1;
+                client->is_free = 1;
             }
         }
         free(cli->id);
-        strcpy(res,"bye\n");
+        strcpy(res, "bye\n");
         return LOGOUT_SUCCESS;
-    }
-    else
-        strcpy(res,"Invalid syntax for 'log'.\nCorrect syntax : 'log out'\n");
+    } else
+        strcpy(res, "Invalid syntax for 'log'.\nCorrect syntax : 'log out'\n");
 
     return LOGOUT_FAILURE;
 }
@@ -173,8 +160,7 @@ int asw__log(char * arg, char * res, struct client *cli)
  * @brief asw__init_aquarium initializes the list of the viewsof the aquarium
  * Has to be called by aq__initialize_aquarium();
  */
-void asw__init_aquarium()
-{
+void asw__init_aquarium() {
     struct clientlist *clientp;
     LIST_INIT(&clients);
 }
@@ -184,13 +170,12 @@ void asw__init_aquarium()
  * @param id the view identifier of the view added
  * Has to be called by aq__add_view()
  */
-void asw__add_view(struct aquarium_view *view)
-{
-    struct client * cli = malloc(sizeof(struct client));
+void asw__add_view(struct aquarium_view *view) {
+    struct client *cli = malloc(sizeof(struct client));
     cli->id = malloc(sizeof(char) * (strlen(view->_id) + 1));
     strcpy(cli->id, view->_id);
-    cli->is_free=1;
-    cli->aqv=view;
+    cli->is_free = 1;
+    cli->aqv = view;
     LIST_INSERT_HEAD(&clients, cli, entries);
 }
 
@@ -199,13 +184,11 @@ void asw__add_view(struct aquarium_view *view)
  * @param id the view identifier of the view removed
  * Has to be called by aq__remove_aquarium_view();
  */
-void asw__remove_view(char *id)
-{
+void asw__remove_view(char *id) {
     struct client *j;
     LIST_FOREACH(j, &clients, entries) {
-        if(!strcmp(j->id,id))
-        {
-            LIST_REMOVE(j,entries);
+        if (!strcmp(j->id, id)) {
+            LIST_REMOVE(j, entries);
             free(j->id);
             free(j);
             return;
@@ -217,8 +200,7 @@ void asw__remove_view(char *id)
  * @brief asw__remove_aquarium frees the list used to manipulate the aquarium
  * Has to be called by aq__remove_aquarium();
  */
-void asw__remove_aquarium()
-{
+void asw__remove_aquarium() {
     struct client *client;
     LIST_FOREACH(client, &clients, entries) {
         LIST_REMOVE(client, entries);

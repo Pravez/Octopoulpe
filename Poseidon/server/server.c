@@ -47,11 +47,12 @@ void *server_process(void *arg) {
 
 
 char* parse(char buffer[BUFFER_SIZE]) {
-    char arg[BUFFER_SIZE];
     //char *res;// = malloc(sizeof(char)*MAX);
 
     char* cmd;
     asprintf(&cmd, "%s", buffer);
+
+    cmd[strlen(cmd)-2] = '\0';
 
     char *token = strtok(cmd, delim);
     if(!strcmp(token, "hello")){
@@ -77,15 +78,24 @@ char* parse(char buffer[BUFFER_SIZE]) {
 
     }
 
+    free(cmd);
     return "Unknown command\n";
 
 }
 
 char* check_client_id(){
+    char* result = NULL;
+
+    char* in = strtok(NULL, delim);
+    char* as = strtok(NULL, delim);
     char* id = strtok(NULL, delim);
-    //Verify ID here
-    //asw__hello(id, res, NULL);
-    return "no greeting";
+    char* str = NULL;
+    if(in != NULL)
+        asprintf(&str, "%s %s %s", in, as, id);
+
+    asw__hello(str, &result, NULL);
+    free(str);
+    return result;
 }
 
 
@@ -97,8 +107,8 @@ void *start(void *arg) {
     char* response;
     //create a pipe to communicate between threads
     int com[2];
-    bzero(buffer, BUFFER_SIZE);
     while (1) {
+        bzero(buffer, BUFFER_SIZE);
         n = read(newsockfd, buffer, BUFFER_SIZE-1);
         //printf("n: %d\n", n);
         CHK_ERROR(n, "Error reading from socket")

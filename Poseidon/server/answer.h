@@ -26,7 +26,7 @@ struct client {
  * @return              HELLO_SUCCESS       if a view identifier was attributed to the client
  *                      HELLO_FAILURE       else, a deconnection will be processed by the server thread
  */
-int asw__hello(char * arg, char * res, struct client *cli);
+int asw__hello(char * arg, char ** res, struct client *cli);
 
 /**
  * @brief asw__get_fishes   the handler for the "hello" command from the client
