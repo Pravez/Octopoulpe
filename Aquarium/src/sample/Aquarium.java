@@ -110,18 +110,23 @@ public class Aquarium extends Application {
     }
 
     public void removeFish(String name) {
-        for (Fish f : fishes ) {
-            if (f.getName() == name)
-                System.out.println("On supprime " + name);
-                fishes.remove(f);
+        Fish toRemove = null;
+        for (Fish f : fishes) {
+            if (f.getName().equalsIgnoreCase(name)) {
+                System.out.println("DEBUG : On supprime " + name);
+                toRemove = f;
+            }
         }
+        if (toRemove != null)
+            fishes.remove(toRemove);
     }
 
     public void setGoal(String name, int x, int y) {
         for (Fish f : fishes ) {
-            if (f.getName() == name)
+            if (f.getName().equalsIgnoreCase(name)) {
                 System.out.println("On met le goal " + x + "/" + y + " a " + name);
                 f.setGoal(x, y);
+            }
         }
     }
 

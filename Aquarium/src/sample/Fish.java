@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.awt.*;
+import java.io.File;
 import java.net.URL;
 
 public class Fish {
@@ -27,14 +28,38 @@ public class Fish {
         initImage(s, w, h);
     }
 
+    private String[] listImage(){
+        File directory = new File(  System.getProperty("user.dir") + "/src/sample/Images/");
+        System.out.println("DEBUG : Directory " + directory.toString() + " exists : " + directory.exists());
+        String[] listFiles = directory.list();
+
+        for(int i=0;i<listFiles.length;i++) {
+            listFiles[i] = listFiles[i].substring(0, listFiles[i].indexOf("."));
+            System.out.println("DEBUG : fichier : " + listFiles[i]);
+        }
+        return listFiles;
+    }
+
     private void initImage(String s, int w, int h) {
         int index = s.indexOf('_');
         String pictureFile = (index == -1) ? new String(s) : new String(s.substring(0, index));
+        Boolean exist = false;
+        System.out.println("DEBUG : FIIIILE : " + pictureFile);
+        String [] listFiles = listImage();
+        for (String f: listFiles) {
+            System.out.println("DEBUG : file in directory : " + f);
+             if (f.equalsIgnoreCase(pictureFile)) {
+              System.out.println("DEBUG : NO EQUAAAL");
+              exist = true;
+             }
+        }
+        if (! exist)
+            pictureFile = new String("poulpy"); //Default image
 
-        
+        System.out.println("DEBUG : Images/" + pictureFile + ".png");
 
-        final URL url1 = getClass().getResource( pictureFile + ".png");
-        final URL url2 = getClass().getResource(pictureFile + "2.png");
+        final URL url1 = getClass().getResource( "Images/" + pictureFile + ".png");
+        final URL url2 = getClass().getResource("Images/" + pictureFile + "2.png");
         final Image img1 = new Image(url1.toExternalForm());
         final Image img2 = new Image(url2.toExternalForm());
 
