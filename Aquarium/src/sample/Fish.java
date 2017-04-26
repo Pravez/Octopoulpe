@@ -6,9 +6,6 @@ import javafx.scene.image.ImageView;
 import java.awt.*;
 import java.net.URL;
 
-/**
- * Created by nicvidal on 23/04/17.
- */
 public class Fish {
 
     private ImageView view1;
@@ -17,15 +14,14 @@ public class Fish {
     private int x;
     private int y;
 
+    private String name;
+
     private Point goal;
-    //private int height;
-    //private int width;
 
     public Fish(int x, int y, int w, int h, String s) {
-        //width = w;
-        //height = h;
         this.x = x;
         this.y = y;
+        name = s;
         goal = new Point(-1, -1);
 
         int index = s.indexOf('_');
@@ -52,7 +48,10 @@ public class Fish {
         view1.setY(y);
         view2.setX(x);
         view2.setY(y);
+    }
 
+    public String getName() {
+        return name;
     }
 
     public void setGoal(int x, int y) {
