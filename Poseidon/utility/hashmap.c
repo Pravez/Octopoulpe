@@ -316,7 +316,8 @@ int hashmap_get(map_t in, char* key, any_t *arg){
         int in_use = m->data[curr].in_use;
         if (in_use == 1){
             if (strcmp(m->data[curr].key,key)==0){
-                *arg = (m->data[curr].data);
+                if(arg != NULL)
+                    *arg = (m->data[curr].data);
                 return MAP_OK;
             }
         }
@@ -324,7 +325,8 @@ int hashmap_get(map_t in, char* key, any_t *arg){
         curr = (curr + 1) % m->table_size;
     }
 
-    *arg = NULL;
+    if(arg != NULL)
+        *arg = NULL;
 
     /* Not found */
     return MAP_MISSING;

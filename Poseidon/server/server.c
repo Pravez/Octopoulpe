@@ -56,9 +56,9 @@ char* parse(char buffer[BUFFER_SIZE]) {
 
     char *token = strtok(cmd, delim);
     if(!strcmp(token, "hello")){
-        return check_client_id();
+        return send__client_id();
     }else if(!strcmp(token, "getFishes")){
-
+        //return send__
     }else if(!strcmp(token, "getFishesContinuously")){
       //create a pipe
       pipe(com);
@@ -83,7 +83,7 @@ char* parse(char buffer[BUFFER_SIZE]) {
 
 }
 
-char* check_client_id(){
+char* send__client_id(){
     char* result = NULL;
 
     char* in = strtok(NULL, delim);

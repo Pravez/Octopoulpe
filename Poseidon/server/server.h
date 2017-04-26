@@ -27,6 +27,6 @@ void wait_connection(int portno);
 void* server_process(void* arg);
 char* parse(char buffer[BUFFER_SIZE]);
 
-char* check_client_id();
+char* send__client_id();
 
 #endif //POSEIDON_SERVER_H

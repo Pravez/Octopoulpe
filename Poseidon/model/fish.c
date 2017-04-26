@@ -40,3 +40,7 @@ void fish__add_to_position(struct fish* fish, int x, int y){
 void fish__set_goal(struct fish* fish, struct position goal){
     fish->_goal = goal;
 }
+
+void fish__set_running_state(struct fish* fish, int state){
+    fish->_running = state;
+}

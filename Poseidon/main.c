@@ -25,8 +25,8 @@ int main(int argc, char* argv[]){
     aquarium = malloc(sizeof(struct aquarium));
     aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
     
-    char* view1 = aq__add_view(aquarium, (struct position) {250, 250}, (struct dimension) {500, 500}, NULL);
-    char* view2 = aq__add_view(aquarium, (struct position) {100, 100}, (struct dimension) {900, 900}, NULL);
+    char* view1 = aq__add_view(aquarium, (struct position) {250, 250}, (struct dimension) {500, 500}, "N1");
+    char* view2 = aq__add_view(aquarium, (struct position) {100, 100}, (struct dimension) {900, 900}, "N2");
 
     //Job to do with config file ... (before launching server)
     parse_config_file("controller.cfg");
@@ -48,6 +48,7 @@ int main(int argc, char* argv[]){
     struct dimension def = (struct dimension){1, 1};
 
     aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 20, "jeanmi", HORIZONTAL, def, SPEED_RATE));
+    aq__set_fish_running_state(aquarium, "jeanmi", 1);
     //aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 30, "jeanma", HORIZONTAL, def));
     //aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 300, 300, "jeanmo", HORIZONTAL, def));
     //aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 400, 400, "jeanbite", HORIZONTAL, def));

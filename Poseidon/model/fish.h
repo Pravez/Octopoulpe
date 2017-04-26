@@ -29,5 +29,6 @@ int fish__free(any_t fish, any_t nothing);
 void fish__set_position(struct fish* fish, struct position newpos);
 void fish__add_to_position(struct fish* fish, int x, int y);
 void fish__set_goal(struct fish* fish, struct position goal);
+void fish__set_running_state(struct fish* fish, int state);
 
 #endif //POSEIDON_FISH_H

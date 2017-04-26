@@ -74,6 +74,17 @@ void aq__remove_fish(struct aquarium *aquarium, char *fish_id) {
     }
 }
 
+int aq__set_fish_running_state(struct aquarium* aquarium, char* fish_id, int state){
+    void* fish_ptr;
+    if(hashmap_get(aquarium->_fishes, fish_id, &fish_ptr) == MAP_OK){
+        fish__set_running_state((struct fish*) fish_ptr, state);
+    }else{
+        return -1;
+    }
+
+    return 0;
+}
+
 int get_aquarium_view_position(struct aquarium *aquarium, char *view_id) {
     for (int i = 0; i < v__size(&aquarium->_views); i++) {
         if (!strcmp(GET_VIEW_PTR(&aquarium->_views, i)->_id, view_id)) {
