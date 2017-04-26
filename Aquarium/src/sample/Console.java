@@ -47,14 +47,12 @@ public class Console extends Stage {
                     });
                 }
             }
-
         });
 
         Label onglet2 = new Label("About");
 
         toolbar = new ToolBar(onglet1, new Separator(), onglet2 );
 
-        //Label label1 = new Label("Choose your action : ");
         input = new TextField ();
         input.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent ak) {
