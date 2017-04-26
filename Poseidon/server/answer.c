@@ -96,11 +96,12 @@ int asw__hello(char *arg, char **res, struct client *cli) {
 
     // Successful request
     if (id != NULL) {
-        cli->id = malloc(sizeof(char) * (strlen(id->_id) + 1));
-        strcpy(cli->id, id->_id);
+        //cli->id = malloc(sizeof(char) * (strlen(id->_id) + 1));
+        //strcpy(cli->id, id->_id);
+        asprintf(&cli->id, "%s", id->_id);
         cli->is_free = 0;
         cli->aqv = id;
-        asprintf(res, "greeting %s\n", id->_id);
+        asprintf(res, "greeting %s\n", cli->id);
         return HELLO_SUCCESS;
     }
     // Failed request

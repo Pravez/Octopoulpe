@@ -3,14 +3,21 @@
 
 #include <sys/queue.h>
 #include <pthread.h>
+#include "answer.h"
 
 #define BUFFER_SIZE 256
 
+struct thread_p{
+    pthread_t _thread;
+    struct client _client;
+    int _thread_id;
+    int _sockfd;
+};
 
 struct listhead *headp;
 struct thread_entry {
     LIST_ENTRY(entry) entries;
-    pthread_t _thread;
+    struct thread_p _thread;
 };
 /**
  * @fn      start
@@ -25,8 +32,8 @@ void* start(void* arg);
 void *get_fishes_continuously(void *time);
 void wait_connection(int portno);
 void* server_process(void* arg);
-char* parse(char buffer[BUFFER_SIZE]);
+char* parse(char buffer[BUFFER_SIZE], struct client* client);
 
-char* send__client_id();
+char* send__client_id(struct client* client);
 
 #endif //POSEIDON_SERVER_H

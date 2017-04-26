@@ -14,6 +14,7 @@ struct client {
     struct aquarium_view *aqv;
     LIST_ENTRY(client) entries;
 };
+
 /* Functions for the server thread */
 /**
  * @brief asw__hello    the handler for the "hello" command from the client

@@ -1,4 +1,3 @@
-#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -7,7 +6,6 @@
 #include <netinet/in.h>
 #include <pthread.h>
 #include "server.h"
-#include "answer.h"
 #include "../utility/tools.h"
 
 #define PARAM 2
@@ -18,6 +16,7 @@ LIST_HEAD(listhead, thread_entry) thread_head = LIST_HEAD_INITIALIZER(thread_hea
 
 static const char* delim = " ";
 static int com[2];
+static int thread_ids = 0;
 
 //for testing time = 0
 void *get_fishes_continuously(void *time) {
@@ -46,7 +45,7 @@ void *server_process(void *arg) {
 
 
 
-char* parse(char buffer[BUFFER_SIZE]) {
+char* parse(char buffer[BUFFER_SIZE], struct client* client) {
     //char *res;// = malloc(sizeof(char)*MAX);
 
     char* cmd;
@@ -56,7 +55,7 @@ char* parse(char buffer[BUFFER_SIZE]) {
 
     char *token = strtok(cmd, delim);
     if(!strcmp(token, "hello")){
-        return send__client_id();
+        return send__client_id(client);
     }else if(!strcmp(token, "getFishes")){
         //return send__
     }else if(!strcmp(token, "getFishesContinuously")){
@@ -83,7 +82,7 @@ char* parse(char buffer[BUFFER_SIZE]) {
 
 }
 
-char* send__client_id(){
+char* send__client_id(struct client* client){
     char* result = NULL;
 
     char* in = strtok(NULL, delim);
@@ -93,7 +92,7 @@ char* send__client_id(){
     if(in != NULL)
         asprintf(&str, "%s %s %s", in, as, id);
 
-    asw__hello(str, &result, NULL);
+    asw__hello(str, &result, client);
     free(str);
     return result;
 }
@@ -102,27 +101,27 @@ char* send__client_id(){
 void *start(void *arg) {
 
     char buffer[BUFFER_SIZE];
-    int newsockfd = *((int *) arg);
+    struct thread_p* thread = (struct thread_p*) arg;
     int n;
     char* response;
     //create a pipe to communicate between threads
     int com[2];
     while (1) {
         bzero(buffer, BUFFER_SIZE);
-        n = read(newsockfd, buffer, BUFFER_SIZE-1);
+        n = read(thread->_sockfd, buffer, BUFFER_SIZE-1);
         //printf("n: %d\n", n);
         CHK_ERROR(n, "Error reading from socket")
         else if (n == 2) { //fix the segfault in case of empty message
-            n = write(newsockfd, "\n", 1);
+            n = write(thread->_sockfd, "\n", 1);
             CHK_ERROR(n, "Error writing to socket")
         } else {
-            response = parse(buffer);
+            response = parse(buffer, &thread->_client);
             //traitement
             //read the result from the pipe and write it
             /*if() {//check if the pipe is not empty
               n = write(newsockfd, ...)
             }*/
-            n = write(newsockfd, response, strlen(response));
+            n = write(thread->_sockfd, response, strlen(response));
             CHK_ERROR(n, "Error writing to socket");
             if(!strcmp(response, "no greeting")) {
                 pthread_exit(NULL);
@@ -152,8 +151,10 @@ void wait_connection(int portno) {
 
     while ((newsockfd = accept(sockfd, (struct sockaddr *) &client_addr, (socklen_t *) &clilen))) {
         struct thread_entry* en = malloc(sizeof(struct thread_entry));
+        en->_thread._thread_id = thread_ids++;
+        en->_thread._sockfd = newsockfd;
         LIST_INSERT_HEAD(&thread_head, en, entries);
-        CHK_ERROR(pthread_create(&en->_thread, NULL, start, &newsockfd), "Error creating thread") //when do we destroy the thread ?
+        CHK_ERROR(pthread_create(&en->_thread._thread, NULL, start, &en->_thread), "Error creating thread") //when do we destroy the thread ?
         //close(newsockfd);
     }
 }
