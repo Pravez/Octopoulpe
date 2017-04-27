@@ -25,8 +25,8 @@ int main(int argc, char* argv[]){
     aquarium = malloc(sizeof(struct aquarium));
     aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
     
-    char* view1 = aq__add_view(aquarium, (struct position) {250, 250}, (struct dimension) {500, 500}, "N1");
-    char* view2 = aq__add_view(aquarium, (struct position) {100, 100}, (struct dimension) {900, 900}, "N2");
+    char* view1 = aq__add_view(aquarium, (struct position) {0, 0}, AQUARIUM_DIMENSIONS, "N1");
+    //char* view2 = aq__add_view(aquarium, (struct position) {100, 100}, (struct dimension) {900, 900}, "N2");
 
     //Job to do with config file ... (before launching server)
     parse_config_file("controller.cfg");

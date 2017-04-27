@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
 #include <string.h>
 #include "answer.h"
 #include "../model/aquarium.h"
-#include "../utility/tools.h"
 
 extern struct aquarium *aquarium;
 LIST_HEAD(clientlist, client) clients;
@@ -42,18 +40,6 @@ struct aquarium_view *available_id(char *wanted) {
     }
 }
 
-
-int sprintf_fish(any_t res, any_t fish) {
-    struct fish *cpy = (struct fish *) fish;
-    double sec = cpy->_speed_rate;
-    char *info_fish = malloc(sizeof(char) * (27 + strlen(cpy->_id)));
-    sprintf(info_fish, " [%s at %dx%d,%dx%d,%f]", cpy->_id,
-            (int) cpy->_current.x, (int) cpy->_current.y,
-            cpy->_cover.width, cpy->_cover.height, sec);
-    strcat((char *) res, info_fish);
-    return MAP_OK;
-}
-
 /* Functions for the server thread */
 /**
  * @brief asw__hello    the handler for the "hello" command from the client
@@ -88,7 +74,7 @@ int asw__hello(char *arg, char **res, struct client *cli) {
             // Incorrect syntax for the command
         else {
             asprintf(res, "Invalid syntax for 'hello'. Corrects syntaxes are :\n'hello in as <wanted id>'\n'hello'\n");
-            return HELLO_FAILURE;
+            return HELLO_INVALID;
         }
     }else{
         id = available_id(NULL);
@@ -109,6 +95,35 @@ int asw__hello(char *arg, char **res, struct client *cli) {
     return HELLO_FAILURE;
 }
 
+//sale mais j'ai pas trouvé mieux pour le moment
+char* fishes_str;
+
+int sprintf_fish(any_t res, any_t fish) {
+    /*struct fish *cpy = (struct fish *) fish;
+    double sec = cpy->_speed_rate;
+    char *info_fish = malloc(sizeof(char) * (27 + strlen(cpy->_id)));
+    sprintf(info_fish, " [%s at %dx%d,%dx%d,%f]", cpy->_id,
+            (int) cpy->_current.x, (int) cpy->_current.y,
+            cpy->_cover.width, cpy->_cover.height, sec);
+    strcat((char *) res, info_fish);*/
+
+    struct fish *ffish = (struct fish*) fish;
+    char* temp_str = NULL;
+    if(fishes_str != NULL){
+        temp_str = malloc(sizeof(char)*strlen(res));
+        strcpy(temp_str, res);
+    }
+
+    char* new_str;
+    asprintf(&new_str, "%s [%s at %dx%d,%dx%d,%d]", temp_str == NULL ? "" : temp_str, ffish->_id,
+             (int) ffish->_current.x, (int) ffish->_current.y,
+             ffish->_cover.width, ffish->_cover.height, (unsigned int) ffish->_speed_rate);
+    free(fishes_str);
+    free(temp_str);
+    fishes_str = new_str;
+    return MAP_OK;
+}
+
 /**
  * @brief asw__get_fishes   the handler for the "hello" command from the client
  * @param arg               the end of the command which represents the arguments, should finish with '\n'
@@ -122,14 +137,19 @@ int asw__hello(char *arg, char **res, struct client *cli) {
  *                          SEC         how many seconds has to last the move from the current position to the new one
  *                                      if SEC equals 0, the fish is shown immediately
  */
-void asw__get_fishes(char *arg, char *res, struct client *cli) {
-    if (strcmp(arg, "\n") == 0 || strcmp(arg, " \n") == 0) {
-        sprintf(res, "list");
-        hashmap_iterate(cli->aqv->_fishes, (PFany) sprintf_fish, res);
-        strcat(res, "\n");
-    } else
-        strcpy(res, "Invalid syntax for 'getFishesContinuously'.\nNo argument allowed : 'getFishesContinuously'\n");
+void asw__get_fishes(char *arg, char **res, struct client *cli) {
+    if(cli != NULL && cli->aqv != NULL){
+        if(hashmap_length(cli->aqv->_fishes) == 0){
+            asprintf(res, "list []\n");
+        }else {
+            fishes_str = NULL;
+            hashmap_iterate(cli->aqv->_fishes, (PFany) sprintf_fish, NULL);
+            asprintf(res, "list%s\n", fishes_str);
+            free(fishes_str);
+        }
+    }
 }
+
 
 /**
  * @brief asw__log frees the ressources allocated to manipulate the client informations

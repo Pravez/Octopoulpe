@@ -5,12 +5,14 @@
 
 #define HELLO_SUCCESS 0
 #define HELLO_FAILURE 1
+#define HELLO_INVALID 2
 #define LOGOUT_SUCCESS 0
 #define LOGOUT_FAILURE 1
 
 struct client {
     char * id;
     int is_free;
+    int _connected;
     struct aquarium_view *aqv;
     LIST_ENTRY(client) entries;
 };
@@ -42,7 +44,7 @@ int asw__hello(char * arg, char ** res, struct client *cli);
  *                          SEC         how many seconds has to last the move from the current position to the new one
  *                                      if SEC equals 0, the fish is shown immediately
  */
-void asw__get_fishes(char * arg, char * res, struct client *cli);
+void asw__get_fishes(char * arg, char ** res, struct client *cli);
 void asw__get_fishes_continuously(char * arg, char * res); // à voir avec Louise : il faut faire une boucle d'attente active !
 void asw__ping(char * arg, char * res); // à voir avec Louise car horloge : le traitant remette à zéro une horloge ? Et dans le thread serveur, un thread qui coupe la communication une fois l'horloge arrivée à expiration OU signal handler !!
 int asw__log(char * arg, char * res, struct client *cli);

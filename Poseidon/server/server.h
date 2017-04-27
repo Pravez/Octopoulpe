@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include "../utility/tools.h"
 #include "answer.h"
 
 #define BUFFER_SIZE 256
@@ -16,6 +17,7 @@ struct thread_p{
     int _thread_id;
     int _socket_fd;
     int _addr_len;
+    char _last_message[BUFFER_SIZE];
 };
 
 struct server_p{

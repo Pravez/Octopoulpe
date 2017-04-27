@@ -4,7 +4,8 @@
 #include <string.h>
 #include <pthread.h>
 #include "server.h"
-#include "../utility/tools.h"
+#include "send.h"
+#include "../utility/data.h"
 
 #define PARAM 2
 #define LISTEN_QUEUE 10
@@ -12,7 +13,7 @@
 
 LIST_HEAD(listhead, thread_entry) thread_head = LIST_HEAD_INITIALIZER(thread_head);
 
-static const char *delim = " ";
+static const char *delim = SERVER_CMD_DELIMITER;
 static int com[2];
 static int thread_ids = 0;
 
@@ -78,39 +79,43 @@ void server__wait_connection(struct server_p *server) {
 
 void *client__start(void *arg) {
 
-    char buffer[BUFFER_SIZE];
     struct thread_p *thread = (struct thread_p *) arg;
-    int n;
+    thread->_client._connected = TRUE;
+    int code_return;
     char *response;
     //create a pipe to communicate between threads
     int com[2];
     while (1) {
-        bzero(buffer, BUFFER_SIZE);
-        n = read(thread->_socket_fd, buffer, BUFFER_SIZE - 1);
-        //printf("n: %d\n", n);
-        CHK_ERROR(n, "Error reading from socket")
-        else if (n == 2) { //fix the segfault in case of empty message
-            n = write(thread->_socket_fd, "\n", 1);
-            CHK_ERROR(n, "Error writing to socket")
+        //We clear entire array
+        bzero(thread->_last_message, BUFFER_SIZE);
+
+        code_return = read(thread->_socket_fd, thread->_last_message, BUFFER_SIZE - 1);
+        CHK_ERROR(code_return, "Error reading from socket")
+
+        if (code_return == 2) {
+            //fix the segfault in case of empty message
+            code_return = write(thread->_socket_fd, "\n", 1);
+            CHK_ERROR(code_return, "Error writing to socket")
+
         } else {
-            response = client__parse_command(buffer, &thread->_client);
+            response = client__parse_command(thread->_last_message, &thread->_client);
             //traitement
             //read the result from the pipe and write it
             /*if() {//check if the pipe is not empty
               n = write(newsockfd, ...)
             }*/
-            n = write(thread->_socket_fd, response, strlen(response));
-            CHK_ERROR(n, "Error writing to socket");
-            if (!strcmp(response, "no greeting")) {
+            code_return = write(thread->_socket_fd, response, strlen(response));
+            CHK_ERROR(code_return, "Error writing to socket");
+
+            if (!thread->_client._connected) {
+                close(thread->_socket_fd);
                 pthread_exit(NULL);
             }
-
         }
     }
 }
 
 char *client__parse_command(char buffer[BUFFER_SIZE], struct client *client) {
-    //char *res;// = malloc(sizeof(char)*MAX);
 
     char *cmd;
     asprintf(&cmd, "%s", buffer);
@@ -119,59 +124,38 @@ char *client__parse_command(char buffer[BUFFER_SIZE], struct client *client) {
 
     char *token = strtok(cmd, delim);
     if (!strcmp(token, "hello")) {
+        if(client->id != NULL){
+            return "Already authenticated\n";
+        }
         return send__client_id(client);
-    } else if (!strcmp(token, "getFishes")) {
-        //return send__
-    } else if (!strcmp(token, "getFishesContinuously")) {
-        //create a pipe
-        pipe(com);
-        //launch thread
-        //where should I write ? A new pipe ? -> quite a good idea !
-        pthread_t moult_fishes;
-        pthread_create(&moult_fishes, NULL, get_fishes_continuously, 0);
-    } else if (!strcmp(token, "log")) {
+    }else if(client->id != NULL){
+        if (!strcmp(token, "getFishes")) {
+            return send__fishes(client);
+        } else if (!strcmp(token, "getFishesContinuously")) {
+            //create a pipe
+            pipe(com);
+            //launch thread
+            //where should I write ? A new pipe ? -> quite a good idea !
+            pthread_t moult_fishes;
+            //pthread_create(&moult_fishes, NULL, get_fishes_continuously, 0);
+        } else if (!strcmp(token, "log")) {
+            return send__logout(client);
+        } else if (!strcmp(token, "ping")) {
 
-    } else if (!strcmp(token, "ping")) {
+        } else if (!strcmp(token, "addFish")) {
+            return send__add_fish(client);
+        } else if (!strcmp(token, "delFish")) {
 
-    } else if (!strcmp(token, "addFish")) {
+        } else if (!strcmp(token, "startFish")) {
 
-    } else if (!strcmp(token, "delFish")) {
-
-    } else if (!strcmp(token, "startFish")) {
-
+        }
+    } else{
+        return "Please authenticate yourself with a `hello` command first\n";
     }
 
     free(cmd);
     return "Unknown command\n";
 
-}
-
-char *send__client_id(struct client *client) {
-    char *result = NULL;
-
-    char *in = strtok(NULL, delim);
-    char *as = strtok(NULL, delim);
-    char *id = strtok(NULL, delim);
-    char *str = NULL;
-    if (in != NULL)
-        asprintf(&str, "%s %s %s", in, as, id);
-
-    asw__hello(str, &result, client);
-    free(str);
-    return result;
-}
-
-//for testing time = 0
-void *get_fishes_continuously(void *time) {
-    int delay = (int) time;
-    char *res;
-    while (1) {
-        sleep(delay);
-        asw__get_fishes(NULL, res, NULL);
-        //lock ?
-        write(com[1], res, strlen(res));
-        //unlock
-    }
 }
 
 #ifndef _PROCESS_
