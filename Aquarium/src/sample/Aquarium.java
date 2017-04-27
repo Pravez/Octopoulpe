@@ -14,10 +14,14 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Aquarium extends Application {
 
     private int timer = 0;
+    private long previousTime = 0;
+
     private int konamiCode = 0;
     private ArrayList<Fish> fishes;
     private ImageView background;
@@ -30,13 +34,9 @@ public class Aquarium extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        //tmp : initialisation of fish
         fishes = new ArrayList<Fish>();
-        Fish f = new Fish(0, 0, 100, 100, "magicarpe");
-        fishes.add(f);
 
         //initialisation of the aquarium
-
         final URL url = getClass().getResource("Images/bg.png");
         final Image bg = new Image(url.toExternalForm());
         background =  new ImageView(bg);
@@ -56,28 +56,36 @@ public class Aquarium extends Application {
         //KONAMI CODE
         initKonami();
 
+
         new AnimationTimer() {
             @Override
             public void handle(long now) {
+                System.out.println("DEBUG : now = " + (now/1000000));
                 timer++;
 
                 if (timer%25 == 0) {
-                    aquarium.getChildren().setAll(background);
+                    aquarium.getChildren().remove(1, aquarium.getChildren().size()); //remove all except background
                     aquarium.getChildren().addAll(getAllViews(1));
                 }
                 if (timer%50 == 0) {
-                    aquarium.getChildren().removeAll(getAllViews(1));
+                    aquarium.getChildren().remove(1, aquarium.getChildren().size() );
                     aquarium.getChildren().addAll(getAllViews(0));
                 }
 
                 if (timer == 400 || timer == 800) {
                     if (timer == 800) {
-                  timer = 0;
+                        timer = 0;
                     }
                 }
-                for (Fish f : fishes) {
-                    f.update(timer);
+                if (previousTime != 0) {
+                    System.out.println("DEBUG : previousTime = " +  previousTime);
+                    System.out.println("DEBUG : elapsed = " + (now/1000000 - previousTime));
+                    for (Fish f : fishes) {
+                        f.update((now/1000000) - previousTime);
+                    }
                 }
+
+                previousTime = now/1000000;
             }
         }.start();
     }
@@ -138,11 +146,11 @@ public class Aquarium extends Application {
             fishes.remove(toRemove);
     }
 
-    public void setGoal(String name, int x, int y) {
+    public void setGoal(String name, int x, int y, long d) {
         for (Fish f : fishes ) {
             if (f.getName().equalsIgnoreCase(name)) {
-                System.out.println("On met le goal " + x + "/" + y + " a " + name);
-                f.setGoal(x, y);
+                System.out.println("On met le goal " + x + "/" + y + " a " + name + " en le faisant en " + d + "millisecondes" );
+                f.setGoal(x, y, d);
             }
         }
     }

@@ -4,12 +4,16 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
@@ -20,6 +24,8 @@ public class Console extends Stage {
     private TextArea display;
     private TextField input;
     private ToolBar toolbar;
+    protected final List<String> history;
+    protected int historyCount = 0;
 
     private int width;
     private int height;
@@ -32,11 +38,12 @@ public class Console extends Stage {
         display = new TextArea();
         display.setEditable(false);
 
+        history = new ArrayList<>();
+
         Label onglet1 = new Label("Help");
         onglet1.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
                 if (e.getButton() == MouseButton.PRIMARY) {
-                    //Tooltip tooltip = new Tooltip("You need help ? Sad !");
                     Alert alert = new Alert(INFORMATION);
                     System.out.println("DEBUG : ALERT");
                     alert.show();
@@ -50,26 +57,48 @@ public class Console extends Stage {
         });
 
         Label onglet2 = new Label("About");
-
         toolbar = new ToolBar(onglet1, new Separator(), onglet2 );
 
         input = new TextField ();
-        input.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ak) {
+        input.addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case ENTER:
+                    String action = input.getText();
+                    history.add(action);
+                    historyCount++;
+                    display.appendText("> " + action + System.lineSeparator());
+                    input.clear();
 
-                String action = input.getText();
-                display.appendText("> " + action + System.lineSeparator());
-                input.clear();
-
-                System.out.println("DEBUG : On a rentré : " + action);
-                parser(action.split(" "));
+                    System.out.println("DEBUG : On a rentré : " + action);
+                    parser(action.split(" "));
+                    break;
+                case UP:
+                    if (historyCount == 0) {
+                        break;
+                    }
+                    historyCount--;
+                    input.setText(history.get(historyCount));
+                    input.selectAll();
+                    break;
+                case DOWN:
+                    if (historyCount == history.size() - 1) {
+                        historyCount = history.size();
+                        input.clear();
+                        break;
+                    }
+                    historyCount++;
+                    input.setText(history.get(historyCount));
+                    input.selectAll();
+                    break;
+                default:
+                    historyCount = history.size();
+                    break;
             }
-
         });
 
         VBox vb = new VBox();
-        display.setMinHeight(h-input.getHeight()-toolbar.getHeight());
-        display.setMaxHeight(h-input.getHeight()-toolbar.getHeight());
+        display.setMinHeight(h-input.getHeight()-toolbar.getHeight()-50); //-10 for the height of windows itself
+        display.setMaxHeight(h-input.getHeight()-toolbar.getHeight()-50);
         input.setPrefColumnCount(20);
         vb.getChildren().addAll(toolbar, display, input);
         entry.getChildren().add(vb);
@@ -110,12 +139,40 @@ public class Console extends Stage {
         }
         //TODO : remove the setGoal ?
         else if (args[0].equalsIgnoreCase("setGoal")) {
-            if (args.length == 4) {
-                aquarium.setGoal(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+            if (args.length == 5) {
+                aquarium.setGoal(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
                 display.appendText("< OK" + System.lineSeparator());
             }
             else
                 display.appendText("< Wrong syntax ! Usage : 'setGoal name x y'" + System.lineSeparator());
+        }
+        else if (args[0].equalsIgnoreCase("hello")) {
+            if (args.length == 4 || args.length == 1) {
+                //TODO : send ID to Controler with TCP
+                Boolean response = true;
+                if (response)
+                    display.appendText("< greeting " + args[3] + System.lineSeparator());
+                else
+                    display.appendText("< no greeting" + System.lineSeparator());
+            }
+            else
+                display.appendText("< NOK. Usage : 'hello' or 'hello in as ID'" + System.lineSeparator());
+        }
+        else if (args[0].equalsIgnoreCase("getFishes")) {
+            if (args.length == 1) {
+                //TODO : send demand to Controler with TCP : String[] fishes
+                display.appendText("< connexion not established yet " + System.lineSeparator());
+            }
+            else
+                display.appendText("< NOK. Usage : 'getFishes'" + System.lineSeparator());
+        }
+        else if (args[0].equalsIgnoreCase("getFishesContinuously")) {
+            if (args.length == 1) {
+                //TODO : send demand to Controler with TCP : String[] fishes
+                display.appendText("< connexion not established yet " + System.lineSeparator());
+            }
+            else
+                display.appendText("< NOK. Usage : 'getFishesContinuously'" + System.lineSeparator());
         }
         else
             display.appendText("< Wrong Syntax ! Please read the help." + System.lineSeparator());
