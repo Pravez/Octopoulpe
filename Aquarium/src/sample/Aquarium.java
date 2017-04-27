@@ -4,12 +4,14 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -18,6 +20,10 @@ public class Aquarium extends Application {
     private int timer = 0;
     private int konamiCode = 0;
     private ArrayList<Fish> fishes;
+    private ImageView background;
+
+    private int width = 630;
+    private int height = 300;
 
     private final Pane aquarium = new Pane();
 
@@ -30,9 +36,17 @@ public class Aquarium extends Application {
         fishes.add(f);
 
         //initialisation of the aquarium
-        aquarium.getChildren().setAll(getAllViews(0));
+
+        final URL url = getClass().getResource("Images/bg.png");
+        final Image bg = new Image(url.toExternalForm());
+        background =  new ImageView(bg);
+        background.setFitHeight(height);
+        background.setFitWidth(width);
+        aquarium.getChildren().setAll(background);
+
+        aquarium.getChildren().addAll(getAllViews(0));
         primaryStage.setTitle("Aquarium");
-        primaryStage.setScene(new Scene(aquarium, 600, 550));
+        primaryStage.setScene(new Scene(aquarium, width, height));
         primaryStage.show();
 
         //Creation of the console window
@@ -48,10 +62,13 @@ public class Aquarium extends Application {
                 timer++;
 
                 if (timer%25 == 0) {
-                    aquarium.getChildren().setAll(getAllViews(1));
+                    aquarium.getChildren().setAll(background);
+                    aquarium.getChildren().addAll(getAllViews(1));
                 }
-                if (timer%50 == 0)
-                    aquarium.getChildren().setAll(getAllViews(0));
+                if (timer%50 == 0) {
+                    aquarium.getChildren().removeAll(getAllViews(1));
+                    aquarium.getChildren().addAll(getAllViews(0));
+                }
 
                 if (timer == 400 || timer == 800) {
                     if (timer == 800) {
@@ -106,7 +123,7 @@ public class Aquarium extends Application {
     public void addFish(String name, int x, int y, int w, int h) {
               Fish f = new Fish(x, y, w, h, name);
               fishes.add(f);
-              aquarium.getChildren().setAll(getAllViews(0));
+              aquarium.getChildren().add(f.get_View(0));
     }
 
     public void removeFish(String name) {
