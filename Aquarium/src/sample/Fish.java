@@ -18,14 +18,14 @@ public class Fish {
     private String name;
 
     private Point goal;
+    private long timeGoal; //in millisecond
 
     public Fish(int x, int y, int w, int h, String s) {
-        this.x = x;
-        this.y = y;
+        initImage(s, w, h);
+        setPosition(x, y);
         name = s;
         goal = new Point(-1, -1);
 
-        initImage(s, w, h);
     }
 
     private String[] listImage(){
@@ -85,9 +85,10 @@ public class Fish {
         return name;
     }
 
-    public void setGoal(int x, int y) {
+    public void setGoal(int x, int y, long d) {
         goal.x = x;
         goal.y = y;
+        timeGoal = d; //TODO : changer, 5 secondes pour tester
     }
 
     public ImageView get_View(int nb) {
@@ -97,24 +98,52 @@ public class Fish {
             return view2;
     }
 
-    public void update(int timer) {
-        if (! goal.equals(new Point(-1,-1))) {
-            if (goal.x > x)
-                x++;
-            else if (goal.x < x)
-                x--;
+    public void update(long timeElapsed) {
 
-            if (goal.y > y)
-                y++;
-            else if (goal.y < y)
-                y--;
+        //TODO : try to compute an average elapsed ?
 
-            setPosition(x, y);
+        if (!goal.equals(new Point(-1, -1))) {
+            timeGoal -= timeElapsed;
+            System.out.println("DEBUG : Il s'est écoulé " + timeElapsed + " millisecondes");
+            System.out.println("DEBUG : Il nous reste " + timeGoal + " millisecondes");
 
-            if (goal.equals(new Point(x, y))) {
+            if (timeGoal <= 0) {
+                x = goal.x;
+                y = goal.y;
+                setPosition(x, y);
                 goal.x = -1;
                 goal.y = -1;
             }
+            else {
+                int distToGoalX = Math.abs(x - goal.x);
+                int distToGoalY = Math.abs(y - goal.y);
+                long distToDoX = timeElapsed * distToGoalX / timeGoal;
+                long distToDoY = timeElapsed * distToGoalY / timeGoal;
+
+                System.out.println("DEBUG : On doit faire " + distToDoX + " en X");
+                System.out.println("DEBUG : On doit faire " + distToDoY + " en Y");
+
+                System.out.println("DEBUG : On était en " + x + "/" + y);
+
+                if (goal.x > x)
+                    x += distToDoX;
+                else if (goal.x < x)
+                    x -= distToDoX;
+
+                if (goal.y > y)
+                    y += distToDoY;
+                else if (goal.y < y)
+                    y -= distToDoY;
+
+                setPosition(x, y);
+                System.out.println("DEBUG : On est maintenant en " + x + "/" + y);
+
+                if (goal.equals(new Point(x, y))) {
+                    goal.x = -1;
+                    goal.y = -1;
+                }
+            }
+
         }
     }
 }
