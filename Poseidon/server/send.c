@@ -28,7 +28,7 @@ char *send__client_id(struct client *client) {
 
 char *send__fishes(struct client *client) {
     char *result = NULL;
-    asw__get_fishes(NULL, &result, client);
+    asw__get_fishes(&result, client);
     return result;
 }
 
@@ -52,10 +52,18 @@ char *send__add_fish(struct client *client) {
 
 char *send__logout(struct client *client) {
     char *out = strtok(NULL, delim);
-    if (out == NULL || strcmp(out, "out")) {
-        return "Maybe you wanted to say `log out`\n";
-    } else {
-        client->_connected = FALSE;
-        return "bye\n";
-    }
+    return asw__log(out, client);
 }
+
+char *send__delete_fish(struct client *client) {
+    return NULL;
+}
+
+char *send__ping(struct client *client) {
+    return NULL;
+}
+
+char *send__start_fish(struct client *client) {
+    return NULL;
+}
+

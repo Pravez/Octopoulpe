@@ -78,6 +78,8 @@ int handle_line() {
     return 1;
 }
 
+
+
 int cmd__call(enum command cmd) {
     if (aquarium == NULL && (cmd == SAVE || cmd == ADD || cmd == LIST || cmd == DELETE || cmd == SHOW)) {
         RETURN_ERROR_MSG("Impossible to execute this action with non-existing aquarium ... create one first.", 0)

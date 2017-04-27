@@ -96,9 +96,8 @@ int asw__hello(char *arg, char **res, struct client *cli) {
 }
 
 //sale mais j'ai pas trouvé mieux pour le moment
-char* fishes_str;
 
-int sprintf_fish(any_t res, any_t fish) {
+int sprintf_fish(any_t *res, any_t fish) {
     /*struct fish *cpy = (struct fish *) fish;
     double sec = cpy->_speed_rate;
     char *info_fish = malloc(sizeof(char) * (27 + strlen(cpy->_id)));
@@ -108,10 +107,11 @@ int sprintf_fish(any_t res, any_t fish) {
     strcat((char *) res, info_fish);*/
 
     struct fish *ffish = (struct fish*) fish;
+    char* fishes_str = *(char**) res;
     char* temp_str = NULL;
     if(fishes_str != NULL){
-        temp_str = malloc(sizeof(char)*strlen(res));
-        strcpy(temp_str, res);
+        temp_str = malloc(sizeof(char)*strlen(fishes_str));
+        strcpy(temp_str, fishes_str);
     }
 
     char* new_str;
@@ -120,7 +120,7 @@ int sprintf_fish(any_t res, any_t fish) {
              ffish->_cover.width, ffish->_cover.height, (unsigned int) ffish->_speed_rate);
     free(fishes_str);
     free(temp_str);
-    fishes_str = new_str;
+    *res = new_str;
     return MAP_OK;
 }
 
@@ -137,13 +137,13 @@ int sprintf_fish(any_t res, any_t fish) {
  *                          SEC         how many seconds has to last the move from the current position to the new one
  *                                      if SEC equals 0, the fish is shown immediately
  */
-void asw__get_fishes(char *arg, char **res, struct client *cli) {
+void asw__get_fishes(char **res, struct client *cli) {
     if(cli != NULL && cli->aqv != NULL){
         if(hashmap_length(cli->aqv->_fishes) == 0){
             asprintf(res, "list []\n");
         }else {
-            fishes_str = NULL;
-            hashmap_iterate(cli->aqv->_fishes, (PFany) sprintf_fish, NULL);
+            char* fishes_str = NULL;
+            hashmap_iterate(cli->aqv->_fishes, (PFany) sprintf_fish, &fishes_str);
             asprintf(res, "list%s\n", fishes_str);
             free(fishes_str);
         }
@@ -158,22 +158,14 @@ void asw__get_fishes(char *arg, char **res, struct client *cli) {
  * @param cli the client structure
  * @return LOGOUT_SUCCESS on success and LOGOUT_FAILURE on fail
  */
-int asw__log(char *arg, char *res, struct client *cli) {
-    if (strcmp(arg, "out\n") == 0 || strcmp(arg, "out \n") == 0) {
-        // Get the view identifier available
-        struct client *client;
-        LIST_FOREACH(client, &clients, entries) {
-            if (!strcmp(cli->id, client->id)) {
-                client->is_free = 1;
-            }
-        }
-        free(cli->id);
-        strcpy(res, "bye\n");
-        return LOGOUT_SUCCESS;
-    } else
-        strcpy(res, "Invalid syntax for 'log'.\nCorrect syntax : 'log out'\n");
-
-    return LOGOUT_FAILURE;
+char* asw__log(char* arg, struct client *client) {
+    if (arg == NULL || strcmp(arg, "out")) {
+        return "Maybe you wanted to say `log out`\n";
+    } else {
+        client->_connected = FALSE;
+        client->is_free = 1;
+        return "bye\n";
+    }
 }
 
 /* Functions for the aquarium */

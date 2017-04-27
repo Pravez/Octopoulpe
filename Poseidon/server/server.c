@@ -141,13 +141,13 @@ char *client__parse_command(char buffer[BUFFER_SIZE], struct client *client) {
         } else if (!strcmp(token, "log")) {
             return send__logout(client);
         } else if (!strcmp(token, "ping")) {
-
+            return send__ping(client);
         } else if (!strcmp(token, "addFish")) {
             return send__add_fish(client);
         } else if (!strcmp(token, "delFish")) {
-
+            return send__delete_fish(client);
         } else if (!strcmp(token, "startFish")) {
-
+            return send__start_fish(client);
         }
     } else{
         return "Please authenticate yourself with a `hello` command first\n";
