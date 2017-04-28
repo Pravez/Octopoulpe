@@ -136,7 +136,15 @@ public class Aquarium extends Application {
                     konamiCode++;
                 }
                 else if (ke.getCode() == KeyCode.A&& konamiCode == 9 ){
-                    System.out.println("KO-KO-KO-KONAMI COOOOOOOOOODE !!!");
+                    System.out.println("DEBUG : KONAMI CODE !!!");
+                    final URL url = getClass().getResource("Images/bb.png");
+                    final Image bg = new Image(url.toExternalForm());
+                    background =  new ImageView(bg);
+                    background.setFitHeight(height);
+                    background.setFitWidth(width);
+                    aquarium.getChildren().setAll(background); //remove all except background
+                    aquarium.getChildren().addAll(getAllViews(0));
+
                     konamiCode=0;
                 }
             }
