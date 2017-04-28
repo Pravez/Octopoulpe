@@ -94,6 +94,20 @@ public class Aquarium extends Application {
         }.start();
     }
 
+    public String toString() {
+        String s = new String(fishes.size() + " poisson(s) trouvé(s)" + System.lineSeparator());
+
+        for (Fish f: fishes) {
+            s += "Fish " + f.toString(width, height) + System.lineSeparator();
+        }
+
+        return s;
+    }
+
+    public int getNbFishes() {
+        return fishes.size();
+    }
+
     private void initKonami() {
         aquarium.requestFocus();
         aquarium.setOnKeyReleased(new EventHandler<KeyEvent>(){

@@ -12,6 +12,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.Socket;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +29,8 @@ public class Console extends Stage {
 
     private Aquarium aquarium;
     private ToolBar toolbar;
+
+    private Socket socket;
 
     private TextArea display;
     private TextField input;
@@ -40,9 +50,20 @@ public class Console extends Stage {
 
         history = new ArrayList<>();
 
-
         initTab();
+        initInput();
 
+        VBox vb = new VBox();
+        display.setMinHeight(h-input.getHeight()-toolbar.getHeight()-50); //-10 for the height of windows itself
+        display.setMaxHeight(h-input.getHeight()-toolbar.getHeight()-50);
+        input.setPrefColumnCount(20);
+        vb.getChildren().addAll(toolbar, display, input);
+        entry.getChildren().add(vb);
+
+        this.setScene(new Scene(entry, w, h));
+    }
+
+    private void initInput() {
         input = new TextField ();
         input.addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
             switch (keyEvent.getCode()) {
@@ -79,15 +100,6 @@ public class Console extends Stage {
                     break;
             }
         });
-
-        VBox vb = new VBox();
-        display.setMinHeight(h-input.getHeight()-toolbar.getHeight()-50); //-10 for the height of windows itself
-        display.setMaxHeight(h-input.getHeight()-toolbar.getHeight()-50);
-        input.setPrefColumnCount(20);
-        vb.getChildren().addAll(toolbar, display, input);
-        entry.getChildren().add(vb);
-
-        this.setScene(new Scene(entry, w, h));
     }
 
     private void initTab() {
@@ -149,18 +161,35 @@ public class Console extends Stage {
         toolbar = new ToolBar(tab1, new Separator(), tab2 );
     }
 
+    private boolean checkMobilityModel(String m) {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/src/sample/MobilityModel.txt"), Charset.defaultCharset());
+
+            for (String s : lines) {
+                System.out.println("DEBUG : dans fichier, ligne :" + s);
+                if (m.contentEquals(s))
+                    return true;
+            }
+        } catch (IOException e) {System.out.println("DEBUG : DIDN'T FOUND FILE !");}
+
+        return false;
+    }
+
     private void parser(String[] args) {
         if (args[0].equalsIgnoreCase("addFish")) {
             if (args.length == 7) {
                 try {
-                    //TODO : Check if movingModel exists
-                    aquarium.addFish(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), args[6]);
-                    display.appendText("< OK" + System.lineSeparator());
+                    if (! checkMobilityModel(args[6]))
+                        display.appendText("< NOK : modèle de mobilité non supporté" + System.lineSeparator());
+                    else {
+                        aquarium.addFish(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), args[6]);
+                        display.appendText("< OK" + System.lineSeparator());
+                    }
                 } catch (NumberFormatException e) {display.appendText("< NOK ! " + e.getMessage().split("\"")[1] + " is supposed to be an integer." + System.lineSeparator());}
 
             }
             else
-                display.appendText("< NOK ! Usage : 'addFish name x y w h modelMoving'" + System.lineSeparator());
+                display.appendText("< NOK. Usage : 'addFish name x y w h modelMoving'" + System.lineSeparator());
         }
         else if (args[0].equalsIgnoreCase("delFish")) {
             if (args.length == 2) {
@@ -173,17 +202,21 @@ public class Console extends Stage {
         }
         else if (args[0].equalsIgnoreCase("status")) {
             if (args.length == 1) {
-                display.appendText("< OK : Connecté à ... " + System.lineSeparator());
+                if (socket != null && socket.isConnected()) {
+                    display.appendText("< OK : Connecté au contrôleur, " + aquarium.toString());
+                }
+                else
+                   display.appendText("< NOK : Connexion non trouvée " + System.lineSeparator());
             }
             else
-                display.appendText("< Wrong syntax ! The command 'status' doesn't expect arguments." + System.lineSeparator());
+                display.appendText("< NOK. The command 'status' doesn't expect arguments." + System.lineSeparator());
         }
         else if (args[0].equalsIgnoreCase("startFish")) {
             //TODO : Check if name exists (juste in the display ?)
             if (args.length == 2)
                 System.out.println("DEBUG : Want to start the fish " + args[1]);
             else
-                display.appendText("< Wrong syntax ! Usage : 'startFish name'" + System.lineSeparator());
+                display.appendText("< NOK. Usage : 'startFish name'" + System.lineSeparator());
         }
         //TODO : remove the setGoal ?
         else if (args[0].equalsIgnoreCase("setGoal")) {
@@ -197,7 +230,7 @@ public class Console extends Stage {
 
             }
             else
-                display.appendText("< Wrong syntax ! Usage : 'setGoal name x y delay'" + System.lineSeparator());
+                display.appendText("< NOK. Usage : 'setGoal name x y delay'" + System.lineSeparator());
         }
         else if (args[0].equalsIgnoreCase("hello")) {
             if (args.length == 4 || args.length == 1) {
@@ -228,8 +261,6 @@ public class Console extends Stage {
                 display.appendText("< NOK. Usage : 'getFishesContinuously'" + System.lineSeparator());
         }
         else
-            display.appendText("< Wrong Syntax ! Please read the help." + System.lineSeparator());
+            display.appendText("< NOK. Please read the help." + System.lineSeparator());
     }
-
-
 }

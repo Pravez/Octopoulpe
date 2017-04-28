@@ -16,18 +16,19 @@ public class Fish {
     private int y;
 
     private String name;
-    private String movingModel; //Util ?
+    private String mobilityModel; //Util ?
 
     private Point goal;
     private long timeGoal; //in millisecond
 
+
     public Fish(int x, int y, int w, int h, String s, String mv) {
+
         initImage(s, w, h);
         setPosition(x, y);
         name = s;
-        movingModel = mv;
+        mobilityModel = mv;
         goal = new Point(-1, -1);
-
     }
 
     private String[] listImage(){
@@ -71,6 +72,10 @@ public class Fish {
         view1.setFitWidth(w);
         view2.setFitHeight(h);
         view2.setFitWidth(w);
+    }
+
+    public String toString(int width, int height) {
+        return (name + " at " + x + "x" + y+ ", " + (view1.getFitWidth()*100/width) + "x" + (view1.getFitHeight()*100/height) + ", " + mobilityModel);
     }
 
     public void setPosition(int new_x, int new_y) {
