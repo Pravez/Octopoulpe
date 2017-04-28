@@ -20,10 +20,10 @@ import static javafx.scene.control.Alert.AlertType.INFORMATION;
 public class Console extends Stage {
 
     private Aquarium aquarium;
+    private ToolBar toolbar;
 
     private TextArea display;
     private TextField input;
-    private ToolBar toolbar;
     protected final List<String> history;
     protected int historyCount = 0;
 
@@ -110,7 +110,7 @@ public class Console extends Stage {
                             + " - setGoal name x y delay" + System.lineSeparator()
                             + " - getFishes " + System.lineSeparator()
                             + " - getFishesContinuously " + System.lineSeparator() );
-                    //alert.show();
+
                     alert.showAndWait().ifPresent(response -> {
                         if (response == ButtonType.OK) {
                             alert.close();
@@ -151,16 +151,20 @@ public class Console extends Stage {
 
     private void parser(String[] args) {
         if (args[0].equalsIgnoreCase("addFish")) {
-            //TODO : check type of arguments
             if (args.length == 7) {
-                aquarium.addFish(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), args[6]);
-                display.appendText("< OK" + System.lineSeparator());
+                try {
+                    //TODO : Check if movingModel exists
+                    aquarium.addFish(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), args[6]);
+                    display.appendText("< OK" + System.lineSeparator());
+                } catch (NumberFormatException e) {display.appendText("< NOK ! " + e.getMessage().split("\"")[1] + " is supposed to be an integer." + System.lineSeparator());}
+
             }
             else
-                display.appendText("< Wrong syntax ! Usage : 'addFish name x y w h modelMoving'" + System.lineSeparator());
+                display.appendText("< NOK ! Usage : 'addFish name x y w h modelMoving'" + System.lineSeparator());
         }
         else if (args[0].equalsIgnoreCase("delFish")) {
             if (args.length == 2) {
+                //TODO : Check if name exists (juste in the display ?)
                 aquarium.removeFish(args[1]);
                 display.appendText("< OK" + System.lineSeparator());
             }
@@ -175,6 +179,7 @@ public class Console extends Stage {
                 display.appendText("< Wrong syntax ! The command 'status' doesn't expect arguments." + System.lineSeparator());
         }
         else if (args[0].equalsIgnoreCase("startFish")) {
+            //TODO : Check if name exists (juste in the display ?)
             if (args.length == 2)
                 System.out.println("DEBUG : Want to start the fish " + args[1]);
             else
@@ -182,9 +187,14 @@ public class Console extends Stage {
         }
         //TODO : remove the setGoal ?
         else if (args[0].equalsIgnoreCase("setGoal")) {
+            //TODO : Check if name exists (juste in the display ?)
             if (args.length == 5) {
-                aquarium.setGoal(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
-                display.appendText("< OK" + System.lineSeparator());
+                try {
+                    aquarium.setGoal(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
+                    display.appendText("< OK" + System.lineSeparator());
+                }
+                catch (NumberFormatException e) {display.appendText("< NOK ! " + e.getMessage().split("\"")[1] + " is supposed to be an integer." + System.lineSeparator());}
+
             }
             else
                 display.appendText("< Wrong syntax ! Usage : 'setGoal name x y delay'" + System.lineSeparator());
