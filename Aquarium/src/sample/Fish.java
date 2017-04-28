@@ -16,14 +16,16 @@ public class Fish {
     private int y;
 
     private String name;
+    private String movingModel; //Util ?
 
     private Point goal;
     private long timeGoal; //in millisecond
 
-    public Fish(int x, int y, int w, int h, String s) {
+    public Fish(int x, int y, int w, int h, String s, String mv) {
         initImage(s, w, h);
         setPosition(x, y);
         name = s;
+        movingModel = mv;
         goal = new Point(-1, -1);
 
     }

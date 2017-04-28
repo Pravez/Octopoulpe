@@ -26,8 +26,8 @@ public class Aquarium extends Application {
     private ArrayList<Fish> fishes;
     private ImageView background;
 
-    private int width = 630;
-    private int height = 300;
+    private int width = 650;
+    private int height = 400;
 
     private final Pane aquarium = new Pane();
 
@@ -44,8 +44,12 @@ public class Aquarium extends Application {
         background.setFitWidth(width);
         aquarium.getChildren().setAll(background);
 
+        primaryStage.setResizable(false);
+
         aquarium.getChildren().addAll(getAllViews(0));
         primaryStage.setTitle("Aquarium");
+        primaryStage.setMaxHeight(height);
+        primaryStage.setMaxWidth(width);
         primaryStage.setScene(new Scene(aquarium, width, height));
         primaryStage.show();
 
@@ -60,7 +64,7 @@ public class Aquarium extends Application {
         new AnimationTimer() {
             @Override
             public void handle(long now) {
-                System.out.println("DEBUG : now = " + (now/1000000));
+                //System.out.println("DEBUG : now = " + (now/1000000));
                 timer++;
 
                 if (timer%25 == 0) {
@@ -78,8 +82,8 @@ public class Aquarium extends Application {
                     }
                 }
                 if (previousTime != 0) {
-                    System.out.println("DEBUG : previousTime = " +  previousTime);
-                    System.out.println("DEBUG : elapsed = " + (now/1000000 - previousTime));
+                    //System.out.println("DEBUG : previousTime = " +  previousTime);
+                    //System.out.println("DEBUG : elapsed = " + (now/1000000 - previousTime));
                     for (Fish f : fishes) {
                         f.update((now/1000000) - previousTime);
                     }
@@ -128,8 +132,8 @@ public class Aquarium extends Application {
         return res;
     }
 
-    public void addFish(String name, int x, int y, int w, int h) {
-              Fish f = new Fish(x, y, w, h, name);
+    public void addFish(String name, int x, int y, int w, int h, String movingModel) {
+              Fish f = new Fish(x*width/100, y*height/100, w*width/100, h*height/100, name, movingModel);
               fishes.add(f);
               aquarium.getChildren().add(f.get_View(0));
     }
@@ -150,7 +154,7 @@ public class Aquarium extends Application {
         for (Fish f : fishes ) {
             if (f.getName().equalsIgnoreCase(name)) {
                 System.out.println("On met le goal " + x + "/" + y + " a " + name + " en le faisant en " + d + "millisecondes" );
-                f.setGoal(x, y, d);
+                f.setGoal(x*width/100, y*height/100, d);
             }
         }
     }
