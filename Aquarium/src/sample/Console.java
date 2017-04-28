@@ -109,12 +109,12 @@ public class Console extends Stage {
     private void parser(String[] args) {
         if (args[0].equalsIgnoreCase("addFish")) {
             //TODO : check type of arguments
-            if (args.length == 6) {
-                aquarium.addFish(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]));
+            if (args.length == 7) {
+                aquarium.addFish(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), args[6]);
                 display.appendText("< OK" + System.lineSeparator());
             }
             else
-                display.appendText("< Wrong syntax ! Usage : 'addFish name x y w h'" + System.lineSeparator());
+                display.appendText("< Wrong syntax ! Usage : 'addFish name x y w h modelMoving'" + System.lineSeparator());
         }
         else if (args[0].equalsIgnoreCase("delFish")) {
             if (args.length == 2) {
@@ -144,7 +144,7 @@ public class Console extends Stage {
                 display.appendText("< OK" + System.lineSeparator());
             }
             else
-                display.appendText("< Wrong syntax ! Usage : 'setGoal name x y'" + System.lineSeparator());
+                display.appendText("< Wrong syntax ! Usage : 'setGoal name x y delay'" + System.lineSeparator());
         }
         else if (args[0].equalsIgnoreCase("hello")) {
             if (args.length == 4 || args.length == 1) {
