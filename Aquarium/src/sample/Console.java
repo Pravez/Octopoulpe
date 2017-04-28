@@ -40,24 +40,8 @@ public class Console extends Stage {
 
         history = new ArrayList<>();
 
-        Label onglet1 = new Label("Help");
-        onglet1.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
-                if (e.getButton() == MouseButton.PRIMARY) {
-                    Alert alert = new Alert(INFORMATION);
-                    System.out.println("DEBUG : ALERT");
-                    alert.show();
-                    alert.showAndWait().ifPresent(response -> {
-                        if (response == ButtonType.OK) {
-                            alert.close();
-                        }
-                    });
-                }
-            }
-        });
 
-        Label onglet2 = new Label("About");
-        toolbar = new ToolBar(onglet1, new Separator(), onglet2 );
+        initTab();
 
         input = new TextField ();
         input.addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
@@ -104,6 +88,65 @@ public class Console extends Stage {
         entry.getChildren().add(vb);
 
         this.setScene(new Scene(entry, w, h));
+    }
+
+    private void initTab() {
+        //TODO : Automatic listing with file ?
+        Label tab1 = new Label("Help");
+        tab1.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    Alert alert = new Alert(INFORMATION);
+                    System.out.println("DEBUG : HELP");
+                    alert.setHeaderText("Commands available : ");
+                    alert.setTitle("Help");
+                    alert.setHeight(200);
+                    alert.setContentText("Here the command available : " + System.lineSeparator()
+                            + " - hello [in as ID]" + System.lineSeparator()
+                            + " - status " + System.lineSeparator()
+                            + " - startFish name " + System.lineSeparator()
+                            + " - addFish name x y w h modelMoving " + System.lineSeparator()
+                            + " - delFish name " + System.lineSeparator()
+                            + " - setGoal name x y delay" + System.lineSeparator()
+                            + " - getFishes " + System.lineSeparator()
+                            + " - getFishesContinuously " + System.lineSeparator() );
+                    //alert.show();
+                    alert.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.OK) {
+                            alert.close();
+                        }
+                    });
+                }
+            }
+        });
+
+        Label tab2 = new Label("About");
+        tab2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    Alert alert = new Alert(INFORMATION);
+                    System.out.println("DEBUG : ABOUT");
+                    alert.setHeaderText("About the software");
+                    alert.setTitle("About");
+                    alert.setHeight(200);
+                    alert.setContentText("This software was made for a student's project as part of ENSEIRB-MATMECA's studies." + System.lineSeparator()
+                            + " Contributors : " + System.lineSeparator()
+                            + " Paul Breton " + System.lineSeparator()
+                            + " Paul Gaulier " + System.lineSeparator()
+                            + " Louise Mouret" + System.lineSeparator()
+                            + " Laurie-Anne Parant " + System.lineSeparator()
+                            + " Nicolas Vidal " + System.lineSeparator());
+
+                    alert.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.OK) {
+                            alert.close();
+                        }
+                    });
+                }
+            }
+        });
+
+        toolbar = new ToolBar(tab1, new Separator(), tab2 );
     }
 
     private void parser(String[] args) {
