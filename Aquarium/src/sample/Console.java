@@ -91,9 +91,11 @@ public class Console extends Stage {
                         input.clear();
                         break;
                     }
-                    historyCount++;
-                    input.setText(history.get(historyCount));
-                    input.selectAll();
+                    if (historyCount < history.size()) {
+                        historyCount++;
+                        input.setText(history.get(historyCount - 1));
+                        input.selectAll();
+                    }
                     break;
                 default:
                     historyCount = history.size();
@@ -178,6 +180,7 @@ public class Console extends Stage {
     private void parser(String[] args) {
         if (args[0].equalsIgnoreCase("addFish")) {
             if (args.length == 7) {
+                //TODO : check for new name if it already exists
                 try {
                     if (! checkMobilityModel(args[6]))
                         display.appendText("< NOK : modèle de mobilité non supporté" + System.lineSeparator());
@@ -193,9 +196,13 @@ public class Console extends Stage {
         }
         else if (args[0].equalsIgnoreCase("delFish")) {
             if (args.length == 2) {
-                //TODO : Check if name exists (juste in the display ?)
-                aquarium.removeFish(args[1]);
-                display.appendText("< OK" + System.lineSeparator());
+                //TODO : for every display ?
+                if (aquarium.hasFish(args[1])) {
+                    aquarium.removeFish(args[1]);
+                    display.appendText("< OK" + System.lineSeparator());
+                }
+                else
+                    display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
             }
             else
                 display.appendText("< Wrong syntax ! Usage : 'delFish name'" + System.lineSeparator());
@@ -213,21 +220,33 @@ public class Console extends Stage {
         }
         else if (args[0].equalsIgnoreCase("startFish")) {
             //TODO : Check if name exists (juste in the display ?)
-            if (args.length == 2)
+            if (args.length == 2) {
+                if (aquarium.hasFish(args[1])) {
+                    //TODO : actually start fish :3
+                    display.appendText("< OK" + System.lineSeparator());
+                }
+                else
+                    display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
                 System.out.println("DEBUG : Want to start the fish " + args[1]);
+
+            }
             else
                 display.appendText("< NOK. Usage : 'startFish name'" + System.lineSeparator());
         }
         //TODO : remove the setGoal ?
         else if (args[0].equalsIgnoreCase("setGoal")) {
-            //TODO : Check if name exists (juste in the display ?)
+            //TODO : switch it to a receive order : go to ...
             if (args.length == 5) {
-                try {
-                    aquarium.setGoal(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
-                    display.appendText("< OK" + System.lineSeparator());
-                }
-                catch (NumberFormatException e) {display.appendText("< NOK ! " + e.getMessage().split("\"")[1] + " is supposed to be an integer." + System.lineSeparator());}
+                if (aquarium.hasFish(args[1])) {
 
+                    try {
+                        aquarium.setGoal(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
+                        display.appendText("< OK" + System.lineSeparator());
+                    }
+                    catch (NumberFormatException e) {display.appendText("< NOK ! " + e.getMessage().split("\"")[1] + " is supposed to be an integer." + System.lineSeparator());}
+                }
+                else
+                    display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
             }
             else
                 display.appendText("< NOK. Usage : 'setGoal name x y delay'" + System.lineSeparator());
