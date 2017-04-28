@@ -94,6 +94,14 @@ public class Aquarium extends Application {
         }.start();
     }
 
+    public boolean hasFish(String name) {
+        for (Fish f: fishes) {
+            if (f.getName().contentEquals(name))
+                return true;
+        }
+        return false;
+    }
+
     public String toString() {
         String s = new String(fishes.size() + " poisson(s) trouvé(s)" + System.lineSeparator());
 
