@@ -2,12 +2,12 @@
 #define POSEIDON_ANSWER_H
 
 #include <sys/queue.h>
+#include <pthread.h>
+#include <time.h>
 
 #define HELLO_SUCCESS 0
 #define HELLO_FAILURE 1
 #define HELLO_INVALID 2
-#define LOGOUT_SUCCESS 0
-#define LOGOUT_FAILURE 1
 
 struct client {
     char * id;
@@ -15,6 +15,10 @@ struct client {
     int _connected;
     struct aquarium_view *aqv;
     LIST_ENTRY(client) entries;
+
+    pthread_t _continuous_sender;
+    time_t _send_delay;
+    int _socket_fd;
 };
 
 /* Functions for the server thread */

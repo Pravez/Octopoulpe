@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
+#include <signal.h>
 #include "send.h"
 #include "../utility/data.h"
 
@@ -32,17 +33,28 @@ char *send__fishes(struct client *client) {
     return result;
 }
 
-//for testing time = 0
-char *send__fishes_continuously(struct client *client, void *time) {
-    /*int delay = (int) time;
-    char *res;
-    while (1) {
-        sleep(delay);
-        asw__get_fishes(NULL, res, NULL);
-        //lock ?
-        write(com[1], res, strlen(res));
-        //unlock
-    }*/
+void send__fishes_continuously(struct client* client) {
+    pid_t child_pid;
+    child_pid = fork();
+    if(child_pid >= 0){
+        if(child_pid == 0){
+            //child
+            while(1){
+                char* fishes = send__fishes(client);
+                CHK_ERROR(write(client->_socket_fd, fishes, strlen(fishes)), "Error writing to socket");
+                free(fishes);
+                sleep(1);
+            }
+        }else{
+            //parent
+            read(client->_socket_fd, NULL, 256-1);
+            kill(child_pid, SIGTERM);
+            sleep(1);
+            kill(child_pid, SIGKILL);
+        }
+    }
+
+    printf("END OF SENDING\n");
 }
 
 char *send__add_fish(struct client *client) {

@@ -15,7 +15,6 @@ struct thread_p{
     pthread_t _thread;
     struct client _client;
     int _thread_id;
-    int _socket_fd;
     int _addr_len;
     char _last_message[BUFFER_SIZE];
 };
