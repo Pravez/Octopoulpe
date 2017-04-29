@@ -75,6 +75,7 @@ double add_to_coordinate(double start, double val, int max_value);
 struct position add_to_position(struct position p, double x, double y);
 int position_equals(struct position pos1, struct position pos2);
 int in_bounds(struct position starting_point, struct dimension dim, struct position pos);
+int msleep(unsigned long milisec);
 
 /**
  * Taken from gnu.org https://www.gnu.org/software/libc/manual/html_node/Backtraces.html

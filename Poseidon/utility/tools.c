@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <execinfo.h>
+#include <time.h>
 
 #include "tools.h"
 #include "data.h"
@@ -110,6 +111,17 @@ struct position add_to_position(struct position p, double x, double y) {
     new.x = add_to_coordinate(p.x, x, AQUARIUM_WIDTH);
     new.y = add_to_coordinate(p.y, y, AQUARIUM_HEIGHT);
 
+    //If the position goes beyond the limits
+    if(new.x > AQUARIUM_WIDTH)
+        new.x = new.x - AQUARIUM_WIDTH;
+    else if(new.x < 0)
+        new.x = AQUARIUM_WIDTH + new.x;
+
+    if(new.y > AQUARIUM_HEIGHT)
+        new.y = new.y - AQUARIUM_HEIGHT;
+    else
+        new.y = AQUARIUM_HEIGHT + new.y;
+
     return new;
 }
 
@@ -120,4 +132,15 @@ int position_equals(struct position pos1, struct position pos2){
 int in_bounds(struct position starting_point, struct dimension dim, struct position pos){
     return (pos.x >= starting_point.x && pos.x <= starting_point.x + dim.width)
             && (pos.y >= starting_point.y && pos.y <= starting_point.y + dim.height);
+}
+
+int msleep(unsigned long milisec) {
+    struct timespec req={0};
+    time_t sec=(int)(milisec/1000);
+    milisec=milisec-(sec*1000);
+    req.tv_sec=sec;
+    req.tv_nsec=milisec*1000000L;
+    while(nanosleep(&req,&req)==-1)
+        continue;
+    return 1;
 }

@@ -32,7 +32,7 @@ int main(int argc, char* argv[]){
     parse_config_file("controller.cfg");
     int port = 8000;
 
-    SPEED_RATE = _get_value(config_vector, "fish-update-interval");
+    SPEED_RATE = -30;//_get_value(config_vector, "fish-update-interval");
 
     CHK_ERROR(pthread_create(&world_t, NULL, world_process , NULL), "world thread");
     CHK_ERROR(pthread_create(&menu_t, NULL, main_menu, NULL), "main_menu thread")

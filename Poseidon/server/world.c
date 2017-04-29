@@ -24,7 +24,7 @@ void *world_process(void *pVoid) {
 
 int world_init() {
     srand((unsigned int) time(NULL));
-    update_rate = SPEED_RATE < 0 ? 1.0/SPEED_RATE : SPEED_RATE;
+    update_rate = SPEED_RATE < 0 ? 1.0 / (-SPEED_RATE) : SPEED_RATE;
     world_initialized = 1;
 
     return 0;
@@ -34,6 +34,7 @@ struct position determine_new_position(struct position previous, struct fish *fi
     switch (fish->_strategy) {
         case HORIZONTAL:
             return (struct position) {(unsigned int) RAND_IN_RANGE(1000, 0), previous.y};
+            //return (struct position) {fish->_current}
         case VERTICAL:
             return (struct position) {previous.x, (unsigned int) RAND_IN_RANGE(1000, 0)};
         case RANDOM:
@@ -92,6 +93,7 @@ int update_fishes(any_t nothing, any_t item) {
         //TODO test if new position*2 is after the position in itself
 
 
+
         fprintf(stderr, "Fish %s is at %d, %d\n", fish->_id, (int) fish->_current.x, (int) fish->_current.y);
 
         if (position_equals(fish->_current, fish->_goal)) {
@@ -121,8 +123,7 @@ int world_loop() {
     while (run) {
         update();
 
-        sleep((unsigned int) update_rate);
-        //usleep((unsigned int) (update_rate * 1000));
+        msleep((unsigned long) (update_rate * 1000));
     }
 
     return 1;
