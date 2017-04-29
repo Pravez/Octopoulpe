@@ -70,7 +70,7 @@ void asw__add_fish(char *id, struct relative_position pos, struct dimension dime
                    char **res,
                    struct client *cli);
 
-void asw__del_fish(char *arg, char *res, struct client *cli);
+void asw__del_fish(char *arg, char **res);
 
 void asw__start_fish(char *arg, char **res);
 

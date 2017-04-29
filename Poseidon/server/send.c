@@ -115,8 +115,15 @@ char *send__logout(struct client *client) {
     return asw__log(out, client);
 }
 
-char *send__delete_fish(struct client *client) {
-    return NULL;
+char *send__delete_fish() {
+    char* result;
+    char* id = strtok(NULL, delim);
+    if(id != NULL && strtok(NULL, delim) == NULL){
+        asw__del_fish(id, &result);
+    }else{
+        asprintf(&result, "> Please use : delFish [fish id]\n");
+    }
+    return result;
 }
 
 char *send__ping(struct client *client) {

@@ -49,29 +49,32 @@ void aq__add_fish_to_aqv(struct aquarium *aq, char *id, struct fish *fish) {
     aqv__add_fish(aqv, fish);
 }
 
-void aq__remove_fish(struct aquarium *aquarium, char *fish_id) {
-    //first we seek for fishes not displayed
-    void *found_fish = malloc(sizeof(struct fish **));
-    if (hashmap_get(aquarium->_fishes, fish_id, found_fish) == MAP_OK) {
-        hashmap_remove(aquarium->_fishes, (*(struct fish **) found_fish)->_id);
+int aq__remove_fish(struct aquarium *aquarium, char *fish_id) {
+    //We first remove it from the entire aquarium
+    struct fish* fish = NULL;
+    if (hashmap_get(aquarium->_fishes, fish_id, (any_t *) &fish) == MAP_OK) {
+        hashmap_remove(aquarium->_fishes, fish->_id);
         _console_log(LOG_MEDIUM, "Removed fish");
     }
 
-    //Then if we didn't find, we seek in views ...
-    for (int j = 0; j < v__size(&aquarium->_views); j++) {
-        struct aquarium_view *view = GET_VIEW_PTR(&aquarium->_views, j);
-        if (view != NULL) {
-            if (hashmap_get(view->_fishes, fish_id, found_fish) == MAP_OK) {
-                hashmap_remove(view->_fishes, (*(struct fish **) found_fish)->_id);
-                _console_log(LOG_MEDIUM, "Removed fish");
+    //If we found it it has a presence in at least one view
+    if(fish != NULL){
+        for (int j = 0; j < v__size(&aquarium->_views); j++) {
+            struct aquarium_view *view = GET_VIEW_PTR(&aquarium->_views, j);
+            if (view != NULL) {
+                if (hashmap_get(view->_fishes, fish_id, NULL) == MAP_OK) {
+                    hashmap_remove(view->_fishes, fish_id);
+                }
             }
         }
+
+        free(fish->_id);
+        free(fish);
+
+        return 1;
     }
 
-    if (found_fish != NULL) {
-        free(*(struct fish **) found_fish);
-        free(found_fish);
-    }
+    return 0;
 }
 
 int aq__set_fish_running_state(struct aquarium* aquarium, char* fish_id, int state){

@@ -283,6 +283,14 @@ void asw__start_fish(char *arg, char **res){
     }
 }
 
+void asw__del_fish(char *arg, char **res){
+    if(aq__remove_fish(aquarium, arg) == 0){
+        asprintf(res, "> Impossible to find fish %s\n", arg);
+    }else{
+        asprintf(res, "Fish %s removed !\n", arg);
+    }
+}
+
 /*
 int main(int argc, char *argv[]) {
 // To test : a false aquarium

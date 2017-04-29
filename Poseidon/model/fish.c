@@ -11,7 +11,7 @@ struct fish* fish__create(enum fish_type type, int x, int y, char* id, enum MOVI
     if(id == NULL)
         asprintf(&f->_id, "%s%d", get_type_string(type), _fish_ids++);
     else
-        f->_id = id;
+        asprintf(&f->_id, "%s", id);
     f->_current = __position(x, y);
     f->_goal = __position(x, y);
     f->_cover = dimension;
