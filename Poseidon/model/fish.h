@@ -8,10 +8,6 @@
 #include "../utility/hashmap.h"
 #include "../utility/data.h"
 
-enum MOVING_STRATEGY{
-    HORIZONTAL, VERTICAL, RANDOM
-};
-
 struct fish {
     enum fish_type _type;
     struct dimension _cover;
