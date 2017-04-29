@@ -6,7 +6,7 @@ enum fish_type{
 };
 
 enum MOVING_STRATEGY{
-    HORIZONTAL, VERTICAL, RANDOM
+    HORIZONTAL, VERTICAL, RANDOM, UNREGISTERED
 };
 
 char* get_type_string(enum fish_type type);

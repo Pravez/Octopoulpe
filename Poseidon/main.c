@@ -53,14 +53,14 @@ int main(int argc, char* argv[]){
 
     struct dimension def = (struct dimension){1, 1};
 
-    aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 20, "jeanmi", HORIZONTAL, def, SPEED_RATE));
-    aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 30, "jeanma", HORIZONTAL, def, SPEED_RATE));
-    aq__add_fish_to_aqv(aquarium, view1, fish__create(OCTOPUS, 300, 300, "jeanmo", HORIZONTAL, def, SPEED_RATE));
-    aq__add_fish_to_aqv(aquarium, view1, fish__create(OCTOPUS, 400, 400, "jeanbite", HORIZONTAL, def, SPEED_RATE));
-    aq__set_fish_running_state(aquarium, "jeanmi", 1);
-    aq__set_fish_running_state(aquarium, "jeanma", 1);
-    aq__set_fish_running_state(aquarium, "jeanmo", 1);
-    aq__set_fish_running_state(aquarium, "jeanmbite", 1);
+    //aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 20, "jeanmi", HORIZONTAL, def, SPEED_RATE));
+    //aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 30, "jeanma", HORIZONTAL, def, SPEED_RATE));
+    //aq__add_fish_to_aqv(aquarium, view1, fish__create(OCTOPUS, 300, 300, "jeanmo", HORIZONTAL, def, SPEED_RATE));
+    //aq__add_fish_to_aqv(aquarium, view1, fish__create(OCTOPUS, 400, 400, "jeanbite", HORIZONTAL, def, SPEED_RATE));
+    //aq__set_fish_running_state(aquarium, "jeanmi", 1);
+    //aq__set_fish_running_state(aquarium, "jeanma", 1);
+    //aq__set_fish_running_state(aquarium, "jeanmo", 1);
+    //aq__set_fish_running_state(aquarium, "jeanmbite", 1);
 
 
     //aq__remove_fish(aquarium, "jeanbite");

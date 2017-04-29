@@ -34,6 +34,9 @@ enum fish_type get_type_from_string(char* type){
 }
 
 enum MOVING_STRATEGY get_strategy_from_string(char* type){
+    if(!strcmp(type, "RandomWayPoint")){
+        return RANDOM;
+    }
     if(!strcmp(type, "HorizontalWayPoint")){
         return HORIZONTAL;
     }
@@ -41,5 +44,5 @@ enum MOVING_STRATEGY get_strategy_from_string(char* type){
         return VERTICAL;
     }
 
-    return RANDOM;
+    return UNREGISTERED;
 }

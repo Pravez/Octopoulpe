@@ -7,7 +7,11 @@
 #define AQUARIUM_HEIGHT 1000
 #define AQUARIUM_DIMENSIONS (struct dimension){AQUARIUM_WIDTH, AQUARIUM_HEIGHT}
 
+#define FISH_MAX_WIDTH 10
+#define FISH_MAX_HEIGHT 10
+
 #define SERVER_CMD_DELIMITER " "
+#define SERVER_FISHVAL_DELIMITER "x"
 
 #define SIGNAL_STOP_SENDING SIGUSR1
 #define SIGNAL_NOTIFICATION SIGUSR2
@@ -17,8 +21,8 @@
 #define CHOSE_AUTOMATICALLY 0
 
 #define DEFAULT_OBSERVERS_QTY 10
-#define TIME_BETWEEN_CHECKS 3
-#define MAXIMUM_IDLE_TIME 4
+#define TIME_BETWEEN_CHECKS 10
+#define MAXIMUM_IDLE_TIME 60
 
 #define LOCK(mutex) pthread_mutex_lock(mutex)
 #define UNLOCK(mutex) pthread_mutex_unlock(mutex)

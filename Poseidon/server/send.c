@@ -8,7 +8,8 @@
 #include "../utility/vector.h"
 
 static const char *delim = SERVER_CMD_DELIMITER;
-extern struct vector* observers;
+static const char *val_delim = SERVER_FISHVAL_DELIMITER;
+extern struct vector *observers;
 
 char *send__client_id(struct client *client) {
     char *result = NULL;
@@ -20,7 +21,7 @@ char *send__client_id(struct client *client) {
     if (in != NULL)
         asprintf(&str, "%s %s %s", in, as, id);
 
-    if(asw__hello(str, &result, client) == HELLO_FAILURE){
+    if (asw__hello(str, &result, client) == HELLO_FAILURE) {
         client->_connected = FALSE;
     }
 
@@ -34,31 +35,31 @@ char *send__fishes(struct client *client) {
     return result;
 }
 
-void send__signal_callback_handler(int signum){
-    if(signum == SIGNAL_STOP_SENDING){
+void send__signal_callback_handler(int signum) {
+    if (signum == SIGNAL_STOP_SENDING) {
         pthread_exit(NULL);
     }
 }
 
-void* send__regular_sender(void* arg){
-    struct client* client = (struct client*)arg;
+void *send__regular_sender(void *arg) {
+    struct client *client = (struct client *) arg;
     signal(SIGNAL_STOP_SENDING, send__signal_callback_handler);
     signal(SIGNAL_NOTIFICATION, send__signal_callback_handler);
 
-    while(1){
+    while (1) {
         pause();
-        char* fishes = send__fishes(client);
+        char *fishes = send__fishes(client);
         CHK_ERROR(write(client->_socket_fd, fishes, strlen(fishes)), "Error writing to socket");
         free(fishes);
     }
 }
 
-void send__fishes_continuously(struct client* client) {
+void send__fishes_continuously(struct client *client) {
     client->_is_observer = TRUE;
     v__add(observers, client, CLIENT);
     pthread_create(&client->_continuous_sender, NULL, send__regular_sender, client);
 
-    read(client->_socket_fd, NULL, 256-1);
+    read(client->_socket_fd, NULL, 256 - 1);
     pthread_kill(client->_continuous_sender, SIGNAL_STOP_SENDING);
     pthread_join(client->_continuous_sender, NULL);
 
@@ -68,12 +69,39 @@ void send__fishes_continuously(struct client* client) {
     v__remove_by_data(observers, client);
 }
 
-char* send__add_fish(struct client* client){
-    char* result = NULL;
+char *send__add_fish(struct client *client) {
+    char *result = NULL;
 
+    char *id = strtok(NULL, delim);
+    char *fish_type = strtok(NULL, delim);
+    char *at = strtok(NULL, delim);
+    char *rel_pos = strtok(NULL, delim);
+    char *size = strtok(NULL, delim);
+    char *strategy = strtok(NULL, delim);
 
-    return NULL;
-    //asw__add_fish()
+    if (id == NULL || fish_type == NULL || at == NULL || rel_pos == NULL || size == NULL ||
+        strategy == NULL || strtok(NULL, delim) != NULL) {
+        asprintf(&result, "> Please check you gave the correct arguments :\n addFish [fish name] [fish type] at "
+                "[posX]x[posY], [width]x[height], [moving strategy]\n");
+        return result;
+    }
+
+    if(rel_pos[strlen(rel_pos) - 1] == ',')
+        rel_pos[strlen(rel_pos) - 1] = '\0';
+    if(size[strlen(size) - 1] == ',')
+        size[strlen(size) - 1] = '\0';
+
+    struct relative_position pos;
+    struct dimension dimensions;
+
+    pos.x = atoi(strtok(rel_pos, val_delim));
+    pos.y = atoi(strtok(NULL, val_delim));
+
+    dimensions.width = atoi(strtok(size, val_delim));
+    dimensions.height = atoi(strtok(NULL, val_delim));
+
+    asw__add_fish(id, pos, dimensions, fish_type, strategy, &result, client);
+    return result;
 }
 
 char *send__logout(struct client *client) {
@@ -86,7 +114,7 @@ char *send__delete_fish(struct client *client) {
 }
 
 char *send__ping(struct client *client) {
-    char* value = strtok(NULL, delim);
+    char *value = strtok(NULL, delim);
     char *result = NULL;
     asw__ping(value, &result, client);
     return result;

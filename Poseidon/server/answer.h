@@ -5,13 +5,14 @@
 #include <pthread.h>
 #include <time.h>
 #include "../utility/hashmap.h"
+#include "../utility/tools.h"
 
 #define HELLO_SUCCESS 0
 #define HELLO_FAILURE 1
 #define HELLO_INVALID 2
 
 struct client {
-    char * id;
+    char *id;
     int is_free;
     int _connected;
     struct aquarium_view *aqv;
@@ -38,7 +39,7 @@ struct client {
  * @return              HELLO_SUCCESS       if a view identifier was attributed to the client
  *                      HELLO_FAILURE       else, a deconnection will be processed by the server thread
  */
-int asw__hello(char * arg, char ** res, struct client *cli);
+int asw__hello(char *arg, char **res, struct client *cli);
 
 /**
  * @brief asw__get_fishes   the handler for the "hello" command from the client
@@ -54,18 +55,32 @@ int asw__hello(char * arg, char ** res, struct client *cli);
  *                                      if SEC equals 0, the fish is shown immediately
  */
 int asw__iterate_fishes(any_t *res, any_t fish);
-void asw__get_fishes(char ** res, struct client *cli);
-void asw__get_fishes_continuously(char * arg, char * res); // à voir avec Louise : il faut faire une boucle d'attente active !
-void asw__ping(char * arg, char ** res, struct client* client); // à voir avec Louise car horloge : le traitant remette à zéro une horloge ? Et dans le thread serveur, un thread qui coupe la communication une fois l'horloge arrivée à expiration OU signal handler !!
-char* asw__log(char* arg, struct client *cli);
-void asw__add_fish(char * arg, char * res, struct client *cli);
-void asw__del_fish(char * arg, char * res, struct client *cli);
-void asw__start_fish(char * arg, char * res, struct client *cli);
+
+void asw__get_fishes(char **res, struct client *cli);
+
+void
+asw__get_fishes_continuously(char *arg, char *res);
+
+void asw__ping(char *arg, char **res,
+               struct client *client);
+
+char *asw__log(char *arg, struct client *cli);
+
+void asw__add_fish(char *id, struct relative_position pos, struct dimension dimension, char *fish_type, char *strategy,
+                   char **res,
+                   struct client *cli);
+
+void asw__del_fish(char *arg, char *res, struct client *cli);
+
+void asw__start_fish(char *arg, char *res, struct client *cli);
 
 /* Functions for the aquarium */
 void asw__init_aquarium(void);
-void asw__add_view(struct aquarium_view * view);
+
+void asw__add_view(struct aquarium_view *view);
+
 void asw__remove_view(char *id);
+
 void asw__remove_aquarium(void);
 
 #endif //POSEIDON_ANSWER_H
