@@ -36,7 +36,7 @@ int main(int argc, char* argv[]){
 
     //Job to do with config file ... (before launching server)
     parse_config_file("controller.cfg");
-    int port = _get_value(config_vector, "controller-port")+1;
+    int port = _get_value(config_vector, "controller-port");
 
     SPEED_RATE = _get_value(config_vector, "fish-update-interval");
 

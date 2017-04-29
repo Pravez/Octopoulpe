@@ -12,7 +12,7 @@ char* send__add_fish(struct client* client);
 char* send__delete_fish(struct client* client);
 char* send__logout(struct client* client);
 char* send__ping(struct client* client);
-char* send__start_fish(struct client* client);
+char* send__start_fish();
 char* send__logout(struct client* client);
 
 

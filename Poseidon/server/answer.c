@@ -241,7 +241,7 @@ asw__add_fish(char *id, struct relative_position pos, struct dimension dimension
     struct position real_position;
     real_position.x = cli->aqv->_inner._starting_position.x +
                       (cli->aqv->_inner._dimensions.width * pos.x) / 100;
-    real_position.x = cli->aqv->_inner._starting_position.y +
+    real_position.y = cli->aqv->_inner._starting_position.y +
                       (cli->aqv->_inner._dimensions.height * pos.y) / 100;
 
     int dimcond = dimension.width > FISH_MAX_WIDTH || dimension.height > FISH_MAX_HEIGHT;
@@ -259,7 +259,13 @@ asw__add_fish(char *id, struct relative_position pos, struct dimension dimension
             asprintf(&posstr,
                      "> Please check the position of your fish, cannot exceed %dx%d (considering size of the fish)\n",
                      AQUARIUM_WIDTH, AQUARIUM_HEIGHT);
+
         asprintf(res, "%s%s", dimstr == NULL ? "" : dimstr, posstr == NULL ? "" : posstr);
+        if(dimstr != NULL)
+            free(dimstr);
+        if(posstr != NULL)
+            free(posstr);
+
         return;
     }
 
@@ -267,6 +273,14 @@ asw__add_fish(char *id, struct relative_position pos, struct dimension dimension
                                      SPEED_RATE);
     aq__add_fish_to_aqv(aquarium, cli->aqv->_id, fish);
     asprintf(res, "Fish successfully added\n");
+}
+
+void asw__start_fish(char *arg, char **res){
+    if(aq__set_fish_running_state(aquarium, arg, 1) == -1){
+        asprintf(res, "> Impossible to find fish %s\n", arg);
+    }else{
+        asprintf(res, "Fish %s started !\n", arg);
+    }
 }
 
 /*

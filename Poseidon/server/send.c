@@ -18,8 +18,14 @@ char *send__client_id(struct client *client) {
     char *as = strtok(NULL, delim);
     char *id = strtok(NULL, delim);
     char *str = NULL;
-    if (in != NULL)
-        asprintf(&str, "%s %s %s", in, as, id);
+    if (in != NULL){
+        if(as != NULL && id != NULL && strtok(NULL, delim) == NULL){
+            asprintf(&str, "%s %s %s", in, as, id);
+        }else{
+            asprintf(&result, "> Please use : hello in as [view id]\n");
+            return result;
+        }
+    }
 
     if (asw__hello(str, &result, client) == HELLO_FAILURE) {
         client->_connected = FALSE;
@@ -120,7 +126,16 @@ char *send__ping(struct client *client) {
     return result;
 }
 
-char *send__start_fish(struct client *client) {
-    return NULL;
+char *send__start_fish() {
+    char* result;
+
+    char* id = strtok(NULL, delim);
+    if(id != NULL && strtok(NULL, delim) == NULL){
+        asw__start_fish(id, &result);
+    }else{
+        asprintf(&result, "> Please use : startFish [fish id]\n");
+    }
+
+    return result;
 }
 

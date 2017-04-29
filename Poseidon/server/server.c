@@ -111,7 +111,6 @@ void* server__check_connections(void* args){
                     _console_log(LOG_MEDIUM, "Thread has not sent anything for 10 seconds, terminating it ...");
                     en->_thread._thread_working = FALSE;
                     shutdown(en->_thread._client._socket_fd, SHUT_RD);
-                    LIST_REMOVE(en, thread_entries);
                 }
                 UNLOCK(&en->_thread._client._time_mutex);
             }
@@ -204,7 +203,7 @@ char *client__parse_command(char buffer[BUFFER_SIZE], struct client *client) {
         } else if (!strcmp(token, "delFish")) {
             return send__delete_fish(client);
         } else if (!strcmp(token, "startFish")) {
-            return send__start_fish(client);
+            return send__start_fish();
         }
     } else{
         return "Please authenticate yourself with a `hello` command first\n";
@@ -224,6 +223,7 @@ void client__init(struct thread_p* client_thread){
 }
 
 void client__destroy(struct thread_entry* client_thread){
+    LIST_REMOVE(client_thread, thread_entries);
     close(client_thread->_thread._client._socket_fd);
     free(client_thread->_thread._client.id);
     free(client_thread);
