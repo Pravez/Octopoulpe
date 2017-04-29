@@ -3,22 +3,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
-#include <signal.h>
 #include "server.h"
 #include "send.h"
 #include "../utility/data.h"
 #include "../utility/vector.h"
-
-#define PARAM 2
-#define LISTEN_QUEUE 10
-#define CHOSE_AUTOMATICALLY 0
-
-#define DEFAULT_OBSERVERS_QTY 10
-#define TIME_BETWEEN_CHECKS 3
-#define MAXIMUM_IDLE_TIME 4
-
-#define LOCK(mutex) pthread_mutex_lock(mutex)
-#define UNLOCK(mutex) pthread_mutex_unlock(mutex)
 
 LIST_HEAD(listhead, thread_entry) thread_head = LIST_HEAD_INITIALIZER(thread_head);
 
@@ -52,7 +40,7 @@ void server__init(struct server_p *server, int port) {
     observers = malloc(sizeof(struct vector));
     v__init(observers, DEFAULT_OBSERVERS_QTY);
     //and say it's okay
-    pthread_mutex_unlock(&mutex_observers);
+    UNLOCK(&mutex_observers);
 
     //Creating the socket to listen to
     server->_listen_socket_fd = socket(AF_INET, SOCK_STREAM, CHOSE_AUTOMATICALLY);
@@ -145,7 +133,9 @@ void *client__start(void *arg) {
 
     client__init(thread);
 
-    while (thread->_thread_working) {
+    //If something happened during actions that needs to stop everything
+    //meaning if the client is still sending messages, and connected
+    while (thread->_thread_working && thread->_client._connected) {
         //We clear entire array
         bzero(thread->_last_message, BUFFER_SIZE);
 
@@ -154,9 +144,9 @@ void *client__start(void *arg) {
 
         if(thread->_thread_working) {
             //We update last time client sent a message
-            pthread_mutex_lock(&thread->_client._time_mutex);
+            LOCK(&thread->_client._time_mutex);
             time(&thread->_client._last_ping);
-            pthread_mutex_unlock(&thread->_client._time_mutex);
+            UNLOCK(&thread->_client._time_mutex);
         }
 
         if (code_return == 2) {
@@ -172,13 +162,6 @@ void *client__start(void *arg) {
             if(response != NULL){
                 code_return = (int) write(thread->_client._socket_fd, response, strlen(response));
                 CHK_ERROR(code_return, "Error writing to socket");
-            }
-
-
-            //If something happened during actions that needs to stop everything
-            if (!thread->_client._connected) {
-                client__destroy(entry);
-                pthread_exit(NULL);
             }
         }
     }

@@ -126,14 +126,14 @@ void update() {
 }
 
 void notify_observers(){
-    pthread_mutex_lock(&mutex_observers);
+    LOCK(&mutex_observers);
     struct client* client;
     for(int i = 0; i < v__size(observers);i++){
         client = GET_CLIENT_PTR(observers, i);
         if(client->_is_observer)
             pthread_kill(client->_continuous_sender, SIGNAL_NOTIFICATION);
     }
-    pthread_mutex_unlock(&mutex_observers);
+    UNLOCK(&mutex_observers);
 }
 
 int world_loop() {
