@@ -158,6 +158,24 @@ int aq__check_free_id(struct aquarium *aquarium, char *id) {
     return 1;
 }
 
+struct relative_position aq__get_relative_pos(struct aquarium* aquarium, struct fish* fish){
+    struct aquarium_view* aqv = NULL;
+    for (int i = 0; i < v__size(&aquarium->_views) && aqv == NULL; i++) {
+        if (hashmap_get(GET_VIEW_PTR(&aquarium->_views, i)->_fishes, fish->_id, NULL) == MAP_OK) {
+            aqv = GET_VIEW_PTR(&aquarium->_views, i);
+        }
+    }
+
+    if(aqv == NULL)
+        return (struct relative_position) { -1 , -1};
+
+    int relative_x = (100*((int)fish->_current.x - (int)aqv->_inner._starting_position.x))/(aqv->_inner._dimensions.width);
+    int relative_y = (100*((int)fish->_current.y - (int)aqv->_inner._starting_position.y))/(aqv->_inner._dimensions.height);
+
+
+    return (struct relative_position) { relative_x, relative_y };
+}
+
 ///////DEBUG
 
 void display_fish(struct fish *fish) {

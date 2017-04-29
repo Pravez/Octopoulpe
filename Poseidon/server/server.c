@@ -13,6 +13,7 @@
 
 LIST_HEAD(listhead, thread_entry) thread_head = LIST_HEAD_INITIALIZER(thread_head);
 
+extern struct aquarium *aquarium;
 static const char *delim = SERVER_CMD_DELIMITER;
 static int thread_ids = 0;
 
@@ -82,28 +83,23 @@ void *client__start(void *arg) {
     thread->_client._connected = TRUE;
     int code_return;
     char *response;
-    //create a pipe to communicate between threads
-    int com[2];
+
     while (1) {
         //We clear entire array
         bzero(thread->_last_message, BUFFER_SIZE);
 
-        code_return = read(thread->_client._socket_fd, thread->_last_message, BUFFER_SIZE - 1);
+        code_return = (int) read(thread->_client._socket_fd, thread->_last_message, BUFFER_SIZE - 1);
         CHK_ERROR(code_return, "Error reading from socket")
 
         if (code_return == 2) {
             //fix the segfault in case of empty message
-            code_return = write(thread->_client._socket_fd, "\n", 1);
+            code_return = (int) write(thread->_client._socket_fd, "\n", 1);
             CHK_ERROR(code_return, "Error writing to socket")
 
         } else {
             response = client__parse_command(thread->_last_message, &thread->_client);
-            //traitement
-            //read the result from the pipe and write it
-            /*if() {//check if the pipe is not empty
-              n = write(newsockfd, ...)
-            }*/
-            code_return = write(thread->_client._socket_fd, response, strlen(response));
+
+            code_return = (int) write(thread->_client._socket_fd, response, strlen(response));
             CHK_ERROR(code_return, "Error writing to socket");
 
             if (!thread->_client._connected) {
@@ -122,6 +118,12 @@ char *client__parse_command(char buffer[BUFFER_SIZE], struct client *client) {
     cmd[strlen(cmd) - 2] = '\0';
 
     char *token = strtok(cmd, delim);
+    if(token == NULL){
+        //The client closed brutally
+        client->_connected = FALSE;
+        return "\0";
+    }
+
     if (!strcmp(token, "hello")) {
         if(client->id != NULL){
             return "Already authenticated\n";

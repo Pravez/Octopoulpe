@@ -95,17 +95,7 @@ int asw__hello(char *arg, char **res, struct client *cli) {
     return HELLO_FAILURE;
 }
 
-//sale mais j'ai pas trouvé mieux pour le moment
-
 int sprintf_fish(any_t *res, any_t fish) {
-    /*struct fish *cpy = (struct fish *) fish;
-    double sec = cpy->_speed_rate;
-    char *info_fish = malloc(sizeof(char) * (27 + strlen(cpy->_id)));
-    sprintf(info_fish, " [%s at %dx%d,%dx%d,%f]", cpy->_id,
-            (int) cpy->_current.x, (int) cpy->_current.y,
-            cpy->_cover.width, cpy->_cover.height, sec);
-    strcat((char *) res, info_fish);*/
-
     struct fish *ffish = (struct fish*) fish;
     char* fishes_str = *(char**) res;
     char* temp_str = NULL;
@@ -114,9 +104,11 @@ int sprintf_fish(any_t *res, any_t fish) {
         strcpy(temp_str, fishes_str);
     }
 
+    struct relative_position fish_pos = aq__get_relative_pos(aquarium, ffish);
+
     char* new_str;
     asprintf(&new_str, "%s [%s at %dx%d,%dx%d,%d]", temp_str == NULL ? "" : temp_str, ffish->_id,
-             (int) ffish->_current.x, (int) ffish->_current.y,
+             fish_pos.x, fish_pos.y,
              ffish->_cover.width, ffish->_cover.height, (unsigned int) ffish->_speed_rate);
     free(fishes_str);
     free(temp_str);

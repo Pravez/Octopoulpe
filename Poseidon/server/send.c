@@ -57,7 +57,7 @@ void send__fishes_continuously(struct client* client) {
     printf("END OF SENDING\n");
 }
 
-char *send__add_fish(struct client *client) {
+char* send__add_fish(struct client* client){
     return NULL;
     //asw__add_fish()
 }
