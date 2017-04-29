@@ -78,6 +78,11 @@ public class Fish {
         return (name + " at " + x + "x" + y+ ", " + (view1.getFitWidth()*100/width) + "x" + (view1.getFitHeight()*100/height) + ", " + mobilityModel);
     }
 
+    public void setSize(int w, int h) {
+        view1.setFitHeight(h);
+        view1.setFitWidth(w);
+    }
+
     public void setPosition(int new_x, int new_y) {
         x = new_x;
         y = new_y;

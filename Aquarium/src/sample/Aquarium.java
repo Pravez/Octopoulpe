@@ -11,28 +11,55 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class Aquarium extends Application {
 
+    //config attributes
+    private String id;
+    private int pingTimeslice;
+    private String imagesURL;
+    private int timeElpased = 0;
+
+    //animation attributes
     private int timer = 0;
     private long previousTime = 0;
 
-    private int konamiCode = 0;
-    private ArrayList<Fish> fishes;
-    private ImageView background;
-
+    //display attributes
     private int width = 650;
     private int height = 400;
-
     private final Pane aquarium = new Pane();
+    private ImageView background;
+
+    //general attributes
+    private ArrayList<Fish> fishes;
+    private Console console;
+
+    //others
+    private int konamiCode = 0;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+
+        String tst = "list [PoissonRouge at 92x40,10x4,5] [PoissonClown at 22x80,12x6,5]";
+        String[] tests = tst.split("\\W");
+
+        for (String p : tests) {
+            System.out.println("TEST " + p);
+        }
+
+        //Creation of the console window
+        console = new Console(this, 400, 400);
+        console.show();
+        config();
+        console.suggestInput("hello in as " + id);
 
         fishes = new ArrayList<Fish>();
 
@@ -53,37 +80,35 @@ public class Aquarium extends Application {
         primaryStage.setScene(new Scene(aquarium, width, height));
         primaryStage.show();
 
-        //Creation of the console window
-        Console console = new Console(this, 400, 400);
-        console.show();
-
-        //KONAMI CODE
         initKonami();
 
+        handler();
+    }
 
+    private void handler() {
         new AnimationTimer() {
             @Override
             public void handle(long now) {
                 //System.out.println("DEBUG : now = " + (now/1000000));
                 timer++;
+                console.checkMessage();
 
-                if (timer%25 == 0) {
+                if (timeElpased >= pingTimeslice) {
+                    timeElpased = 0;
+                    console.send("ping 12345");
+                }
+
+                if (timer%15 == 0) {
                     aquarium.getChildren().remove(1, aquarium.getChildren().size()); //remove all except background
                     aquarium.getChildren().addAll(getAllViews(1));
                 }
-                if (timer%50 == 0) {
+                if (timer%30 == 0) {
                     aquarium.getChildren().remove(1, aquarium.getChildren().size() );
                     aquarium.getChildren().addAll(getAllViews(0));
                 }
 
-                if (timer == 400 || timer == 800) {
-                    if (timer == 800) {
-                        timer = 0;
-                    }
-                }
                 if (previousTime != 0) {
-                    //System.out.println("DEBUG : previousTime = " +  previousTime);
-                    //System.out.println("DEBUG : elapsed = " + (now/1000000 - previousTime));
+                    timeElpased += previousTime;
                     for (Fish f : fishes) {
                         f.update((now/1000000) - previousTime);
                     }
@@ -92,6 +117,57 @@ public class Aquarium extends Application {
                 previousTime = now/1000000;
             }
         }.start();
+    }
+
+    private void config() {
+        //TODO : On suppose que le config est correctement fait  et complété ?
+            try {
+                List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/src/sample/affichage.cfg"), StandardCharsets.ISO_8859_1);
+
+                String address = new String();
+                int port = 0;
+                for (String s : lines) {
+                    if (!s.isEmpty() && s.charAt(0) != '#') {
+                        String[] words = s.split(" ");
+                        System.out.println("DEBUG : FIRST WORD " + words[0]);
+                        switch (words[0]) {
+                            case "controller-address":
+                                System.out.println("DEBUG : ADDRESS " + words[2]);
+                                address = words[2];
+                                break;
+                            case "id":
+                                System.out.println("DEBUG : ID " + words[2]);
+                                id = words[2];
+                                break;
+                            case "controller-port":
+                                System.out.println("DEBUG : PORT " + words[2]);
+                                port = Integer.parseInt(words[2]);
+                                break;
+                            case "display-timeout-value":
+                                System.out.println("DEBUG : TIMESLICE " + words[2]);
+                                pingTimeslice = Integer.parseInt(words[2]);
+                                break;
+                            case "resources":
+                                System.out.println("DEBUG : RESSOURCE " + words[2]);
+                                imagesURL = words[2];
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                console.config(address, port);
+            } catch (IOException e) {
+                System.out.println("DEBUG : DIDN'T FOUND FILE ! Exception : " + e.toString());
+            }
+        }
+
+    public void setFishSize(String name, int w, int h) {
+        for (Fish f: fishes) {
+            if (f.getName().contentEquals(name)) {
+                f.setSize(w, h);
+            }
+        }
     }
 
     public boolean hasFish(String name) {
