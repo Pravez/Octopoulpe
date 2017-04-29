@@ -36,15 +36,15 @@ void _set_verbosity(int value) {
 void _console_log(int priority, char *message) {
     switch (priority) {
         case LOG_HIGH :
-            printf(REDBOLD"%s"RESET"\n", message);
+            fprintf(stderr, REDBOLD"%s"RESET"\n", message);
             break;
         case LOG_MEDIUM:
             if (verbosity)
-                printf(YELLOW"%s"RESET"\n", message);
+                fprintf(stderr, YELLOW"%s"RESET"\n", message);
             break;
         case LOG_LOW:
             if (verbosity)
-                printf("%s\n", message);
+                fprintf(stderr, "%s\n", message);
             break;
         default:
             break;

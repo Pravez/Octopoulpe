@@ -19,6 +19,7 @@ extern pthread_mutex_t mutex_observers;
 static double update_rate;
 static int run;
 
+time_t world_last_sleep;
 int world_initialized;
 
 
@@ -47,6 +48,8 @@ struct position determine_new_position(struct position previous, struct fish *fi
         case RANDOM:
             return (struct position) {(unsigned int) RAND_IN_RANGE(1000, 0), (unsigned int) RAND_IN_RANGE(1000, 0)};
     }
+
+    //Then we adapt speed
 
     return (struct position) {-1, -1};
 }

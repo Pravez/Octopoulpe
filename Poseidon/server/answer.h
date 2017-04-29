@@ -21,6 +21,9 @@ struct client {
     int _is_observer;
 
     int _socket_fd;
+
+    time_t _last_ping;
+    pthread_mutex_t _time_mutex;
 };
 
 /* Functions for the server thread */
@@ -53,7 +56,7 @@ int asw__hello(char * arg, char ** res, struct client *cli);
 int asw__iterate_fishes(any_t *res, any_t fish);
 void asw__get_fishes(char ** res, struct client *cli);
 void asw__get_fishes_continuously(char * arg, char * res); // à voir avec Louise : il faut faire une boucle d'attente active !
-void asw__ping(char * arg, char * res); // à voir avec Louise car horloge : le traitant remette à zéro une horloge ? Et dans le thread serveur, un thread qui coupe la communication une fois l'horloge arrivée à expiration OU signal handler !!
+void asw__ping(char * arg, char ** res, struct client* client); // à voir avec Louise car horloge : le traitant remette à zéro une horloge ? Et dans le thread serveur, un thread qui coupe la communication une fois l'horloge arrivée à expiration OU signal handler !!
 char* asw__log(char* arg, struct client *cli);
 void asw__add_fish(char * arg, char * res, struct client *cli);
 void asw__del_fish(char * arg, char * res, struct client *cli);

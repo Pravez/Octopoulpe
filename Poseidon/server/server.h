@@ -12,27 +12,32 @@
 
 struct thread_p{
     struct sockaddr _client_socket;
-    pthread_t _thread;
-    struct client _client;
-    int _thread_id;
     int _addr_len;
+
+    pthread_t _thread;
+    int _thread_working;
+
+    struct client _client;
     char _last_message[BUFFER_SIZE];
 };
 
 struct server_p{
     struct sockaddr_in _server_socket;
     int _listen_socket_fd;
+
+    pthread_t _link_keeper;
 };
 
 struct listhead *headp;
 struct thread_entry {
-    LIST_ENTRY(entry) entries;
+    LIST_ENTRY(thread_entry) thread_entries;
     struct thread_p _thread;
 };
 
 void* server_process(void* arg);
 void server__init(struct server_p* server, int port);
 void server__wait_connection(struct server_p* server);
+void* server__check_connections(void* args);
 
 /**
  * @fn      start
@@ -40,6 +45,8 @@ void server__wait_connection(struct server_p* server);
  */
 void* client__start(void* arg);
 char* client__parse_command(char buffer[BUFFER_SIZE], struct client* client);
+void client__init(struct thread_p* client_thread);
+void client__destroy(struct thread_entry* client_thread);
 
 /**
  * @fn      get_fishes_continuously

@@ -217,6 +217,14 @@ void asw__remove_aquarium() {
     }
 }
 
+void asw__ping(char * arg, char ** res, struct client* client){
+    if(arg != NULL){
+        asprintf(res, "pong %s", arg);
+    }else{
+        asprintf(res, "Please give a value with ping");
+    }
+}
+
 /*
 int main(int argc, char *argv[]) {
 // To test : a false aquarium

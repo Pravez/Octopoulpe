@@ -5,6 +5,8 @@
 
 char *send__client_id(struct client *client);
 char* send__fishes(struct client* client);
+void send__signal_callback_handler(int signum);
+void* send__regular_sender(void* arg);
 void send__fishes_continuously(struct client* client);
 char* send__add_fish(struct client* client);
 char* send__delete_fish(struct client* client);

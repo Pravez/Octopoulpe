@@ -83,7 +83,10 @@ char *send__delete_fish(struct client *client) {
 }
 
 char *send__ping(struct client *client) {
-    return NULL;
+    char* value = strtok(NULL, delim);
+    char *result = NULL;
+    asw__ping(value, &result, client);
+    return result;
 }
 
 char *send__start_fish(struct client *client) {
