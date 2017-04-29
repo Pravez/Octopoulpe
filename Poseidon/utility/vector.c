@@ -75,3 +75,10 @@ struct fish* vi__convert_fish(struct vector_item* item){
 
     return NULL;
 }
+
+struct client* vi__convert_client(struct vector_item *item){
+    if(item->_type == CLIENT)
+        return (struct client*)item->_data;
+
+    return NULL;
+}

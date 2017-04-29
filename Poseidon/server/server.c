@@ -6,16 +6,22 @@
 #include "server.h"
 #include "send.h"
 #include "../utility/data.h"
+#include "../utility/vector.h"
 
 #define PARAM 2
 #define LISTEN_QUEUE 10
 #define CHOSE_AUTOMATICALLY 0
+
+#define DEFAULT_OBSERVERS_QTY 10
 
 LIST_HEAD(listhead, thread_entry) thread_head = LIST_HEAD_INITIALIZER(thread_head);
 
 extern struct aquarium *aquarium;
 static const char *delim = SERVER_CMD_DELIMITER;
 static int thread_ids = 0;
+
+struct vector* observers;
+extern pthread_mutex_t mutex_observers;
 
 #ifdef _PROCESS_
 
@@ -32,6 +38,12 @@ void *server_process(void *arg) {
 #endif //_PROCESS_
 
 void server__init(struct server_p *server, int port) {
+    //We initialize observers vector
+    observers = malloc(sizeof(struct vector));
+    v__init(observers, DEFAULT_OBSERVERS_QTY);
+    //and say it's okay
+    pthread_mutex_unlock(&mutex_observers);
+
     //Creating the socket to listen to
     server->_listen_socket_fd = socket(AF_INET, SOCK_STREAM, CHOSE_AUTOMATICALLY);
     CHK_ERROR(server->_listen_socket_fd, "Error opening socket")

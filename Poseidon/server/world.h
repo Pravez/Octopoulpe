@@ -10,6 +10,7 @@ int world_loop();
 int update_fishes(any_t nothing, any_t item);
 void update_view_content(struct aquarium_view* aqv, struct fish* fish);
 void update();
+void notify_observers();
 struct movement next_movement(struct fish* fish);
 struct position determine_new_position(struct position, struct fish* fish);
 

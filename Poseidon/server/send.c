@@ -5,9 +5,10 @@
 #include <signal.h>
 #include "send.h"
 #include "../utility/data.h"
-
+#include "../utility/vector.h"
 
 static const char *delim = SERVER_CMD_DELIMITER;
+extern struct vector* observers;
 
 char *send__client_id(struct client *client) {
     char *result = NULL;
@@ -34,28 +35,37 @@ char *send__fishes(struct client *client) {
 }
 
 void send__signal_callback_handler(int signum){
-    pthread_exit(NULL);
+    if(signum == SIGNAL_STOP_SENDING){
+        pthread_exit(NULL);
+    }
 }
 
 void* send__regular_sender(void* arg){
     struct client* client = (struct client*)arg;
-    signal(SIGUSR1, send__signal_callback_handler);
+    signal(SIGNAL_STOP_SENDING, send__signal_callback_handler);
+    signal(SIGNAL_NOTIFICATION, send__signal_callback_handler);
 
     while(1){
+        pause();
         char* fishes = send__fishes(client);
         CHK_ERROR(write(client->_socket_fd, fishes, strlen(fishes)), "Error writing to socket");
         free(fishes);
-        sleep(1);
     }
 }
 
 void send__fishes_continuously(struct client* client) {
+    client->_is_observer = TRUE;
+    v__add(observers, client, CLIENT);
     pthread_create(&client->_continuous_sender, NULL, send__regular_sender, client);
 
     read(client->_socket_fd, NULL, 256-1);
-    pthread_kill(client->_continuous_sender, SIGUSR1);
+    pthread_kill(client->_continuous_sender, SIGNAL_STOP_SENDING);
+    pthread_join(client->_continuous_sender, NULL);
 
     printf("END OF SENDING\n");
+
+    client->_is_observer = FALSE;
+    v__remove_by_data(observers, client);
 }
 
 char* send__add_fish(struct client* client){

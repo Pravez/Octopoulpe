@@ -4,12 +4,14 @@
 #define INV_INT 32765
 
 #define GET_VIEW_PTR(vector, position) vi__convert_aq_view(v__get(vector, position))
+#define GET_CLIENT_PTR(vector, position) vi__convert_client(v__get(vector, position))
 
 struct aquarium_view;
 struct fish;
+struct client;
 
 enum TTYPE {
-    INT, AQ_VIEW, FISH
+    INT, AQ_VIEW, FISH, CLIENT
 };
 
 struct vector_item {
@@ -45,5 +47,7 @@ int vi__convert_int(struct vector_item *item);
 struct aquarium_view *vi__convert_aq_view(struct vector_item *item);
 
 struct fish *vi__convert_fish(struct vector_item *item);
+
+struct client* vi__convert_client(struct vector_item *item);
 
 #endif //POSEIDON_VECTOR_H

@@ -109,7 +109,7 @@ int asw__iterate_fishes(any_t *res, any_t fish) {
     //double lasting_time =
 
     char* new_str;
-    asprintf(&new_str, "%s [%s at %dx%d,%dx%d,%d]", temp_str == NULL ? "" : temp_str, ffish->_id,
+    asprintf(&new_str, "%s [%s at %dx%d,%dx%d,%d]", temp_str == NULL ? "" : temp_str, get_type_string(ffish->_type),
              fish_pos.x, fish_pos.y,
              ffish->_cover.width, ffish->_cover.height, (unsigned int) ffish->_speed_rate);
 

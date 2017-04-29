@@ -15,11 +15,17 @@
 extern struct _tvector* config_vector;
 struct aquarium* aquarium;
 
+pthread_mutex_t mutex_observers;
+
+pthread_t thread_menu;
+pthread_t thread_server;
+pthread_t thread_world;
+
 int main(int argc, char* argv[]){
 
-    pthread_t menu_t;
-    pthread_t server_t;
-    pthread_t world_t;
+    //First we allocate the mutex and lock it
+    pthread_mutex_init(&mutex_observers, NULL);
+    pthread_mutex_lock(&mutex_observers);
 
     // Initialisation of the aquarium
     aquarium = malloc(sizeof(struct aquarium));
@@ -30,13 +36,13 @@ int main(int argc, char* argv[]){
 
     //Job to do with config file ... (before launching server)
     parse_config_file("controller.cfg");
-    int port = 8000;
+    int port = _get_value(config_vector, "controller-port");
 
-    SPEED_RATE = -30;//_get_value(config_vector, "fish-update-interval");
+    SPEED_RATE = _get_value(config_vector, "fish-update-interval");
 
-    CHK_ERROR(pthread_create(&world_t, NULL, world_process , NULL), "world thread");
-    CHK_ERROR(pthread_create(&menu_t, NULL, main_menu, NULL), "main_menu thread")
-    CHK_ERROR(pthread_create(&server_t, NULL, server_process, &port), "server thread");
+    CHK_ERROR(pthread_create(&thread_world, NULL, world_process , NULL), "world thread");
+    CHK_ERROR(pthread_create(&thread_menu, NULL, main_menu, NULL), "main_menu thread")
+    CHK_ERROR(pthread_create(&thread_server, NULL, server_process, &port), "server thread");
 
     printf("Display timeout value : %d\n", _get_value(config_vector, "fish-update-interval"));
     _delete_tvector(config_vector);
@@ -48,10 +54,14 @@ int main(int argc, char* argv[]){
     struct dimension def = (struct dimension){1, 1};
 
     aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 20, "jeanmi", HORIZONTAL, def, SPEED_RATE));
+    aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 30, "jeanma", HORIZONTAL, def, SPEED_RATE));
+    aq__add_fish_to_aqv(aquarium, view1, fish__create(OCTOPUS, 300, 300, "jeanmo", HORIZONTAL, def, SPEED_RATE));
+    aq__add_fish_to_aqv(aquarium, view1, fish__create(OCTOPUS, 400, 400, "jeanbite", HORIZONTAL, def, SPEED_RATE));
     aq__set_fish_running_state(aquarium, "jeanmi", 1);
-    //aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 30, "jeanma", HORIZONTAL, def));
-    //aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 300, 300, "jeanmo", HORIZONTAL, def));
-    //aq__add_fish_to_aqv(aquarium, view2, fish__create(OCTOPUS, 400, 400, "jeanbite", HORIZONTAL, def));
+    aq__set_fish_running_state(aquarium, "jeanma", 1);
+    aq__set_fish_running_state(aquarium, "jeanmo", 1);
+    aq__set_fish_running_state(aquarium, "jeanmbite", 1);
+
 
     //aq__remove_fish(aquarium, "jeanbite");
 
@@ -61,9 +71,9 @@ int main(int argc, char* argv[]){
     //aq__remove_fish(aquarium, "jeanma");
     display_aquarium(aquarium);
 
-    pthread_join(menu_t, NULL);
-    pthread_join(server_t, NULL);
-    pthread_join(world_t, NULL);
+    pthread_join(thread_menu, NULL);
+    pthread_join(thread_server, NULL);
+    pthread_join(thread_world, NULL);
 
     return EXIT_SUCCESS;
 

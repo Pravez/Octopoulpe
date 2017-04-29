@@ -2,17 +2,24 @@
 #include <unistd.h>
 #include <time.h>
 #include <stdio.h>
+#include <pthread.h>
+#include <signal.h>
 
 #include "world.h"
 #include "../model/aquarium.h"
 #include "../model/fish.h"
 #include "../utility/vector.h"
+#include "../utility/data.h"
+#include "answer.h"
+
+extern struct aquarium *aquarium;
+extern struct vector* observers;
+extern pthread_mutex_t mutex_observers;
 
 static double update_rate;
-extern struct aquarium *aquarium;
+static int run;
 
 int world_initialized;
-static int run;
 
 
 void *world_process(void *pVoid) {
@@ -115,6 +122,17 @@ void update() {
     hashmap_iterate(aquarium->_fishes, (PFany) update_fishes, NULL);
 }
 
+void notify_observers(){
+    pthread_mutex_lock(&mutex_observers);
+    struct client* client;
+    for(int i = 0; i < v__size(observers);i++){
+        client = GET_CLIENT_PTR(observers, i);
+        if(client->_is_observer)
+            pthread_kill(client->_continuous_sender, SIGNAL_NOTIFICATION);
+    }
+    pthread_mutex_unlock(&mutex_observers);
+}
+
 int world_loop() {
 
     run = 1;
@@ -122,6 +140,7 @@ int world_loop() {
     //Need to implement an alarm to stop the while true
     while (run) {
         update();
+        notify_observers();
 
         msleep((unsigned long) (update_rate * 1000));
     }

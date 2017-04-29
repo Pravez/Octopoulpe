@@ -18,7 +18,8 @@ struct client {
     LIST_ENTRY(client) entries;
 
     pthread_t _continuous_sender;
-    time_t _send_delay;
+    int _is_observer;
+
     int _socket_fd;
 };
 

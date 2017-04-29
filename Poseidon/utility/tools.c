@@ -119,7 +119,7 @@ struct position add_to_position(struct position p, double x, double y) {
 
     if(new.y > AQUARIUM_HEIGHT)
         new.y = new.y - AQUARIUM_HEIGHT;
-    else
+    else if(new.y < 0)
         new.y = AQUARIUM_HEIGHT + new.y;
 
     return new;
