@@ -51,7 +51,7 @@ public class Fish {
         String [] listFiles = listImage();
         for (String f: listFiles) {
             System.out.println("DEBUG : file in directory : " + f);
-             if (f.equalsIgnoreCase(pictureFile) && !f.equalsIgnoreCase("bg")) { //to prevent bug with background
+             if (f.equalsIgnoreCase(pictureFile) && !f.equalsIgnoreCase("bg") && !f.equalsIgnoreCase("bb")) { //to prevent bug with background
               System.out.println("DEBUG : NO EQUAAAL");
               exist = true;
              }

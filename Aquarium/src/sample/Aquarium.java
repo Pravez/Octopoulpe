@@ -58,7 +58,7 @@ public class Aquarium extends Application {
         //Creation of the console window
         console = new Console(this, 400, 400);
         console.show();
-        config();
+        //config();
         console.suggestInput("hello in as " + id);
 
         fishes = new ArrayList<Fish>();

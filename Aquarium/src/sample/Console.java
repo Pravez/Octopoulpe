@@ -171,7 +171,42 @@ public class Console extends Stage {
             }
         });
 
-        toolbar = new ToolBar(tab1, new Separator(), tab2 );
+        Label tab3 = new Label("Fishes");
+        tab3.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    Alert alert = new Alert(INFORMATION);
+                    System.out.println("DEBUG : FISH");
+                    alert.setHeaderText("Fishes available : ");
+                    alert.setTitle("Fishes");
+                    alert.setHeight(200);
+                    alert.setContentText("Here the fishes available : " + System.lineSeparator() +getFishesAvailable() );
+
+                    alert.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.OK) {
+                            alert.close();
+                        }
+                    });
+                }
+            }
+        });
+
+        toolbar = new ToolBar(tab3, new Separator(), tab1, new Separator(), tab2);
+    }
+
+    private String getFishesAvailable() {
+        //TODO : use function in class Fish ?
+            File directory = new File(  System.getProperty("user.dir") + "/src/sample/Images/");
+            System.out.println("DEBUG : Directory " + directory.toString() + " exists : " + directory.exists());
+            String[] listFiles = directory.list();
+            String res = new String("");
+            for(int i=0;i<listFiles.length;i++) {
+                listFiles[i] = listFiles[i].substring(0, listFiles[i].indexOf("."));
+                if (!listFiles[i].equalsIgnoreCase("bg") && !listFiles[i].equalsIgnoreCase("bb")) { //to avaoid background
+                    res += "- " + listFiles[i] + System.lineSeparator();
+                }
+            }
+            return res;
     }
 
     private boolean checkMobilityModel(String m) {
@@ -352,3 +387,4 @@ public class Console extends Stage {
         }*/
     }
 }
+ //https://openclassrooms.com/courses/introduction-aux-sockets-1
