@@ -33,26 +33,27 @@ char *send__fishes(struct client *client) {
     return result;
 }
 
-void send__fishes_continuously(struct client* client) {
-    pid_t child_pid;
-    child_pid = fork();
-    if(child_pid >= 0){
-        if(child_pid == 0){
-            //child
-            while(1){
-                char* fishes = send__fishes(client);
-                CHK_ERROR(write(client->_socket_fd, fishes, strlen(fishes)), "Error writing to socket");
-                free(fishes);
-                sleep(1);
-            }
-        }else{
-            //parent
-            read(client->_socket_fd, NULL, 256-1);
-            kill(child_pid, SIGTERM);
-            sleep(1);
-            kill(child_pid, SIGKILL);
-        }
+void send__signal_callback_handler(int signum){
+    pthread_exit(NULL);
+}
+
+void* send__regular_sender(void* arg){
+    struct client* client = (struct client*)arg;
+    signal(SIGUSR1, send__signal_callback_handler);
+
+    while(1){
+        char* fishes = send__fishes(client);
+        CHK_ERROR(write(client->_socket_fd, fishes, strlen(fishes)), "Error writing to socket");
+        free(fishes);
+        sleep(1);
     }
+}
+
+void send__fishes_continuously(struct client* client) {
+    pthread_create(&client->_continuous_sender, NULL, send__regular_sender, client);
+
+    read(client->_socket_fd, NULL, 256-1);
+    pthread_kill(client->_continuous_sender, SIGUSR1);
 
     printf("END OF SENDING\n");
 }

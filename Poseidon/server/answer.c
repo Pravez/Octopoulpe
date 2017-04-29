@@ -95,21 +95,24 @@ int asw__hello(char *arg, char **res, struct client *cli) {
     return HELLO_FAILURE;
 }
 
-int sprintf_fish(any_t *res, any_t fish) {
+int asw__iterate_fishes(any_t *res, any_t fish) {
     struct fish *ffish = (struct fish*) fish;
     char* fishes_str = *(char**) res;
     char* temp_str = NULL;
+
     if(fishes_str != NULL){
         temp_str = malloc(sizeof(char)*strlen(fishes_str));
         strcpy(temp_str, fishes_str);
     }
 
     struct relative_position fish_pos = aq__get_relative_pos(aquarium, ffish);
+    //double lasting_time =
 
     char* new_str;
     asprintf(&new_str, "%s [%s at %dx%d,%dx%d,%d]", temp_str == NULL ? "" : temp_str, ffish->_id,
              fish_pos.x, fish_pos.y,
              ffish->_cover.width, ffish->_cover.height, (unsigned int) ffish->_speed_rate);
+
     free(fishes_str);
     free(temp_str);
     *res = new_str;
@@ -135,7 +138,7 @@ void asw__get_fishes(char **res, struct client *cli) {
             asprintf(res, "list []\n");
         }else {
             char* fishes_str = NULL;
-            hashmap_iterate(cli->aqv->_fishes, (PFany) sprintf_fish, &fishes_str);
+            hashmap_iterate(cli->aqv->_fishes, (PFany) asw__iterate_fishes, &fishes_str);
             asprintf(res, "list%s\n", fishes_str);
             free(fishes_str);
         }

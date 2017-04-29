@@ -133,7 +133,6 @@ char *client__parse_command(char buffer[BUFFER_SIZE], struct client *client) {
         if (!strcmp(token, "getFishes")) {
             return send__fishes(client);
         } else if (!strcmp(token, "getFishesContinuously")) {
-            //pthread_create(&client->_continuous_sender, NULL, send__fishes_continuously, client);
             send__fishes_continuously(client);
             return "END";
         } else if (!strcmp(token, "log")) {
