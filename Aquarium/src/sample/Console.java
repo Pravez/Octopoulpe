@@ -30,6 +30,7 @@ public class Console extends Stage {
 
     private Socket socket;
     private BufferedReader in;
+    private BufferedReader inContinuously;
     private String id;
 
     private TextArea display;
@@ -116,6 +117,7 @@ public class Console extends Stage {
                 System.out.println("Try to connect at " + InetAddress.getLocalHost().toString().split("/")[1] + ", with port = " + port);
                 socket = new Socket(InetAddress.getByName(InetAddress.getLocalHost().toString().split("/")[1]), 2009); //TODO : change ADDRESS and port
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                inContinuously = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 connected = true;
             } catch (IOException e) {
                 connected = false;
@@ -212,7 +214,7 @@ public class Console extends Stage {
             String res = new String("");
             for(int i=0;i<listFiles.length;i++) {
                 listFiles[i] = listFiles[i].substring(0, listFiles[i].indexOf("."));
-                if (!listFiles[i].equalsIgnoreCase("bg") && !listFiles[i].equalsIgnoreCase("bb")) { //to avaoid background
+                if (!listFiles[i].equalsIgnoreCase("bg") && !listFiles[i].equalsIgnoreCase("bb") && !listFiles[i].contains("2")) { //to avaoid background
                     res += "- " + listFiles[i] + System.lineSeparator();
                 }
             }
@@ -237,7 +239,6 @@ public class Console extends Stage {
         String[] args = action.split (" |\\, ");
         switch (args[0]) {
             case "hello" :
-                //TODO : send ID to Controler with TCP
                 if (args.length == 4 || args.length == 1) {
                     send(action);
                     getAswHello();
@@ -312,7 +313,7 @@ public class Console extends Stage {
                 if (args.length == 1) {
                     send(action);
                     display.appendText("< OK" + System.lineSeparator());
-                    //continuously = new Thread(new ContinuouslyHandler(in, aquarium));
+                    //continuously = new Thread(new ContinuouslyHandler(inContinuously, aquarium));
                     //continuously.run();
                     System.out.println("DEBUG : ON SORT DE CETTE MERDE");
                 }
@@ -440,39 +441,6 @@ public class Console extends Stage {
         }
     }
 
-    public void checkMessage() {
-        /*if (socket != null && socket.isConnected()) {
-            try {
-                String message = in.readLine();
-                System.out.println("DEBUG : We received : " + message);
-                display.appendText(message + System.lineSeparator());
-
-                if ( !message.isEmpty()) {
-                    String[] args = message.split(" ");
-                    switch (args[0]) {
-                        case "greeting" :
-                            id = args[1];
-                            break;
-                        case "no" :
-                            System.exit(0);
-                            break;
-                        case "list" :
-                            args = message.split(" |\\[|\\]|\\,");
-                            for (int i=2; i < args.length; i=i+7) {
-                                aquarium.setFishSize(args[i], Integer.parseInt(args[i+3].split("x")[0]), Integer.parseInt(args[i+3].split("x")[0]));
-                                aquarium.setGoal(args[i], Integer.parseInt(args[i+2].split("x")[0]), Integer.parseInt(args[i+2].split("x")[0]), Integer.parseInt(args[i+4]));
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            } catch (IOException e) {
-                System.out.println("DEBUG : Exception in reception !!");
-            }
-        }*/
-    }
-
     public void send(String s) {
         if (socket != null && socket.isConnected()) {
             try {
@@ -483,4 +451,3 @@ public class Console extends Stage {
         }
     }
 }
- //https://openclassrooms.com/courses/introduction-aux-sockets-1
