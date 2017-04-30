@@ -54,6 +54,10 @@ void *send__regular_sender(void *arg) {
 
     while (1) {
         pause();
+        LOCK(&client->_time_mutex);
+        time(&client->_last_ping);
+        UNLOCK(&client->_time_mutex);
+
         char *fishes = send__fishes(client);
         CHK_ERROR(write(client->_socket_fd, fishes, strlen(fishes)), "Error writing to socket");
         free(fishes);

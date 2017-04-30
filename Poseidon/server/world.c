@@ -39,14 +39,26 @@ int world_init() {
 }
 
 struct position determine_new_position(struct position previous, struct fish *fish) {
+    struct position newpos;
+    struct movement movement;
+
     switch (fish->_strategy) {
         case HORIZONTAL:
-            return (struct position) {(unsigned int) RAND_IN_RANGE(1000, 0), previous.y};
-            //return (struct position) {fish->_current}
+            movement = (struct movement){1, 0};
+            newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate) * update_rate,
+                                     (movement.y * fish->_speed_rate) * update_rate);
+            return newpos;
         case VERTICAL:
-            return (struct position) {previous.x, (unsigned int) RAND_IN_RANGE(1000, 0)};
+            movement = (struct movement){0, 1};
+            newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate*2) * update_rate,
+                                     (movement.y * fish->_speed_rate) * update_rate);
+            return newpos;
         case RANDOM:
-            return (struct position) {(unsigned int) RAND_IN_RANGE(1000, 0), (unsigned int) RAND_IN_RANGE(1000, 0)};
+            movement = (struct movement){RAND_IN_RANGE(2, -1), RAND_IN_RANGE(2, -1)};
+            newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate*2) * update_rate,
+                                     (movement.y * fish->_speed_rate) * update_rate);
+            return newpos;
+        case UNREGISTERED:break;
     }
 
     //Then we adapt speed
