@@ -1,4 +1,4 @@
-﻿package sample;
+package sample;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -232,7 +232,7 @@ public class Console extends Stage {
     }
 
     private void parser(String action) {
-        String[] args = action.split (" ");
+        String[] args = action.split (" |\\, ");
         switch (args[0]) {
             case "hello" :
                 //TODO : send ID to Controler with TCP
@@ -258,12 +258,12 @@ public class Console extends Stage {
                 break;
             case "addFish":
                 //TODO : check for new name if it already exists
-                if (args.length == 7) {
+                if (args.length == 6) {
                     try {
-                        if (!checkMobilityModel(args[6]))
+                        if (!checkMobilityModel(args[5]))
                             display.appendText("< NOK : modèle de mobilité non supporté" + System.lineSeparator());
                         else {
-                            aquarium.addFish(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), args[6]);
+                            aquarium.addFish(args[1], Integer.parseInt(args[3].split("x")[0]), Integer.parseInt(args[3].split("x")[1]), Integer.parseInt(args[4].split("x")[0]), Integer.parseInt(args[4].split("x")[1]), args[5]);
                             send(action);
                             //TODO : Verify result
                             display.appendText("< OK" + System.lineSeparator());
@@ -273,7 +273,7 @@ public class Console extends Stage {
                     }
                 }
                 else
-                    display.appendText("< NOK. Usage : 'addFish name x y w h modelMoving'" + System.lineSeparator());
+                    display.appendText("< NOK. Usage : addFish 'name' at 'x'x'y', 'w'x'h', 'mobilityModel'" + System.lineSeparator());
                 break;
             case "startFish":
                 //TODO : actually start fish :3
@@ -342,7 +342,7 @@ public class Console extends Stage {
     }
 
     public void checkMessage() {
-        /*if (socket.isConnected()) {
+        /*if (socket != null && socket.isConnected()) {
             try {
                 String message = in.readLine();
                 System.out.println("DEBUG : We received : " + message);
@@ -375,7 +375,7 @@ public class Console extends Stage {
     }
 
     public void send(String s) {
-        if (socket.isConnected()) {
+        if (socket != null && socket.isConnected()) {
             try {
                 PrintWriter out =  new PrintWriter(socket.getOutputStream());
                 out.println(s);
