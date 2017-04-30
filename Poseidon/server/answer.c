@@ -272,22 +272,22 @@ asw__add_fish(char *id, struct relative_position pos, struct dimension dimension
     struct fish *fish = fish__create(type, (int) real_position.x, (int) real_position.y, id, mv_strategy, dimension,
                                      SPEED_RATE);
     aq__add_fish_to_aqv(aquarium, cli->aqv->_id, fish);
-    asprintf(res, "Fish successfully added\n");
+    asprintf(res, "< Fish successfully added\n");
 }
 
 void asw__start_fish(char *arg, char **res){
     if(aq__set_fish_running_state(aquarium, arg, 1) == -1){
-        asprintf(res, "> Impossible to find fish %s\n", arg);
+        asprintf(res, "< Impossible to find fish %s\n", arg);
     }else{
-        asprintf(res, "Fish %s started !\n", arg);
+        asprintf(res, "< Fish %s started !\n", arg);
     }
 }
 
 void asw__del_fish(char *arg, char **res){
     if(aq__remove_fish(aquarium, arg) == 0){
-        asprintf(res, "> Impossible to find fish %s\n", arg);
+        asprintf(res, "< Impossible to find fish %s\n", arg);
     }else{
-        asprintf(res, "Fish %s removed !\n", arg);
+        asprintf(res, "< Fish %s removed !\n", arg);
     }
 }
 

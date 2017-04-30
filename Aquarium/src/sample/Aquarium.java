@@ -51,7 +51,7 @@ public class Aquarium extends Application {
         //Creation of the console window
         console = new Console(this, 400, 400);
         console.show();
-        //config();
+        config();
         console.suggestInput("hello in as " + id);
 
         fishes = new ArrayList<Fish>();
@@ -156,6 +156,7 @@ public class Aquarium extends Application {
         }
 
     public void setFishSize(String name, int w, int h) {
+        System.out.println("DEBUG : SET SIZE");
         for (Fish f: fishes) {
             if (f.getName().contentEquals(name)) {
                 f.setSize(w, h);
@@ -221,20 +222,24 @@ public class Aquarium extends Application {
     }
 
     public Collection<ImageView> getAllViews(int nb) {
-        //TODO : if the list is empty ?
-
         ArrayList<ImageView> res = new ArrayList<ImageView>();
         for(Fish f : fishes) {
             res.add(f.get_View(nb));
         }
-
         return res;
     }
 
-    public void addFish(String name, int x, int y, int w, int h, String movingModel) {
-              Fish f = new Fish(x*width/100, y*height/100, w*width/100, h*height/100, name, movingModel);
+    public void addFish(String name, int x, int y, int w, int h) {
+              Fish f = new Fish(x*width/100, y*height/100, w*width/100, h*height/100, name);
               fishes.add(f);
               aquarium.getChildren().add(f.get_View(0));
+    }
+
+    public void setStarted(String name) {
+        for (Fish f: fishes) {
+            if (f.getName().contentEquals(name))
+                f.setStarted(true);
+        }
     }
 
     public void removeFish(String name) {

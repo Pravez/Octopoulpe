@@ -16,18 +16,18 @@ public class Fish {
     private int y;
 
     private String name;
-    private String mobilityModel; //Util ?
+    private boolean started;
 
     private Point goal;
     private long timeGoal; //in millisecond
 
 
-    public Fish(int x, int y, int w, int h, String s, String mv) {
+    public Fish(int x, int y, int w, int h, String s) {
 
         initImage(s, w, h);
         setPosition(x, y);
         name = s;
-        mobilityModel = mv;
+        started = false;
         goal = new Point(-1, -1);
     }
 
@@ -74,11 +74,15 @@ public class Fish {
         view2.setFitWidth(w);
     }
 
+    public void setStarted(boolean s) {
+        started=s;
+    }
     public String toString(int width, int height) {
-        return (name + " at " + x + "x" + y+ ", " + (view1.getFitWidth()*100/width) + "x" + (view1.getFitHeight()*100/height) + ", " + mobilityModel);
+        return (name + " at " + x + "x" + y+ ", " + (view1.getFitWidth()*100/width) + "x" + (view1.getFitHeight()*100/height) + (started ? "started": "not started"));
     }
 
     public void setSize(int w, int h) {
+        System.out.println("DEBUG : SET SIIIIIIIIIIIZE");
         view1.setFitHeight(h);
         view1.setFitWidth(w);
     }

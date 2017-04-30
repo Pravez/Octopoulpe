@@ -236,11 +236,9 @@ public class Console extends Stage {
         switch (args[0]) {
             case "hello" :
                 //TODO : send ID to Controler with TCP
-                if (args.length == 4) {
+                if (args.length == 4 || args.length == 1) {
                     send(action);
-                }
-                else if (args.length == 1) {
-                    send(action);
+                    getAswHello();
                 }
                 else
                     display.appendText("< NOK. Usage : 'hello' or 'hello in as ID'" + System.lineSeparator());
@@ -257,15 +255,13 @@ public class Console extends Stage {
                     display.appendText("< NOK. The command 'status' doesn't expect arguments." + System.lineSeparator());
                 break;
             case "addFish":
-                //TODO : check for new name if it already exists
                 if (args.length == 6) {
                     try {
                         if (!checkMobilityModel(args[5]))
                             display.appendText("< NOK : modèle de mobilité non supporté" + System.lineSeparator());
                         else {
-                            aquarium.addFish(args[1], Integer.parseInt(args[3].split("x")[0]), Integer.parseInt(args[3].split("x")[1]), Integer.parseInt(args[4].split("x")[0]), Integer.parseInt(args[4].split("x")[1]), args[5]);
                             send(action);
-                            //TODO : Verify result
+                            getAswAdd(args[1], Integer.parseInt(args[3].split("x")[0]), Integer.parseInt(args[3].split("x")[1]), Integer.parseInt(args[4].split("x")[0]), Integer.parseInt(args[4].split("x")[1]), args[5]);
                             display.appendText("< OK" + System.lineSeparator());
                         }
                     } catch (NumberFormatException e) {
@@ -276,11 +272,10 @@ public class Console extends Stage {
                     display.appendText("< NOK. Usage : addFish 'name' at 'x'x'y', 'w'x'h', 'mobilityModel'" + System.lineSeparator());
                 break;
             case "startFish":
-                //TODO : actually start fish :3
                 if (args.length == 2) {
                     if (aquarium.hasFish(args[1])) {
                         send(action);
-                        //TODO : Verify result
+                        getAswStart(args[1]);
                         display.appendText("< OK" + System.lineSeparator());
                     }
                     else
@@ -293,7 +288,7 @@ public class Console extends Stage {
                 if (args.length == 2) {
                     if (aquarium.hasFish(args[1])) {
                         send(action);
-                        aquarium.removeFish(args[1]);
+                        getAswDel(args[1]);
                         display.appendText("< OK" + System.lineSeparator());
                     }
                     else
@@ -305,7 +300,8 @@ public class Console extends Stage {
             case "getFishes":
                 if (args.length == 1) {
                     send(action);
-                    display.appendText("< connexion not established yet " + System.lineSeparator());
+                    getAswGoal();
+                    display.appendText("< OK" + System.lineSeparator());
                 }
                 else
                     display.appendText("< NOK. Usage : 'getFishes'" + System.lineSeparator());
@@ -313,13 +309,12 @@ public class Console extends Stage {
             case "getFishesContinuously":
                 if (args.length == 1) {
                     send(action);
-                    display.appendText("< connexion not established yet " + System.lineSeparator());
+                    display.appendText("< OK" + System.lineSeparator());
                 }
                 else
                     display.appendText("< NOK. Usage : 'getFishesContinuously'" + System.lineSeparator());
                 break;
             case "setGoal" :
-                //TODO : REMOVE
                 if (args.length == 5) {
                     if (aquarium.hasFish(args[1])) {
 
@@ -338,6 +333,99 @@ public class Console extends Stage {
             default:
                 display.appendText("< NOK. Commande introuvable. (Les commandes sont disponible dans l'onglet)." + System.lineSeparator());
                 break;
+        }
+    }
+
+    public void getAswGoal() {
+        if (socket != null && socket.isConnected()) {
+            try {
+                String message = in.readLine();
+                String[] args = message.split(" |\\[|\\]|\\,");
+                for (int i = 2; i < args.length; i = i + 7) {
+                    String n = args[i];
+                    int x = Integer.parseInt(args[i + 2].split("x")[0]);
+                    int y = Integer.parseInt(args[i + 2].split("x")[1]);
+                    int time = Integer.parseInt(args[i + 4]) * 1000;
+                    int w = Integer.parseInt(args[i + 3].split("x")[0]);
+                    int h = Integer.parseInt(args[i + 3].split("x")[0]);
+                    if (aquarium.hasFish(n))
+                        aquarium.addFish(n, x, y, w, h);
+                    else {
+                        aquarium.setFishSize(n, w, h);
+                        aquarium.setGoal(n, x, y, time);
+                    }
+                }
+            }catch (IOException e) {
+                System.out.println("DEBUG : Exception in send !!"); }
+        }
+    }
+
+    public void getAswHello() {
+        if (socket != null && socket.isConnected()) {
+            boolean answered = false;
+            while (!answered) {
+                try {
+                    String message = in.readLine();
+                    display.appendText(message + System.lineSeparator());
+                    id = message.split(" ")[2];
+                    answered=true;
+                } catch (IOException e) {
+                    System.out.println("DEBUG : Exception in send !!");
+                    answered=false;
+                }
+            }
+        }
+    }
+
+    public void getAswAdd(String name, int x, int y, int w, int h, String model) {
+        if (socket != null && socket.isConnected()) {
+            boolean answered = false;
+            while (!answered) {
+                try {
+                    String message = in.readLine();
+                    display.appendText(message + System.lineSeparator());
+                    if (message.split(" ")[2].contentEquals("successfully"));
+                        aquarium.addFish(name, x, y, w, h);
+                    answered=true;
+                } catch (IOException e) {
+                    System.out.println("DEBUG : Exception in send !!");
+                    answered=false;
+                }
+            }
+        }
+    }
+
+    public void getAswStart(String n) {
+        if (socket != null && socket.isConnected()) {
+            boolean answered = false;
+            while (!answered) {
+                try {
+                    String message = in.readLine();
+                    aquarium.setStarted(n);
+                    answered=true;
+                } catch (IOException e) {
+                    System.out.println("DEBUG : Exception in send !!");
+                    answered=false;
+                }
+            }
+        }
+    }
+
+    public void getAswDel(String name) {
+        if (socket != null && socket.isConnected()) {
+            boolean answered = false;
+            while (!answered) {
+                try {
+                    String message = in.readLine();
+                    display.appendText(message + System.lineSeparator());
+                    if (message.split(" ")[1].contentEquals("Fish"));
+                            aquarium.removeFish(name);
+                    answered=true;
+                } catch (IOException e) {
+                    System.out.println("DEBUG : Exception in send !!");
+                    answered=false;
+                }
+            }
         }
     }
 
