@@ -16,7 +16,6 @@ extern pthread_mutex_t mutex_observers;
 struct vector* observers;
 
 static int check_threads_connection = TRUE;
-static pthread_mutex_t threads_list_mutex;
 static struct server_p server;
 
 int server_working = TRUE;
@@ -74,7 +73,7 @@ void server__stop(int signo){
 
         struct thread_entry* en;
         LIST_FOREACH(en, &thread_head, thread_entries){
-            en->_thread._thread_working = FALSE;
+            en->_thread._connected = FALSE;
             pthread_join(en->_thread._thread, NULL);
             LIST_REMOVE(en, thread_entries);
             free(en);
@@ -98,7 +97,7 @@ void server__wait_connection(struct server_p *server) {
         entry->_thread._addr_len = sizeof(entry->_thread._client_socket);
 
         //Waiting for a connection
-        if ((entry->_thread._client._socket_fd = accept(server->_listen_socket_fd, &entry->_thread._client_socket,
+        if ((entry->_thread._socket_fd = accept(server->_listen_socket_fd, &entry->_thread._client_socket,
                                                 (socklen_t *) &entry->_thread._addr_len)) != -1){
 
             LOCK(&threads_list_mutex);
@@ -128,13 +127,15 @@ void* server__check_connections(void* args){
 
             LOCK(&threads_list_mutex);
             LIST_FOREACH(en, &thread_head, thread_entries){
-                LOCK(&en->_thread._client._time_mutex);
-                if(difftime(now, en->_thread._client._last_ping) > (double) MAXIMUM_IDLE_TIME){
-                    _console_log(LOG_MEDIUM, "Thread has not sent anything for 10 seconds, terminating it ...");
-                    en->_thread._thread_working = FALSE;
-                    shutdown(en->_thread._client._socket_fd, SHUT_RD);
+                if(en->_thread._authenticated){
+                    LOCK(&en->_thread._time_mutex);
+                    if(difftime(now, en->_thread._last_ping) > (double) MAXIMUM_IDLE_TIME){
+                        _console_log(LOG_MEDIUM, "Thread has not sent anything for 10 seconds, terminating it ...");
+                        en->_thread._connected = FALSE;
+                        shutdown(en->_thread._socket_fd, SHUT_RD);
+                    }
+                    UNLOCK(&en->_thread._time_mutex);
                 }
-                UNLOCK(&en->_thread._client._time_mutex);
             }
             UNLOCK(&threads_list_mutex);
         }

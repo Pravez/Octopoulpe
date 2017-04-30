@@ -11,7 +11,7 @@ static const char *delim = SERVER_CMD_DELIMITER;
 static const char *val_delim = SERVER_FISHVAL_DELIMITER;
 extern struct vector *observers;
 
-char *send__client_id(struct client *client) {
+char *send__client_id(struct thread_p *thread) {
     char *result = NULL;
 
     char *in = strtok(NULL, delim);
@@ -27,8 +27,8 @@ char *send__client_id(struct client *client) {
         }
     }
 
-    if (asw__hello(str, &result, client) == HELLO_FAILURE) {
-        client->_connected = FALSE;
+    if (asw__hello(str, &result, thread) == HELLO_FAILURE) {
+        thread->_authenticated = FALSE;
     }
 
     free(str);
@@ -48,35 +48,35 @@ void send__signal_callback_handler(int signum) {
 }
 
 void *send__regular_sender(void *arg) {
-    struct client *client = (struct client *) arg;
+    struct thread_p *thread = (struct thread_p *) arg;
     signal(SIGNAL_STOP_SENDING, send__signal_callback_handler);
     signal(SIGNAL_NOTIFICATION, send__signal_callback_handler);
 
     while (1) {
         pause();
-        LOCK(&client->_time_mutex);
-        time(&client->_last_ping);
-        UNLOCK(&client->_time_mutex);
+        LOCK(&thread->_time_mutex);
+        time(&thread->_last_ping);
+        UNLOCK(&thread->_time_mutex);
 
-        char *fishes = send__fishes(client);
-        CHK_ERROR(write(client->_socket_fd, fishes, strlen(fishes)), "Error writing to socket");
+        char *fishes = send__fishes(thread->_client);
+        CHK_ERROR(write(thread->_socket_fd, fishes, strlen(fishes)), "Error writing to socket");
         free(fishes);
     }
 }
 
-void send__fishes_continuously(struct client *client) {
-    client->_is_observer = TRUE;
-    v__add(observers, client, CLIENT);
-    pthread_create(&client->_continuous_sender, NULL, send__regular_sender, client);
+void send__fishes_continuously(struct thread_p *thread) {
+    thread->_client->_is_observer = TRUE;
+    v__add(observers, thread->_client, CLIENT);
+    pthread_create(&thread->_client->_continuous_sender, NULL, send__regular_sender, thread->_client);
 
-    read(client->_socket_fd, NULL, 256 - 1);
-    pthread_kill(client->_continuous_sender, SIGNAL_STOP_SENDING);
-    pthread_join(client->_continuous_sender, NULL);
+    read(thread->_socket_fd, NULL, 256 - 1);
+    pthread_kill(thread->_client->_continuous_sender, SIGNAL_STOP_SENDING);
+    pthread_join(thread->_client->_continuous_sender, NULL);
 
     printf("END OF SENDING\n");
 
-    client->_is_observer = FALSE;
-    v__remove_by_data(observers, client);
+    thread->_client->_is_observer = FALSE;
+    v__remove_by_data(observers, thread->_client);
 }
 
 char *send__add_fish(struct client *client) {
@@ -114,9 +114,9 @@ char *send__add_fish(struct client *client) {
     return result;
 }
 
-char *send__logout(struct client *client) {
+char *send__logout(struct thread_p *thread) {
     char *out = strtok(NULL, delim);
-    return asw__log(out, client);
+    return asw__log(out, thread);
 }
 
 char *send__delete_fish() {

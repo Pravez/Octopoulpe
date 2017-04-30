@@ -25,7 +25,7 @@
  * @return              HELLO_SUCCESS       if a view identifier was attributed to the client
  *                      HELLO_FAILURE       else, a deconnection will be processed by the server thread
  */
-int asw__hello(char *arg, char **res, struct client *cli);
+int asw__hello(char *arg, char **res, struct thread_p *thread);
 
 /**
  * @brief asw__get_fishes   the handler for the "hello" command from the client
@@ -50,7 +50,7 @@ asw__get_fishes_continuously(char *arg, char *res);
 void asw__ping(char *arg, char **res,
                struct client *client);
 
-char *asw__log(char *arg, struct client *cli);
+char *asw__log(char *arg, struct thread_p *thread);
 
 void asw__add_fish(char *id, struct relative_position pos, struct dimension dimension, char *fish_type, char *strategy,
                    char **res,

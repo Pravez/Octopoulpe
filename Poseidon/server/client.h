@@ -11,17 +11,11 @@
 struct client {
     char *id;
     int is_free;
-    int _connected;
     struct aquarium_view *aqv;
     LIST_ENTRY(client) entries;
 
     pthread_t _continuous_sender;
     int _is_observer;
-
-    int _socket_fd;
-
-    time_t _last_ping;
-    pthread_mutex_t _time_mutex;
 };
 
 struct thread_p{
@@ -29,10 +23,15 @@ struct thread_p{
     int _addr_len;
 
     pthread_t _thread;
-    int _thread_working;
+    int _connected;
+    int _authenticated;
 
-    struct client _client;
+    struct client* _client;
     char _last_message[BUFFER_SIZE];
+    int _socket_fd;
+
+    time_t _last_ping;
+    pthread_mutex_t _time_mutex;
 };
 
 struct listhead *headp;
@@ -41,8 +40,11 @@ struct thread_entry {
     struct thread_p _thread;
 };
 
+LIST_HEAD(clientlist, client) clients;
+pthread_mutex_t threads_list_mutex;
+
 void* client__start(void* arg);
-char* client__parse_command(char buffer[BUFFER_SIZE], struct client* client);
+char* client__parse_command(char buffer[BUFFER_SIZE], struct thread_p* thread);
 void client__init(struct thread_p* client_thread);
 void client__destroy(struct thread_entry* client_thread);
 

@@ -5,12 +5,9 @@
 #include "server/parser.h"
 #include "server/server.h"
 #include "model/aquarium.h"
-#include "utility/tools.h"
 #include "view/view.h"
-#include "utility/data.h"
 #include "server/world.h"
 
-#include "server/answer.h"
 
 extern struct _tvector* config_vector;
 struct aquarium* aquarium;
@@ -27,10 +24,6 @@ int main(int argc, char* argv[]){
     _console_log(LOG_LOW, "Starting Octopoulpe");
     _console_log(LOG_LOW, "Initializing values ...");
 
-    //First we allocate the mutex and lock it
-    pthread_mutex_init(&mutex_observers, NULL);
-    pthread_mutex_lock(&mutex_observers);
-
     // Initialisation of the aquarium
     aquarium = malloc(sizeof(struct aquarium));
     aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
@@ -40,10 +33,16 @@ int main(int argc, char* argv[]){
 
     //Job to do with config file ... (before launching server)
     if(access("controller.cfg", F_OK) != -1) {
+
+        //We parse config file
         parse_config_file("controller.cfg");
         UPDATE_INTERVAL = _get_value(config_vector, "fish-update-interval");
         DISPLAY_TIMEOUT_VALUE = _get_value(config_vector, "display-timeout-value");
-        CONTROLLER_PORT = _get_value(config_vector, "controller-port") + 1;
+        CONTROLLER_PORT = _get_value(config_vector, "controller-port")+2;
+
+        //First we allocate the mutex and lock it
+        pthread_mutex_init(&mutex_observers, NULL);
+        pthread_mutex_lock(&mutex_observers);
 
         CHK_ERROR(pthread_create(&thread_world, NULL, world_process, NULL), "world thread");
         CHK_ERROR(pthread_create(&thread_menu, NULL, main_menu, NULL), "main_menu thread")

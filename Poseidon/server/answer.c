@@ -6,7 +6,6 @@
 #include "../model/aquarium.h"
 
 extern struct aquarium *aquarium;
-LIST_HEAD(clientlist, client) clients;
 
 /* Auxiliar functions*/
 /**
@@ -16,15 +15,14 @@ LIST_HEAD(clientlist, client) clients;
  *                      NULL                        if none of the view identifier is available
  *                      an other view identifier    else
  */
-struct aquarium_view *available_id(char *wanted) {
+struct client* available_id(char *wanted) {
     struct client *first_available_id = NULL;
     struct client *client;
     LIST_FOREACH(client, &clients, entries) {
         // The wanted id exists and is available
         if (wanted != NULL) {
             if (!strcmp(wanted, client->id) && client->is_free) {
-                client->is_free = 0;
-                return client->aqv;
+                return client;
             }
         }
         // Use the first available id
@@ -34,8 +32,7 @@ struct aquarium_view *available_id(char *wanted) {
     }
     // The wanted id was not in the aquarium or not available but one id is available
     if (first_available_id != NULL) {
-        first_available_id->is_free = 0;
-        return first_available_id->aqv;
+        return first_available_id;
     } else {
         return NULL;
     }
@@ -53,8 +50,8 @@ struct aquarium_view *available_id(char *wanted) {
  * @return              HELLO_SUCCESS       if a view identifier was attributed to the client
  *                      HELLO_FAILURE       else
  */
-int asw__hello(char *arg, char **res, struct client *cli) {
-    struct aquarium_view *id;
+int asw__hello(char *arg, char **res, struct thread_p *thread) {
+    struct client *id;
 
     if (arg != NULL) {
         char *argv[4];
@@ -83,12 +80,10 @@ int asw__hello(char *arg, char **res, struct client *cli) {
 
     // Successful request
     if (id != NULL) {
-        //cli->id = malloc(sizeof(char) * (strlen(id->_id) + 1));
-        //strcpy(cli->id, id->_id);
-        asprintf(&cli->id, "%s", id->_id);
-        cli->is_free = 0;
-        cli->aqv = id;
-        asprintf(res, "greeting %s\n", cli->id);
+        thread->_client = id;
+        thread->_client->is_free = FALSE;
+        thread->_authenticated = TRUE;
+        asprintf(res, "greeting %s\n", thread->_client->id);
         return HELLO_SUCCESS;
     }
     // Failed request
@@ -154,12 +149,15 @@ void asw__get_fishes(char **res, struct client *cli) {
  * @param cli the client structure
  * @return LOGOUT_SUCCESS on success and LOGOUT_FAILURE on fail
  */
-char *asw__log(char *arg, struct client *client) {
+char *asw__log(char *arg, struct thread_p *thread) {
     if (arg == NULL || strcmp(arg, "out")) {
         return "Maybe you wanted to say `log out`\n";
     } else {
-        client->_connected = FALSE;
-        client->is_free = 1;
+        if(thread->_authenticated == TRUE && thread->_client != NULL)
+            thread->_client->is_free = TRUE;
+
+        thread->_authenticated = FALSE;
+        thread->_connected = FALSE;
         return "bye\n";
     }
 }
@@ -185,6 +183,7 @@ void asw__add_view(struct aquarium_view *view) {
     strcpy(cli->id, view->_id);
     cli->is_free = 1;
     cli->aqv = view;
+    cli->_is_observer = FALSE;
     LIST_INSERT_HEAD(&clients, cli, entries);
 }
 
@@ -198,6 +197,8 @@ void asw__remove_view(char *id) {
     LIST_FOREACH(j, &clients, entries) {
         if (!strcmp(j->id, id)) {
             LIST_REMOVE(j, entries);
+            free(j->id);
+            free(j);
             return;
         }
     }
