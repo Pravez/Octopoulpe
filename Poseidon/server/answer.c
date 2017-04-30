@@ -67,7 +67,7 @@ int asw__hello(char *arg, char **res, struct thread_p *thread) {
             !strcmp(argv[0], "\n") || !strcmp(argv[0], " \n")) {
             id = available_id(strtok(argv[2], " "));
         } else {
-            asprintf(res, "Invalid syntax for 'hello'. Corrects syntaxes are :\n'hello in as <wanted id>'\n'hello'\n");
+            asprintf(res, "NOK : Invalid syntax for 'hello'. Corrects syntaxes are :\n'hello in as <wanted id>'\n'hello'\n");
             return HELLO_INVALID;
         }
 
@@ -82,11 +82,11 @@ int asw__hello(char *arg, char **res, struct thread_p *thread) {
         thread->_client = id;
         thread->_client->is_free = FALSE;
         thread->_authenticated = TRUE;
-        asprintf(res, "greeting %s\n", thread->_client->id);
+        asprintf(res, "OK : greeting %s\n", thread->_client->id);
         return HELLO_SUCCESS;
     }
     // Failed request
-    asprintf(res, "> no greeting\n");
+    asprintf(res, "NOK : no greeting\n");
     return HELLO_FAILURE;
 }
 
@@ -104,7 +104,7 @@ int asw__iterate_fishes(any_t *res, any_t fish) {
     //double lasting_time =
 
     char *new_str;
-    asprintf(&new_str, "%s [%s at %dx%d,%dx%d,%d]", temp_str == NULL ? "" : temp_str, get_type_string(ffish->_type),
+    asprintf(&new_str, "%s [%s at %dx%d,%dx%d,%d]", temp_str == NULL ? "" : temp_str, ffish->_id/*get_type_string(ffish->_type)*/,
              fish_pos.x, fish_pos.y,
              ffish->_cover.width, ffish->_cover.height, (unsigned int) ffish->_speed_rate);
 
@@ -150,14 +150,14 @@ void asw__get_fishes(char **res, struct client *cli) {
  */
 char *asw__log(char *arg, struct thread_p *thread) {
     if (arg == NULL || strcmp(arg, "out")) {
-        return "Maybe you wanted to say `log out`\n";
+        return "NOK : Maybe you wanted to say `log out`\n";
     } else {
         if(thread->_authenticated == TRUE && thread->_client != NULL)
             thread->_client->is_free = TRUE;
 
         thread->_authenticated = FALSE;
         thread->_connected = FALSE;
-        return "bye\n";
+        return "OK : bye\n";
     }
 }
 
@@ -218,9 +218,9 @@ void asw__remove_aquarium() {
 
 void asw__ping(char *arg, char **res, struct client *client) {
     if (arg != NULL) {
-        asprintf(res, "pong %s", arg);
+        asprintf(res, "OK : pong %s", arg);
     } else {
-        asprintf(res, "> Please give a value with ping");
+        asprintf(res, "NOK : Please give a value with ping");
     }
 }
 
@@ -228,12 +228,12 @@ void
 asw__add_fish(char *id, struct relative_position pos, struct dimension dimension, char *fish_type, char *strategy,
               char **res,
               struct client *cli) {
-    enum fish_type type = get_type_from_string(fish_type);
+    //enum fish_type type = get_type_from_string(fish_type);
     enum MOVING_STRATEGY mv_strategy = get_strategy_from_string(strategy);
 
-    if (type == NONE || mv_strategy == UNREGISTERED) {
-        asprintf(res, "%s%s", type == NONE ? "> Fish type is not known\n" : "",
-                 mv_strategy == UNREGISTERED ? "> Moving strategy is not registered\n" : "");
+    if (/*type == NONE || */mv_strategy == UNREGISTERED) {
+        asprintf(res, "%s",/* type == NONE ? "> Fish type is not known\n" : "",*/
+                 /*mv_strategy == UNREGISTERED ? */"NOK : Moving strategy is not registered\n"/* : ""*/);
         return;
     }
 
@@ -252,11 +252,11 @@ asw__add_fish(char *id, struct relative_position pos, struct dimension dimension
         char *posstr = NULL;
 
         if (dimcond)
-            asprintf(&dimstr, "> Please verify the fish's dimensions, cannot exceed %dx%d\n", FISH_MAX_WIDTH,
+            asprintf(&dimstr, "NOK : Please verify the fish's dimensions, cannot exceed %dx%d\n", FISH_MAX_WIDTH,
                      FISH_MAX_HEIGHT);
         if (poscond)
             asprintf(&posstr,
-                     "> Please check the position of your fish, cannot exceed %dx%d (considering size of the fish)\n",
+                     "NOK : Please check the position of your fish, cannot exceed %dx%d (considering size of the fish)\n",
                      AQUARIUM_WIDTH, AQUARIUM_HEIGHT);
 
         asprintf(res, "%s%s", dimstr == NULL ? "" : dimstr, posstr == NULL ? "" : posstr);
@@ -268,24 +268,28 @@ asw__add_fish(char *id, struct relative_position pos, struct dimension dimension
         return;
     }
 
-    struct fish *fish = fish__create(type, (int) real_position.x, (int) real_position.y, id, mv_strategy, dimension,
-                                     UPDATE_INTERVAL);
-    aq__add_fish_to_aqv(aquarium, cli->aqv->_id, fish);
-    asprintf(res, "Fish successfully added\n");
+    if(hashmap_get(aquarium->_fishes, id, NULL) == MAP_MISSING) {
+        struct fish *fish = fish__create(NONE, (int) real_position.x, (int) real_position.y, id, mv_strategy, dimension,
+                                         UPDATE_INTERVAL);
+        aq__add_fish_to_aqv(aquarium, cli->aqv->_id, fish);
+        asprintf(res, "OK : Fish %s successfully added\n", id);
+    }else{
+        asprintf(res, "NOK : fish already exists\n");
+    }
 }
 
 void asw__start_fish(char *arg, char **res){
     if(aq__set_fish_running_state(aquarium, arg, 1) == -1){
-        asprintf(res, "> Impossible to find fish %s\n", arg);
+        asprintf(res, "NOK :  Impossible to find fish %s\n", arg);
     }else{
-        asprintf(res, "Fish %s started !\n", arg);
+        asprintf(res, "OK : Fish %s started !\n", arg);
     }
 }
 
 void asw__del_fish(char *arg, char **res){
     if(aq__remove_fish(aquarium, arg) == 0){
-        asprintf(res, "> Impossible to find fish %s\n", arg);
+        asprintf(res, "NOK : Impossible to find fish %s\n", arg);
     }else{
-        asprintf(res, "Fish %s removed !\n", arg);
+        asprintf(res, "OK : Fish %s removed !\n", arg);
     }
 }

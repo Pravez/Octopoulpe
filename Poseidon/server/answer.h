@@ -44,9 +44,6 @@ int asw__iterate_fishes(any_t *res, any_t fish);
 
 void asw__get_fishes(char **res, struct client *cli);
 
-void
-asw__get_fishes_continuously(char *arg, char *res);
-
 void asw__ping(char *arg, char **res,
                struct client *client);
 

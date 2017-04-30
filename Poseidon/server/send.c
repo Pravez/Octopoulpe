@@ -22,7 +22,7 @@ char *send__client_id(struct thread_p *thread) {
         if(as != NULL && id != NULL && strtok(NULL, delim) == NULL){
             asprintf(&str, "%s %s %s", in, as, id);
         }else{
-            asprintf(&result, "> Please use : hello in as [view id]\n");
+            asprintf(&result, "NOK : Please use : hello in as [view id]\n");
             return result;
         }
     }
@@ -83,15 +83,15 @@ char *send__add_fish(struct client *client) {
     char *result = NULL;
 
     char *id = strtok(NULL, delim);
-    char *fish_type = strtok(NULL, delim);
+    //char *fish_type = strtok(NULL, delim);
     char *at = strtok(NULL, delim);
     char *rel_pos = strtok(NULL, delim);
     char *size = strtok(NULL, delim);
     char *strategy = strtok(NULL, delim);
 
-    if (id == NULL || fish_type == NULL || at == NULL || rel_pos == NULL || size == NULL ||
+    if (id == NULL || /*fish_type == NULL ||*/ at == NULL || rel_pos == NULL || size == NULL ||
         strategy == NULL || strtok(NULL, delim) != NULL) {
-        asprintf(&result, "> Please check you gave the correct arguments :\n addFish [fish name] [fish type] at "
+        asprintf(&result, "NOK : Please check you gave the correct arguments :\n addFish [fish name] at "
                 "[posX]x[posY], [width]x[height], [moving strategy]\n");
         return result;
     }
@@ -110,7 +110,8 @@ char *send__add_fish(struct client *client) {
     dimensions.width = atoi(strtok(size, val_delim));
     dimensions.height = atoi(strtok(NULL, val_delim));
 
-    asw__add_fish(id, pos, dimensions, fish_type, strategy, &result, client);
+    //Ignoring fish type
+    asw__add_fish(id, pos, dimensions, NULL, strategy, &result, client);
     return result;
 }
 
@@ -125,7 +126,7 @@ char *send__delete_fish() {
     if(id != NULL && strtok(NULL, delim) == NULL){
         asw__del_fish(id, &result);
     }else{
-        asprintf(&result, "> Please use : delFish [fish id]\n");
+        asprintf(&result, "NOK : Please use : delFish [fish id]\n");
     }
     return result;
 }
@@ -144,7 +145,7 @@ char *send__start_fish() {
     if(id != NULL && strtok(NULL, delim) == NULL){
         asw__start_fish(id, &result);
     }else{
-        asprintf(&result, "> Please use : startFish [fish id]\n");
+        asprintf(&result, "NOK : Please use : startFish [fish id]\n");
     }
 
     return result;
