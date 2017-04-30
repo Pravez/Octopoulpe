@@ -1,4 +1,4 @@
-﻿package sample;
+package sample;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -48,20 +48,10 @@ public class Aquarium extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        String test = "list [PoissonRouge at 90x4,10x4,5] [PoissonClown at 20x80,12x6,5]";
-
-        for(String s:test.split(" |\\[|\\]|\\,"))
-            System.out.println(s);
-
-        while(true) {
-            if (false)
-                break;
-        } ;
-
         //Creation of the console window
         console = new Console(this, 400, 400);
         console.show();
-        config();
+        //config();
         console.suggestInput("hello in as " + id);
 
         fishes = new ArrayList<Fish>();
