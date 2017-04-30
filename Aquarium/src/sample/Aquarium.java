@@ -41,6 +41,7 @@ public class Aquarium extends Application {
     //general attributes
     private ArrayList<Fish> fishes;
     private Console console;
+    private boolean continuously;
 
     //others
     private int konamiCode = 0;
@@ -55,6 +56,7 @@ public class Aquarium extends Application {
         console.suggestInput("hello in as " + id);
 
         fishes = new ArrayList<Fish>();
+        continuously = false;
 
         //initialisation of the aquarium
         final URL url = getClass().getResource("Images/bg.png");
@@ -84,7 +86,9 @@ public class Aquarium extends Application {
             public void handle(long now) {
                 //System.out.println("DEBUG : now = " + (now/1000000));
                 timer++;
-                console.checkMessage();
+                if (continuously)
+                    console.getAswGoal();
+                //console.checkMessage();
 
                 if (timeElpased >= pingTimeslice) {
                     timeElpased = 0;
@@ -159,9 +163,13 @@ public class Aquarium extends Application {
         System.out.println("DEBUG : SET SIZE");
         for (Fish f: fishes) {
             if (f.getName().contentEquals(name)) {
-                f.setSize(w, h);
+                f.setSize(w*width/100, h*height/100);
             }
         }
+    }
+
+    public void setContinuously(boolean c) {
+        continuously = c;
     }
 
     public boolean hasFish(String name) {

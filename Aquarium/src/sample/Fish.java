@@ -78,13 +78,15 @@ public class Fish {
         started=s;
     }
     public String toString(int width, int height) {
-        return (name + " at " + x + "x" + y+ ", " + (view1.getFitWidth()*100/width) + "x" + (view1.getFitHeight()*100/height) + (started ? "started": "not started"));
+        return (name + " at " + x + "x" + y+ ", " + (view1.getFitWidth()*100/width) + "x" + (view1.getFitHeight()*100/height) + (started ? " started": " not started"));
     }
 
     public void setSize(int w, int h) {
-        System.out.println("DEBUG : SET SIIIIIIIIIIIZE");
+        System.out.println("DEBUG : SET SIIIIIIIIIIIZE W=" + w + " AND H=" + h);
         view1.setFitHeight(h);
         view1.setFitWidth(w);
+        view2.setFitHeight(h);
+        view2.setFitWidth(w);
     }
 
     public void setPosition(int new_x, int new_y) {

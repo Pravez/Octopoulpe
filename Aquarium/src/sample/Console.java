@@ -40,6 +40,8 @@ public class Console extends Stage {
     private int width;
     private int height;
 
+    Thread continuously;
+
     public Console(Aquarium a, int w, int h) {
         aquarium = a;
         this.setTitle("Console");
@@ -310,6 +312,9 @@ public class Console extends Stage {
                 if (args.length == 1) {
                     send(action);
                     display.appendText("< OK" + System.lineSeparator());
+                    //continuously = new Thread(new ContinuouslyHandler(in, aquarium));
+                    //continuously.run();
+                    System.out.println("DEBUG : ON SORT DE CETTE MERDE");
                 }
                 else
                     display.appendText("< NOK. Usage : 'getFishesContinuously'" + System.lineSeparator());
@@ -340,7 +345,10 @@ public class Console extends Stage {
         if (socket != null && socket.isConnected()) {
             try {
                 String message = in.readLine();
+                System.out.println("DEBUG : ON ESSAI DE RECUPERER UN GOAL : " + message);
                 String[] args = message.split(" |\\[|\\]|\\,");
+                for (String s : args)
+                    System.out.println("DEBUG : ON A DANS ARGS: " + s);
                 for (int i = 2; i < args.length; i = i + 7) {
                     String n = args[i];
                     int x = Integer.parseInt(args[i + 2].split("x")[0]);
@@ -348,16 +356,19 @@ public class Console extends Stage {
                     int time = Integer.parseInt(args[i + 4]) * 1000;
                     int w = Integer.parseInt(args[i + 3].split("x")[0]);
                     int h = Integer.parseInt(args[i + 3].split("x")[0]);
-                    if (aquarium.hasFish(n))
+                    System.out.println("DEBUG : ON A W = : " + w + " ET H = " + h);
+                    if (!aquarium.hasFish(n))
                         aquarium.addFish(n, x, y, w, h);
                     else {
                         aquarium.setFishSize(n, w, h);
                         aquarium.setGoal(n, x, y, time);
                     }
+                    System.out.println("DEBUG : FIN GOAL");
                 }
             }catch (IOException e) {
                 System.out.println("DEBUG : Exception in send !!"); }
         }
+        System.out.println("FINI");
     }
 
     public void getAswHello() {
