@@ -66,8 +66,8 @@ void *send__regular_sender(void *arg) {
 
 void send__fishes_continuously(struct thread_p *thread) {
     thread->_client->_is_observer = TRUE;
-    v__add(observers, thread->_client, CLIENT);
-    pthread_create(&thread->_client->_continuous_sender, NULL, send__regular_sender, thread->_client);
+    v__add(observers, thread->_client, THREAD);
+    pthread_create(&thread->_client->_continuous_sender, NULL, send__regular_sender, thread);
 
     read(thread->_socket_fd, NULL, 256 - 1);
     pthread_kill(thread->_client->_continuous_sender, SIGNAL_STOP_SENDING);

@@ -133,7 +133,7 @@ void notify_observers(){
     LOCK(&mutex_observers);
     struct client* client;
     for(int i = 0; i < v__size(observers);i++){
-        client = GET_CLIENT_PTR(observers, i);
+        client = GET_THREAD_PTR(observers, i);
         if(client->_is_observer)
             pthread_kill(client->_continuous_sender, SIGNAL_NOTIFICATION);
     }

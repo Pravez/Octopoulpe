@@ -109,6 +109,8 @@ void server__wait_connection(struct server_p *server) {
         }else{
             break;
         }
+
+
     }
 
     if(entry != NULL)

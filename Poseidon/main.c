@@ -38,7 +38,7 @@ int main(int argc, char* argv[]){
         parse_config_file("controller.cfg");
         UPDATE_INTERVAL = _get_value(config_vector, "fish-update-interval");
         DISPLAY_TIMEOUT_VALUE = _get_value(config_vector, "display-timeout-value");
-        CONTROLLER_PORT = _get_value(config_vector, "controller-port")+2;
+        CONTROLLER_PORT = _get_value(config_vector, "controller-port")+3;
 
         //First we allocate the mutex and lock it
         pthread_mutex_init(&mutex_observers, NULL);

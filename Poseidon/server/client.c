@@ -119,6 +119,7 @@ void client__destroy(struct thread_entry *client_thread) {
 
     if (client_thread->_thread._client != NULL) {
         client_thread->_thread._client->_is_observer = FALSE;
+        client_thread->_thread._client->is_free = TRUE;
     }
 
     client_thread->_thread._client = NULL;

@@ -55,25 +55,24 @@ int asw__hello(char *arg, char **res, struct thread_p *thread) {
 
     if (arg != NULL) {
         char *argv[4];
-        char *cpy = malloc(100 * 4); // Copy of arg needed, else segfault with strtok
-        strcpy(cpy, arg);
+        char *cpy;
+        asprintf(&cpy, "%s", arg);
 
         argv[0] = strtok(cpy, " "); // in
         argv[1] = strtok(NULL, " "); // as
-        argv[2] = strtok(NULL, "\n"); // wanted id
-
-        free(cpy);
+        argv[2] = strtok(NULL, " "); // wanted id
 
         // Seeking for an available id
         if ((!strcmp(argv[0], "in") && !strcmp(argv[1], "as") && (argv[2] != NULL) && strcmp(argv[2], " ")) ||
             !strcmp(argv[0], "\n") || !strcmp(argv[0], " \n")) {
             id = available_id(strtok(argv[2], " "));
-        }
-            // Incorrect syntax for the command
-        else {
+        } else {
             asprintf(res, "Invalid syntax for 'hello'. Corrects syntaxes are :\n'hello in as <wanted id>'\n'hello'\n");
             return HELLO_INVALID;
         }
+
+        free(cpy);
+
     } else {
         id = available_id(NULL);
     }

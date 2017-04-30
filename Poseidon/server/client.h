@@ -21,6 +21,7 @@ struct client {
 struct thread_p{
     struct sockaddr _client_socket;
     int _addr_len;
+    int _socket_fd;
 
     pthread_t _thread;
     int _connected;
@@ -28,7 +29,6 @@ struct thread_p{
 
     struct client* _client;
     char _last_message[BUFFER_SIZE];
-    int _socket_fd;
 
     time_t _last_ping;
     pthread_mutex_t _time_mutex;
