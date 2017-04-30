@@ -1,4 +1,4 @@
-package sample;
+﻿package sample;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -51,7 +51,7 @@ public class Fish {
         String [] listFiles = listImage();
         for (String f: listFiles) {
             System.out.println("DEBUG : file in directory : " + f);
-             if (f.equalsIgnoreCase(pictureFile) && !f.equalsIgnoreCase("bg")) { //to prevent bug with background
+             if (f.equalsIgnoreCase(pictureFile) && !f.equalsIgnoreCase("bg") && !f.equalsIgnoreCase("bb")) { //to prevent bug with background
               System.out.println("DEBUG : NO EQUAAAL");
               exist = true;
              }
@@ -76,6 +76,11 @@ public class Fish {
 
     public String toString(int width, int height) {
         return (name + " at " + x + "x" + y+ ", " + (view1.getFitWidth()*100/width) + "x" + (view1.getFitHeight()*100/height) + ", " + mobilityModel);
+    }
+
+    public void setSize(int w, int h) {
+        view1.setFitHeight(h);
+        view1.setFitWidth(w);
     }
 
     public void setPosition(int new_x, int new_y) {

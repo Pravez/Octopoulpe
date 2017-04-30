@@ -1,4 +1,4 @@
-package sample;
+﻿package sample;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -12,10 +12,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -31,6 +29,8 @@ public class Console extends Stage {
     private ToolBar toolbar;
 
     private Socket socket;
+    private BufferedReader in;
+    private String id;
 
     private TextArea display;
     private TextField input;
@@ -63,6 +63,9 @@ public class Console extends Stage {
         this.setScene(new Scene(entry, w, h));
     }
 
+    public void suggestInput(String s) {
+        input.setText(s);
+    }
     private void initInput() {
         input = new TextField ();
         input.addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
@@ -75,7 +78,7 @@ public class Console extends Stage {
                     input.clear();
 
                     System.out.println("DEBUG : On a rentré : " + action);
-                    parser(action.split(" "));
+                    parser(action);
                     break;
                 case UP:
                     if (historyCount == 0) {
@@ -102,6 +105,22 @@ public class Console extends Stage {
                     break;
             }
         });
+    }
+
+    public void config(String address, int port) {
+        boolean connected = false;
+        while (!connected) {
+            try {
+                System.out.println("Try to connect at " + InetAddress.getLocalHost().toString().split("/")[1] + ", with port = " + port);
+                socket = new Socket(InetAddress.getByName(InetAddress.getLocalHost().toString().split("/")[1]), 2009); //TODO : change ADDRESS and port
+                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                connected = true;
+            } catch (IOException e) {
+                connected = false;
+                //System.out.println("Problème de connexion : " + e.toString());
+            }
+        }
+        System.out.println("CONNECTE !!!!!!!!!");
     }
 
     private void initTab() {
@@ -160,7 +179,42 @@ public class Console extends Stage {
             }
         });
 
-        toolbar = new ToolBar(tab1, new Separator(), tab2 );
+        Label tab3 = new Label("Fishes");
+        tab3.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    Alert alert = new Alert(INFORMATION);
+                    System.out.println("DEBUG : FISH");
+                    alert.setHeaderText("Fishes available : ");
+                    alert.setTitle("Fishes");
+                    alert.setHeight(200);
+                    alert.setContentText("Here the fishes available : " + System.lineSeparator() +getFishesAvailable() );
+
+                    alert.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.OK) {
+                            alert.close();
+                        }
+                    });
+                }
+            }
+        });
+
+        toolbar = new ToolBar(tab3, new Separator(), tab1, new Separator(), tab2);
+    }
+
+    private String getFishesAvailable() {
+        //TODO : use function in class Fish ?
+            File directory = new File(  System.getProperty("user.dir") + "/src/sample/Images/");
+            System.out.println("DEBUG : Directory " + directory.toString() + " exists : " + directory.exists());
+            String[] listFiles = directory.list();
+            String res = new String("");
+            for(int i=0;i<listFiles.length;i++) {
+                listFiles[i] = listFiles[i].substring(0, listFiles[i].indexOf("."));
+                if (!listFiles[i].equalsIgnoreCase("bg") && !listFiles[i].equalsIgnoreCase("bb")) { //to avaoid background
+                    res += "- " + listFiles[i] + System.lineSeparator();
+                }
+            }
+            return res;
     }
 
     private boolean checkMobilityModel(String m) {
@@ -177,109 +231,157 @@ public class Console extends Stage {
         return false;
     }
 
-    private void parser(String[] args) {
-        if (args[0].equalsIgnoreCase("addFish")) {
-            if (args.length == 7) {
-                //TODO : check for new name if it already exists
-                try {
-                    if (! checkMobilityModel(args[6]))
-                        display.appendText("< NOK : modèle de mobilité non supporté" + System.lineSeparator());
-                    else {
-                        aquarium.addFish(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), args[6]);
-                        display.appendText("< OK" + System.lineSeparator());
-                    }
-                } catch (NumberFormatException e) {display.appendText("< NOK ! " + e.getMessage().split("\"")[1] + " is supposed to be an integer." + System.lineSeparator());}
-
-            }
-            else
-                display.appendText("< NOK. Usage : 'addFish name x y w h modelMoving'" + System.lineSeparator());
-        }
-        else if (args[0].equalsIgnoreCase("delFish")) {
-            if (args.length == 2) {
-                //TODO : for every display ?
-                if (aquarium.hasFish(args[1])) {
-                    aquarium.removeFish(args[1]);
-                    display.appendText("< OK" + System.lineSeparator());
-                }
-                else
-                    display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
-            }
-            else
-                display.appendText("< Wrong syntax ! Usage : 'delFish name'" + System.lineSeparator());
-        }
-        else if (args[0].equalsIgnoreCase("status")) {
-            if (args.length == 1) {
-                if (socket != null && socket.isConnected()) {
-                    display.appendText("< OK : Connecté au contrôleur, " + aquarium.toString());
-                }
-                else
-                   display.appendText("< NOK : Connexion non trouvée " + System.lineSeparator());
-            }
-            else
-                display.appendText("< NOK. The command 'status' doesn't expect arguments." + System.lineSeparator());
-        }
-        else if (args[0].equalsIgnoreCase("startFish")) {
-            //TODO : Check if name exists (juste in the display ?)
-            if (args.length == 2) {
-                if (aquarium.hasFish(args[1])) {
-                    //TODO : actually start fish :3
-                    display.appendText("< OK" + System.lineSeparator());
-                }
-                else
-                    display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
-                System.out.println("DEBUG : Want to start the fish " + args[1]);
-
-            }
-            else
-                display.appendText("< NOK. Usage : 'startFish name'" + System.lineSeparator());
-        }
-        //TODO : remove the setGoal ?
-        else if (args[0].equalsIgnoreCase("setGoal")) {
-            //TODO : switch it to a receive order : go to ...
-            if (args.length == 5) {
-                if (aquarium.hasFish(args[1])) {
-
-                    try {
-                        aquarium.setGoal(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
-                        display.appendText("< OK" + System.lineSeparator());
-                    }
-                    catch (NumberFormatException e) {display.appendText("< NOK ! " + e.getMessage().split("\"")[1] + " is supposed to be an integer." + System.lineSeparator());}
-                }
-                else
-                    display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
-            }
-            else
-                display.appendText("< NOK. Usage : 'setGoal name x y delay'" + System.lineSeparator());
-        }
-        else if (args[0].equalsIgnoreCase("hello")) {
-            if (args.length == 4 || args.length == 1) {
+    private void parser(String action) {
+        String[] args = action.split (" ");
+        switch (args[0]) {
+            case "hello" :
                 //TODO : send ID to Controler with TCP
-                Boolean response = true;
-                if (response)
-                    display.appendText("< greeting " + args[3] + System.lineSeparator());
+                if (args.length == 4) {
+                    send(action);
+                }
+                else if (args.length == 1) {
+                    send(action);
+                }
                 else
-                    display.appendText("< no greeting" + System.lineSeparator());
-            }
-            else
-                display.appendText("< NOK. Usage : 'hello' or 'hello in as ID'" + System.lineSeparator());
+                    display.appendText("< NOK. Usage : 'hello' or 'hello in as ID'" + System.lineSeparator());
+                break;
+            case "status" :
+                if (args.length == 1) {
+                    if (socket != null && socket.isConnected()) {
+                        display.appendText("< OK : Connecté au contrôleur, " + aquarium.toString() + System.lineSeparator());
+                    }
+                    else
+                        display.appendText("< NOK : Connexion non trouvée."  + aquarium.toString() + System.lineSeparator());
+                }
+                else
+                    display.appendText("< NOK. The command 'status' doesn't expect arguments." + System.lineSeparator());
+                break;
+            case "addFish":
+                //TODO : check for new name if it already exists
+                if (args.length == 7) {
+                    try {
+                        if (!checkMobilityModel(args[6]))
+                            display.appendText("< NOK : modèle de mobilité non supporté" + System.lineSeparator());
+                        else {
+                            aquarium.addFish(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), Integer.parseInt(args[5]), args[6]);
+                            send(action);
+                            //TODO : Verify result
+                            display.appendText("< OK" + System.lineSeparator());
+                        }
+                    } catch (NumberFormatException e) {
+                        display.appendText("< NOK ! " + e.getMessage().split("\"")[1] + " is supposed to be an integer." + System.lineSeparator());
+                    }
+                }
+                else
+                    display.appendText("< NOK. Usage : 'addFish name x y w h modelMoving'" + System.lineSeparator());
+                break;
+            case "startFish":
+                //TODO : actually start fish :3
+                if (args.length == 2) {
+                    if (aquarium.hasFish(args[1])) {
+                        send(action);
+                        //TODO : Verify result
+                        display.appendText("< OK" + System.lineSeparator());
+                    }
+                    else
+                        display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
+                }
+                else
+                    display.appendText("< NOK. Usage : 'startFish name'" + System.lineSeparator());
+                break;
+            case "delFish":
+                if (args.length == 2) {
+                    if (aquarium.hasFish(args[1])) {
+                        send(action);
+                        aquarium.removeFish(args[1]);
+                        display.appendText("< OK" + System.lineSeparator());
+                    }
+                    else
+                        display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
+                }
+                else
+                    display.appendText("< Wrong syntax ! Usage : 'delFish name'" + System.lineSeparator());
+                break;
+            case "getFishes":
+                if (args.length == 1) {
+                    send(action);
+                    display.appendText("< connexion not established yet " + System.lineSeparator());
+                }
+                else
+                    display.appendText("< NOK. Usage : 'getFishes'" + System.lineSeparator());
+                break;
+            case "getFishesContinuously":
+                if (args.length == 1) {
+                    send(action);
+                    display.appendText("< connexion not established yet " + System.lineSeparator());
+                }
+                else
+                    display.appendText("< NOK. Usage : 'getFishesContinuously'" + System.lineSeparator());
+                break;
+            case "setGoal" :
+                //TODO : REMOVE
+                if (args.length == 5) {
+                    if (aquarium.hasFish(args[1])) {
+
+                        try {
+                            aquarium.setGoal(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
+                            display.appendText("< OK" + System.lineSeparator());
+                        }
+                        catch (NumberFormatException e) {display.appendText("< NOK ! " + e.getMessage().split("\"")[1] + " is supposed to be an integer." + System.lineSeparator());}
+                    }
+                    else
+                        display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
+                }
+                else
+                    display.appendText("< NOK. Usage : 'setGoal name x y delay'" + System.lineSeparator());
+                break;
+            default:
+                display.appendText("< NOK. Commande introuvable. (Les commandes sont disponible dans l'onglet)." + System.lineSeparator());
+                break;
         }
-        else if (args[0].equalsIgnoreCase("getFishes")) {
-            if (args.length == 1) {
-                //TODO : send demand to Controler with TCP : String[] fishes
-                display.appendText("< connexion not established yet " + System.lineSeparator());
+    }
+
+    public void checkMessage() {
+        /*if (socket.isConnected()) {
+            try {
+                String message = in.readLine();
+                System.out.println("DEBUG : We received : " + message);
+                display.appendText(message + System.lineSeparator());
+
+                if ( !message.isEmpty()) {
+                    String[] args = message.split(" ");
+                    switch (args[0]) {
+                        case "greeting" :
+                            id = args[1];
+                            break;
+                        case "no" :
+                            System.exit(0);
+                            break;
+                        case "list" :
+                            args = message.split(" |\\[|\\]|\\,");
+                            for (int i=2; i < args.length; i=i+7) {
+                                aquarium.setFishSize(args[i], Integer.parseInt(args[i+3].split("x")[0]), Integer.parseInt(args[i+3].split("x")[0]));
+                                aquarium.setGoal(args[i], Integer.parseInt(args[i+2].split("x")[0]), Integer.parseInt(args[i+2].split("x")[0]), Integer.parseInt(args[i+4]));
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            } catch (IOException e) {
+                System.out.println("DEBUG : Exception in reception !!");
             }
-            else
-                display.appendText("< NOK. Usage : 'getFishes'" + System.lineSeparator());
+        }*/
+    }
+
+    public void send(String s) {
+        if (socket.isConnected()) {
+            try {
+                PrintWriter out =  new PrintWriter(socket.getOutputStream());
+                out.println(s);
+                out.flush();
+            } catch (IOException e) {System.out.println("DEBUG : Exception in send !!");}
         }
-        else if (args[0].equalsIgnoreCase("getFishesContinuously")) {
-            if (args.length == 1) {
-                //TODO : send demand to Controler with TCP : String[] fishes
-                display.appendText("< connexion not established yet " + System.lineSeparator());
-            }
-            else
-                display.appendText("< NOK. Usage : 'getFishesContinuously'" + System.lineSeparator());
-        }
-        else
-            display.appendText("< NOK. Please read the help." + System.lineSeparator());
     }
 }
+ //https://openclassrooms.com/courses/introduction-aux-sockets-1
