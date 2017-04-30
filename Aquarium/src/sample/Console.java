@@ -108,11 +108,19 @@ public class Console extends Stage {
     }
 
     public void config(String address, int port) {
-        try {
-            socket = new Socket(InetAddress.getByName(address), port);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        boolean connected = false;
+        while (!connected) {
+            try {
+                System.out.println("Try to connect at " + InetAddress.getLocalHost().toString().split("/")[1] + ", with port = " + port);
+                socket = new Socket(InetAddress.getByName(InetAddress.getLocalHost().toString().split("/")[1]), 2009); //TODO : change ADDRESS and port
+                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                connected = true;
+            } catch (IOException e) {
+                connected = false;
+                //System.out.println("Problème de connexion : " + e.toString());
+            }
         }
-        catch (IOException e) {System.out.println("Problème de connexion");}
+        System.out.println("CONNECTE !!!!!!!!!");
     }
 
     private void initTab() {
@@ -230,23 +238,12 @@ public class Console extends Stage {
                 //TODO : send ID to Controler with TCP
                 if (args.length == 4) {
                     send(action);
-                    /*Boolean response = true;
-                    if (response)
-                        display.appendText("< greeting " + args[3] + System.lineSeparator());
-                    else
-                        display.appendText("< no greeting" + System.lineSeparator());*/
                 }
                 else if (args.length == 1) {
                     send(action);
-                    /*Boolean response = true;
-                    if (response)
-                        display.appendText("< greeting " + System.lineSeparator());
-                    else
-                        display.appendText("< no greeting" + System.lineSeparator());*/
                 }
                 else
                     display.appendText("< NOK. Usage : 'hello' or 'hello in as ID'" + System.lineSeparator());
-
                 break;
             case "status" :
                 if (args.length == 1) {
@@ -361,7 +358,7 @@ public class Console extends Stage {
                             System.exit(0);
                             break;
                         case "list" :
-                            args = message.split("\\W");
+                            args = message.split(" |\\[|\\]|\\,");
                             for (int i=2; i < args.length; i=i+7) {
                                 aquarium.setFishSize(args[i], Integer.parseInt(args[i+3].split("x")[0]), Integer.parseInt(args[i+3].split("x")[0]));
                                 aquarium.setGoal(args[i], Integer.parseInt(args[i+2].split("x")[0]), Integer.parseInt(args[i+2].split("x")[0]), Integer.parseInt(args[i+4]));
@@ -378,13 +375,13 @@ public class Console extends Stage {
     }
 
     public void send(String s) {
-        /*if (socket.isConnected()) {
+        if (socket.isConnected()) {
             try {
                 PrintWriter out =  new PrintWriter(socket.getOutputStream());
                 out.println(s);
                 out.flush();
             } catch (IOException e) {System.out.println("DEBUG : Exception in send !!");}
-        }*/
+        }
     }
 }
  //https://openclassrooms.com/courses/introduction-aux-sockets-1
