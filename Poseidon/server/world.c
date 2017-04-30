@@ -1,27 +1,18 @@
 #include <stdlib.h>
 #include <unistd.h>
-#include <time.h>
 #include <stdio.h>
 #include <pthread.h>
 #include <signal.h>
 
 #include "world.h"
 #include "../model/aquarium.h"
-#include "../model/fish.h"
-#include "../utility/vector.h"
-#include "../utility/data.h"
-#include "answer.h"
+#include "../server/client.h"
 
 extern struct aquarium *aquarium;
 extern struct vector* observers;
 extern pthread_mutex_t mutex_observers;
 
 static double update_rate;
-static int run;
-
-time_t world_last_sleep;
-int world_initialized;
-
 
 void *world_process(void *pVoid) {
     world_init();
@@ -32,8 +23,9 @@ void *world_process(void *pVoid) {
 
 int world_init() {
     srand((unsigned int) time(NULL));
-    update_rate = SPEED_RATE < 0 ? 1.0 / (-SPEED_RATE) : SPEED_RATE;
-    world_initialized = 1;
+    aquarium->_running = TRUE;
+    update_rate = UPDATE_INTERVAL < 0 ? 1.0 / (-UPDATE_INTERVAL) : UPDATE_INTERVAL;
+
 
     return 0;
 }
@@ -86,11 +78,11 @@ struct movement next_movement(struct fish *fish) {
 
 void update_view_content(struct aquarium_view *aqv, struct fish *fish) {
     if (hashmap_get(aqv->_fishes, fish->_id, NULL) == MAP_OK) {
-        if (!in_bounds(aqv->_inner._starting_position, aqv->_inner._dimensions, fish->_current)) {
+        if (!in_bounds(aqv->_outer._starting_position, aqv->_outer._dimensions, fish->_current)) {
             aqv__remove_fish(aqv, fish);
         }
     } else {
-        if (in_bounds(aqv->_inner._starting_position, aqv->_inner._dimensions, fish->_current)) {
+        if (in_bounds(aqv->_outer._starting_position, aqv->_outer._dimensions, fish->_current)) {
             aqv__add_fish(aqv, fish);
         }
     }
@@ -139,21 +131,19 @@ void update() {
 
 void notify_observers(){
     LOCK(&mutex_observers);
-    struct client* client;
+    struct thread_p* thread;
     for(int i = 0; i < v__size(observers);i++){
-        client = GET_CLIENT_PTR(observers, i);
-        if(client->_is_observer)
-            pthread_kill(client->_continuous_sender, SIGNAL_NOTIFICATION);
+        thread = GET_THREAD_PTR(observers, i);
+        if(thread->_client->_is_observer)
+            pthread_kill(thread->_client->_continuous_sender, SIGNAL_NOTIFICATION);
     }
     UNLOCK(&mutex_observers);
 }
 
 int world_loop() {
 
-    run = 1;
-
     //Need to implement an alarm to stop the while true
-    while (run) {
+    while (aquarium->_running) {
         update();
         notify_observers();
 

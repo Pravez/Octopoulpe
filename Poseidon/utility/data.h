@@ -3,6 +3,10 @@
 
 #include "tools.h"
 
+int UPDATE_INTERVAL;
+int DISPLAY_TIMEOUT_VALUE;
+int CONTROLLER_PORT;
+
 #define AQUARIUM_WIDTH 1000
 #define AQUARIUM_HEIGHT 1000
 #define AQUARIUM_DIMENSIONS (struct dimension){AQUARIUM_WIDTH, AQUARIUM_HEIGHT}
@@ -15,6 +19,7 @@
 
 #define SIGNAL_STOP_SENDING SIGUSR1
 #define SIGNAL_NOTIFICATION SIGUSR2
+#define SIGNAL_END_EVERYTHING SIGNAL_NOTIFICATION
 
 #define PARAM 2
 #define LISTEN_QUEUE 10
@@ -22,11 +27,11 @@
 
 #define DEFAULT_OBSERVERS_QTY 10
 #define TIME_BETWEEN_CHECKS 10
-#define MAXIMUM_IDLE_TIME 60
+#define MAXIMUM_IDLE_TIME DISPLAY_TIMEOUT_VALUE
 
 #define LOCK(mutex) pthread_mutex_lock(mutex)
 #define UNLOCK(mutex) pthread_mutex_unlock(mutex)
 
-int SPEED_RATE;
+#define BUFFER_SIZE 256
 
 #endif //POSEIDON_DATA_H

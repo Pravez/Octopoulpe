@@ -3,6 +3,8 @@
 #include <string.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <signal.h>
+#include <pthread.h>
 
 #include "view.h"
 #include "../utility/file.h"
@@ -15,6 +17,8 @@ const char *prompt = YELLOW"Octopoulple "YELLOWBOLD"$ > "RESET;
 static const char *delim = " ";
 
 extern struct aquarium* aquarium;
+extern pthread_t thread_server;
+extern pthread_t thread_world;
 
 void display_menu() {
     printf("Welcome to "REDBOLD"Octopoulpe"RESET" main menu ! Enter a command to continue ...\n");
@@ -44,35 +48,40 @@ int handle_line() {
 
     char *token;
 
+
     if (!strcmp(line, "quit") || !strcmp(line, "exit"))
         return 0;
     else if (!strcmp(line, "help") || !strcmp(line, "?"))
         display_help();
     else {
         token = strtok(line, delim);
+        if(token != NULL) {
+            //^C handling
+            if(*token == -1)
+                return 0;
 
-        if (!strcmp(token, "load")) {
-            cmd__call(LOAD);
-        } else if (!strcmp(token, "init")) {
-            cmd__call(INIT);
-        } else if (!strcmp(token, "show")) {
-            cmd__call(SHOW);
-        } else if (!strcmp(token, "add")) {
-            cmd__call(ADD);
-        } else if (!strcmp(token, "list")) {
-            cmd__call(LIST);
-        } else if (!strcmp(token, "delete")) {
-            cmd__call(DELETE);
-        } else if (!strcmp(token, "save")) {
-            cmd__call(SAVE);
-        } else {
-            printf("\t> Unrecognized command, use 'help' or '?' to list available commands\n");
+            if (!strcmp(token, "load")) {
+                cmd__call(LOAD);
+            } else if (!strcmp(token, "init")) {
+                cmd__call(INIT);
+            } else if (!strcmp(token, "show")) {
+                cmd__call(SHOW);
+            } else if (!strcmp(token, "add")) {
+                cmd__call(ADD);
+            } else if (!strcmp(token, "list")) {
+                cmd__call(LIST);
+            } else if (!strcmp(token, "delete")) {
+                cmd__call(DELETE);
+            } else if (!strcmp(token, "save")) {
+                cmd__call(SAVE);
+            } else {
+                printf("\t> Unrecognized command, use 'help' or '?' to list available commands\n");
+            }
+
+            //add_history(line);
+
         }
     }
-
-    /*if (line[0] != 0) {
-        add_history(line);
-    }*/
 
 
     return 1;
@@ -188,11 +197,11 @@ int cmd__add() {
 
             return 1;
         } else {
-            //Do other things if for instance add fish ...
+            printf("\t> Cannot add %s, unable to handle it.\n", string);
             return 0;
         }
     }else{
-        printf("\t> Please precise what thing you want to add\n");
+        printf("\t> Please precise what thing you want to add (view)\n");
         return 0;
     }
 }
@@ -257,6 +266,15 @@ void __init__() {
 }
 
 void __end__() {
+    printf("\t> Stopping server thread ...\n");
+    pthread_kill(thread_server, SIGNAL_END_EVERYTHING);
+    pthread_join(thread_server, NULL);
+
+    printf("\t> Stopping aquarium emulation thread ...\n");
+    aquarium->_running = FALSE;
+    pthread_join(thread_world, NULL);
+
+    printf("\t> Clearing data ...\n");
     if(aquarium != NULL) {
         aq__remove_aquarium(aquarium);
         free(aquarium);

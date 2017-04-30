@@ -1,4 +1,4 @@
-package sample;
+﻿package sample;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -396,7 +396,7 @@ public class Console extends Stage {
                 try {
                     String message = in.readLine();
                     display.appendText(message + System.lineSeparator());
-                    if (message.split(" ")[2].contentEquals("successfully"));
+                    if (message.split(" ")[3].contentEquals("successfully"));
                         aquarium.addFish(name, x, y, w, h);
                     answered=true;
                 } catch (IOException e) {

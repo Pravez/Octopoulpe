@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
+#include <signal.h>
 #include "server.h"
 #include "send.h"
 #include "../utility/data.h"
@@ -14,10 +15,8 @@ extern struct aquarium *aquarium;
 extern pthread_mutex_t mutex_observers;
 struct vector* observers;
 
-static const char *delim = SERVER_CMD_DELIMITER;
-static int thread_ids = 0;
 static int check_threads_connection = TRUE;
-static pthread_mutex_t threads_list_mutex;
+static struct server_p server;
 
 int server_working = TRUE;
 
@@ -25,12 +24,12 @@ int server_working = TRUE;
 
 void *server_process(void *arg) {
     LIST_INIT(&thread_head);
-    struct server_p server;
 
     //Then we launch listening
-    server__init(&server, *(int *) arg);
+    server__init(&server, CONTROLLER_PORT);
     server__wait_connection(&server);
-    return 0;
+
+    pthread_exit(NULL);
 }
 
 #endif //_PROCESS_
@@ -62,6 +61,28 @@ void server__init(struct server_p *server, int port) {
 
     //We set the mutex for the threads list
     pthread_mutex_init(&threads_list_mutex, NULL);
+
+    //If we get a sigstop, we stop everything
+    signal(SIGNAL_END_EVERYTHING, server__stop);
+}
+
+void server__stop(int signo){
+    if(signo == SIGNAL_END_EVERYTHING){
+        server_working = FALSE;
+        check_threads_connection = FALSE;
+
+        struct thread_entry* en;
+        LIST_FOREACH(en, &thread_head, thread_entries){
+            en->_thread._connected = FALSE;
+            pthread_join(en->_thread._thread, NULL);
+            LIST_REMOVE(en, thread_entries);
+            free(en);
+        }
+
+        pthread_join(server._link_keeper, NULL);
+
+        shutdown(server._listen_socket_fd, SHUT_RDWR);
+    }
 }
 
 void server__wait_connection(struct server_p *server) {
@@ -76,8 +97,8 @@ void server__wait_connection(struct server_p *server) {
         entry->_thread._addr_len = sizeof(entry->_thread._client_socket);
 
         //Waiting for a connection
-        if ((entry->_thread._client._socket_fd = accept(server->_listen_socket_fd, &entry->_thread._client_socket,
-                                                (socklen_t *) &entry->_thread._addr_len))){
+        if ((entry->_thread._socket_fd = accept(server->_listen_socket_fd, &entry->_thread._client_socket,
+                                                (socklen_t *) &entry->_thread._addr_len)) != -1){
 
             LOCK(&threads_list_mutex);
             LIST_INSERT_HEAD(&thread_head, entry, thread_entries);
@@ -88,6 +109,8 @@ void server__wait_connection(struct server_p *server) {
         }else{
             break;
         }
+
+
     }
 
     if(entry != NULL)
@@ -106,13 +129,15 @@ void* server__check_connections(void* args){
 
             LOCK(&threads_list_mutex);
             LIST_FOREACH(en, &thread_head, thread_entries){
-                LOCK(&en->_thread._client._time_mutex);
-                if(difftime(now, en->_thread._client._last_ping) > (double) MAXIMUM_IDLE_TIME){
-                    _console_log(LOG_MEDIUM, "Thread has not sent anything for 10 seconds, terminating it ...");
-                    en->_thread._thread_working = FALSE;
-                    shutdown(en->_thread._client._socket_fd, SHUT_RD);
+                if(en->_thread._authenticated){
+                    LOCK(&en->_thread._time_mutex);
+                    if(difftime(now, en->_thread._last_ping) > (double) MAXIMUM_IDLE_TIME){
+                        _console_log(LOG_MEDIUM, "Thread has not sent anything for 10 seconds, terminating it ...");
+                        en->_thread._connected = FALSE;
+                        shutdown(en->_thread._socket_fd, SHUT_RD);
+                    }
+                    UNLOCK(&en->_thread._time_mutex);
                 }
-                UNLOCK(&en->_thread._client._time_mutex);
             }
             UNLOCK(&threads_list_mutex);
         }
@@ -121,112 +146,6 @@ void* server__check_connections(void* args){
     }
 
     pthread_exit(NULL);
-}
-
-void *client__start(void *arg) {
-
-    struct thread_entry *entry = (struct thread_entry *) arg;
-    struct thread_p* thread = &entry->_thread;
-    int code_return;
-    char *response;
-
-    client__init(thread);
-
-    //If something happened during actions that needs to stop everything
-    //meaning if the client is still sending messages, and connected
-    while (thread->_thread_working && thread->_client._connected) {
-        //We clear entire array
-        bzero(thread->_last_message, BUFFER_SIZE);
-
-        code_return = (int) read(thread->_client._socket_fd, thread->_last_message, BUFFER_SIZE - 1);
-        CHK_ERROR(code_return, "Error reading from socket")
-
-        if(thread->_thread_working) {
-            //We update last time client sent a message
-            LOCK(&thread->_client._time_mutex);
-            time(&thread->_client._last_ping);
-            UNLOCK(&thread->_client._time_mutex);
-        }
-
-        if (code_return == 2) {
-            //fix the segfault in case of empty message
-            code_return = (int) write(thread->_client._socket_fd, "\n", 1);
-            CHK_ERROR(code_return, "Error writing to socket")
-
-        } else {
-            //We parse command
-            response = client__parse_command(thread->_last_message, &thread->_client);
-
-            //We write answer
-            if(response != NULL){
-                code_return = (int) write(thread->_client._socket_fd, response, strlen(response));
-                CHK_ERROR(code_return, "Error writing to socket");
-            }
-        }
-    }
-
-    client__destroy(entry);
-    pthread_exit(NULL);
-}
-
-char *client__parse_command(char buffer[BUFFER_SIZE], struct client *client) {
-
-    char *cmd;
-    asprintf(&cmd, "%s", buffer);
-
-    cmd[strlen(cmd) - 2] = '\0';
-
-    char *token = strtok(cmd, delim);
-    if(token == NULL){
-        //The client closed brutally
-        client->_connected = FALSE;
-        return "\0";
-    }
-
-    if (!strcmp(token, "hello")) {
-        if(client->id != NULL){
-            return "Already authenticated\n";
-        }
-        return send__client_id(client);
-    }else if(client->id != NULL){
-        if (!strcmp(token, "getFishes")) {
-            return send__fishes(client);
-        } else if (!strcmp(token, "getFishesContinuously")) {
-            send__fishes_continuously(client);
-            return "End of transaction";
-        } else if (!strcmp(token, "log")) {
-            return send__logout(client);
-        } else if (!strcmp(token, "ping")) {
-            return send__ping(client);
-        } else if (!strcmp(token, "addFish")) {
-            return send__add_fish(client);
-        } else if (!strcmp(token, "delFish")) {
-            return send__delete_fish(client);
-        } else if (!strcmp(token, "startFish")) {
-            return send__start_fish();
-        }
-    } else{
-        return "Please authenticate yourself with a `hello` command first\n";
-    }
-
-    free(cmd);
-    return "Unknown command\n";
-
-}
-
-void client__init(struct thread_p* client_thread){
-    time(&client_thread->_client._last_ping);
-    client_thread->_client._is_observer = FALSE;
-    client_thread->_client._connected = TRUE;
-    client_thread->_thread_working = TRUE;
-    pthread_mutex_init(&client_thread->_client._time_mutex, NULL);
-}
-
-void client__destroy(struct thread_entry* client_thread){
-    LIST_REMOVE(client_thread, thread_entries);
-    close(client_thread->_thread._client._socket_fd);
-    free(client_thread->_thread._client.id);
-    free(client_thread);
 }
 
 #ifndef _PROCESS_

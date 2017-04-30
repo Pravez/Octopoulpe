@@ -7,6 +7,7 @@
 void * world_process(void *pVoid);
 int world_init();
 int world_loop();
+void world_end(int signo);
 int update_fishes(any_t nothing, any_t item);
 void update_view_content(struct aquarium_view* aqv, struct fish* fish);
 void update();

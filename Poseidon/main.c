@@ -5,12 +5,9 @@
 #include "server/parser.h"
 #include "server/server.h"
 #include "model/aquarium.h"
-#include "utility/tools.h"
 #include "view/view.h"
-#include "utility/data.h"
 #include "server/world.h"
 
-#include "server/answer.h"
 
 extern struct _tvector* config_vector;
 struct aquarium* aquarium;
@@ -23,59 +20,48 @@ pthread_t thread_world;
 
 int main(int argc, char* argv[]){
 
-    //First we allocate the mutex and lock it
-    pthread_mutex_init(&mutex_observers, NULL);
-    pthread_mutex_lock(&mutex_observers);
+    _set_verbosity(TRUE);
+    _console_log(LOG_LOW, "Starting Octopoulpe");
+    _console_log(LOG_LOW, "Initializing values ...");
 
     // Initialisation of the aquarium
     aquarium = malloc(sizeof(struct aquarium));
     aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
     
     char* view1 = aq__add_view(aquarium, (struct position) {250, 250}, (struct dimension){250, 250}, "N1");
-    //char* view2 = aq__add_view(aquarium, (struct position) {100, 100}, (struct dimension) {900, 900}, "N2");
 
     //Job to do with config file ... (before launching server)
-    parse_config_file("controller.cfg");
-    int port = _get_value(config_vector, "controller-port");
+    if(access("controller.cfg", F_OK) != -1) {
 
-    SPEED_RATE = _get_value(config_vector, "fish-update-interval");
+        //We parse config file
+        parse_config_file("controller.cfg");
+        UPDATE_INTERVAL = _get_value(config_vector, "fish-update-interval");
+        DISPLAY_TIMEOUT_VALUE = _get_value(config_vector, "display-timeout-value");
+        CONTROLLER_PORT = _get_value(config_vector, "controller-port")+4;
+        _delete_tvector(config_vector);
+        _console_log(LOG_LOW, "Successfully parsed config file");
 
-    CHK_ERROR(pthread_create(&thread_world, NULL, world_process , NULL), "world thread");
-    CHK_ERROR(pthread_create(&thread_menu, NULL, main_menu, NULL), "main_menu thread")
-    CHK_ERROR(pthread_create(&thread_server, NULL, server_process, &port), "server thread");
+        //First we allocate the mutex and lock it
+        pthread_mutex_init(&mutex_observers, NULL);
+        pthread_mutex_lock(&mutex_observers);
 
-    printf("Display timeout value : %d\n", _get_value(config_vector, "fish-update-interval"));
-    _delete_tvector(config_vector);
-
-    _set_verbosity(FALSE);
-    _console_log(LOG_HIGH, "BIG PROBLEM");
-    _console_log(LOG_LOW, "simple log");
-
-    struct dimension def = (struct dimension){1, 1};
-
-    //aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 20, "jeanmi", HORIZONTAL, def, SPEED_RATE));
-    //aq__add_fish_to_aqv(aquarium, view1, fish__create(BLOBFISH, 10, 30, "jeanma", HORIZONTAL, def, SPEED_RATE));
-    //aq__add_fish_to_aqv(aquarium, view1, fish__create(OCTOPUS, 300, 300, "jeanmo", HORIZONTAL, def, SPEED_RATE));
-    //aq__add_fish_to_aqv(aquarium, view1, fish__create(OCTOPUS, 400, 400, "jeanbite", HORIZONTAL, def, SPEED_RATE));
-    //aq__set_fish_running_state(aquarium, "jeanmi", 1);
-    //aq__set_fish_running_state(aquarium, "jeanma", 1);
-    //aq__set_fish_running_state(aquarium, "jeanmo", 1);
-    //aq__set_fish_running_state(aquarium, "jeanmbite", 1);
+        _console_log(LOG_LOW, "Launching threads ...");
+        CHK_ERROR(pthread_create(&thread_world, NULL, world_process, NULL), "world thread");
+        CHK_ERROR(pthread_create(&thread_menu, NULL, main_menu, NULL), "main_menu thread")
+        CHK_ERROR(pthread_create(&thread_server, NULL, server_process, NULL), "server thread");
+        _console_log(LOG_LOW, "Done !");
 
 
-    //aq__remove_fish(aquarium, "jeanbite");
+        pthread_join(thread_server, NULL);
+        pthread_join(thread_menu, NULL);
 
-    display_aquarium(aquarium);
+        pthread_mutex_destroy(&mutex_observers);
 
-    //aq__remove_fish(aquarium, "jeanmi");
-    //aq__remove_fish(aquarium, "jeanma");
-    display_aquarium(aquarium);
+        return EXIT_SUCCESS;
+    }else{
+        _console_log(LOG_HIGH, "Impossible to find controller.cfg config file");
+    }
 
-    pthread_join(thread_menu, NULL);
-    pthread_join(thread_server, NULL);
-    pthread_join(thread_world, NULL);
-
-    return EXIT_SUCCESS;
 
     // To test : a false aquarium
     /*    aquarium = malloc(sizeof(struct aquarium));

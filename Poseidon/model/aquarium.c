@@ -98,28 +98,26 @@ int get_aquarium_view_position(struct aquarium *aquarium, char *view_id) {
     return -1;
 }
 
-int removal_iterator(any_t aquarium, any_t fish) {
-    struct aquarium *aqua = aquarium;
-    struct fish *f = fish;
-    if (aquarium == NULL)
-        return MAP_MISSING;
+int removal_iterator(any_t aquarium_view, any_t fish) {
+    struct aquarium_view *aqua = aquarium_view;
+    char *f = ((struct fish*) fish)->_id;
 
-    return hashmap_put(aqua->_fishes, f->_id, f);
+    return hashmap_remove(aqua->_fishes, f);
 }
 
 void aq__remove_aquarium_view(struct aquarium *aquarium, char *view_id) {
 
     struct aquarium_view *view = aq__get_view_by_id(aquarium, view_id);
 
-    hashmap_iterate(aquarium->_fishes, (PFany) removal_iterator, aquarium);
+    hashmap_iterate(aquarium->_fishes, (PFany) removal_iterator, view);
 
     v__remove_by_data(&aquarium->_views, view);
-    aqv__remove_aquarium_view(view);
-
-    free(view);
 
     asw__remove_view(view_id);
 
+    aqv__remove_aquarium_view(view);
+
+    free(view);
 }
 
 struct array aq__get_views_ids(struct aquarium *aquarium) {
@@ -136,13 +134,12 @@ struct array aq__get_views_ids(struct aquarium *aquarium) {
 }
 
 void aq__remove_aquarium(struct aquarium *aquarium) {
-    hashmap_iterate(aquarium->_fishes, (PFany) fish__free, NULL);
-    hashmap_free(aquarium->_fishes);
-
     for (int i = 0; i < v__size(&aquarium->_views); i++) {
-        aqv__remove_aquarium_view(GET_VIEW_PTR(&aquarium->_views, i));
+        aq__remove_aquarium_view(aquarium, GET_VIEW_PTR(&aquarium->_views, i)->_id);
     }
 
+    hashmap_iterate(aquarium->_fishes, (PFany) fish__free, NULL);
+    hashmap_free(aquarium->_fishes);
     v__destroy(&aquarium->_views);
 
     asw__remove_aquarium();

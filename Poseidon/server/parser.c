@@ -30,7 +30,10 @@ void parse_config_file(const char* file){
         string = strtok(NULL, "=");
         temp_int = atoi(string);
         _add_tuple(config_vector, temp_string, temp_int);
+        free(temp_string);
     }
+
+    free(line);
 
     fclose(conf_file);
 }
