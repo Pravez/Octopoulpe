@@ -82,11 +82,11 @@ int asw__hello(char *arg, char **res, struct thread_p *thread) {
         thread->_client = id;
         thread->_client->is_free = FALSE;
         thread->_authenticated = TRUE;
-        asprintf(res, "OK : greeting %s\n", thread->_client->id);
+        asprintf(res, "greeting %s\n", thread->_client->id);
         return HELLO_SUCCESS;
     }
     // Failed request
-    asprintf(res, "NOK : no greeting\n");
+    asprintf(res, "no greeting\n");
     return HELLO_FAILURE;
 }
 
