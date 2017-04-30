@@ -11,6 +11,7 @@ struct aquarium{
     struct dimension _dimensions;
     struct vector _views;
     map_t _fishes;
+    int _running;
 };
 
 void aq__initialize_aquarium(struct aquarium* aquarium, struct dimension dimension);

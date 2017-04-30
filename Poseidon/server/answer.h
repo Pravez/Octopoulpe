@@ -4,28 +4,14 @@
 #include <sys/queue.h>
 #include <pthread.h>
 #include <time.h>
+
+#include "client.h"
 #include "../utility/hashmap.h"
 #include "../utility/tools.h"
 
 #define HELLO_SUCCESS 0
 #define HELLO_FAILURE 1
 #define HELLO_INVALID 2
-
-struct client {
-    char *id;
-    int is_free;
-    int _connected;
-    struct aquarium_view *aqv;
-    LIST_ENTRY(client) entries;
-
-    pthread_t _continuous_sender;
-    int _is_observer;
-
-    int _socket_fd;
-
-    time_t _last_ping;
-    pthread_mutex_t _time_mutex;
-};
 
 /* Functions for the server thread */
 /**

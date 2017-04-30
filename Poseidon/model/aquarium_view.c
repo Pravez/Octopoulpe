@@ -42,5 +42,6 @@ int aqv__get_fish_qty(struct aquarium_view *aqv) {
 }
 
 void aqv__remove_aquarium_view(struct aquarium_view *aqv) {
+    free(aqv->_id);
     hashmap_free(aqv->_fishes);
 }

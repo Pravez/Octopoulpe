@@ -2,6 +2,7 @@
 #define POSEIDON_SEND_H
 
 #include "answer.h"
+#include "client.h"
 
 char *send__client_id(struct client *client);
 char* send__fishes(struct client* client);
@@ -14,6 +15,7 @@ char* send__logout(struct client* client);
 char* send__ping(struct client* client);
 char* send__start_fish();
 char* send__logout(struct client* client);
+char* send__client_id(struct client* client);
 
 
 

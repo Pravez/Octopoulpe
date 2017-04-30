@@ -1,27 +1,18 @@
 #include <stdlib.h>
 #include <unistd.h>
-#include <time.h>
 #include <stdio.h>
 #include <pthread.h>
 #include <signal.h>
 
 #include "world.h"
 #include "../model/aquarium.h"
-#include "../model/fish.h"
-#include "../utility/vector.h"
-#include "../utility/data.h"
-#include "answer.h"
+#include "../server/client.h"
 
 extern struct aquarium *aquarium;
 extern struct vector* observers;
 extern pthread_mutex_t mutex_observers;
 
 static double update_rate;
-static int run;
-
-time_t world_last_sleep;
-int world_initialized;
-
 
 void *world_process(void *pVoid) {
     world_init();
@@ -32,8 +23,9 @@ void *world_process(void *pVoid) {
 
 int world_init() {
     srand((unsigned int) time(NULL));
-    update_rate = SPEED_RATE < 0 ? 1.0 / (-SPEED_RATE) : SPEED_RATE;
-    world_initialized = 1;
+    aquarium->_running = TRUE;
+    update_rate = UPDATE_INTERVAL < 0 ? 1.0 / (-UPDATE_INTERVAL) : UPDATE_INTERVAL;
+
 
     return 0;
 }
@@ -150,10 +142,8 @@ void notify_observers(){
 
 int world_loop() {
 
-    run = 1;
-
     //Need to implement an alarm to stop the while true
-    while (run) {
+    while (aquarium->_running) {
         update();
         notify_observers();
 

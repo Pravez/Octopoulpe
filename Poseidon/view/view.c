@@ -3,6 +3,8 @@
 #include <string.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <signal.h>
+#include <pthread.h>
 
 #include "view.h"
 #include "../utility/file.h"
@@ -15,6 +17,8 @@ const char *prompt = YELLOW"Octopoulple "YELLOWBOLD"$ > "RESET;
 static const char *delim = " ";
 
 extern struct aquarium* aquarium;
+extern pthread_t thread_server;
+extern pthread_t thread_world;
 
 void display_menu() {
     printf("Welcome to "REDBOLD"Octopoulpe"RESET" main menu ! Enter a command to continue ...\n");
@@ -257,6 +261,15 @@ void __init__() {
 }
 
 void __end__() {
+    printf("\t> Stopping server thread ...\n");
+    pthread_kill(thread_server, SIGNAL_END_EVERYTHING);
+    pthread_join(thread_server, NULL);
+
+    printf("\t> Stopping aquarium emulation thread ...\n");
+    aquarium->_running = FALSE;
+    pthread_join(thread_world, NULL);
+
+    printf("\t> Clearing data ...\n");
     if(aquarium != NULL) {
         aq__remove_aquarium(aquarium);
         free(aquarium);

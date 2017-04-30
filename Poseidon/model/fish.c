@@ -16,7 +16,7 @@ struct fish* fish__create(enum fish_type type, int x, int y, char* id, enum MOVI
     f->_goal = __position(x, y);
     f->_cover = dimension;
     f->_type = type;
-    f->_speed_rate = SPEED_RATE < 0 ? 1.0/(-SPEED_RATE) : SPEED_RATE;
+    f->_speed_rate = UPDATE_INTERVAL < 0 ? 1.0/(-UPDATE_INTERVAL) : UPDATE_INTERVAL;
     f->_strategy = strategy;
     f->_running = 0;
 

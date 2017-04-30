@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "answer.h"
 #include "../model/aquarium.h"
 
@@ -197,8 +198,6 @@ void asw__remove_view(char *id) {
     LIST_FOREACH(j, &clients, entries) {
         if (!strcmp(j->id, id)) {
             LIST_REMOVE(j, entries);
-            free(j->id);
-            free(j);
             return;
         }
     }
@@ -270,7 +269,7 @@ asw__add_fish(char *id, struct relative_position pos, struct dimension dimension
     }
 
     struct fish *fish = fish__create(type, (int) real_position.x, (int) real_position.y, id, mv_strategy, dimension,
-                                     SPEED_RATE);
+                                     UPDATE_INTERVAL);
     aq__add_fish_to_aqv(aquarium, cli->aqv->_id, fish);
     asprintf(res, "Fish successfully added\n");
 }
@@ -290,31 +289,3 @@ void asw__del_fish(char *arg, char **res){
         asprintf(res, "Fish %s removed !\n", arg);
     }
 }
-
-/*
-int main(int argc, char *argv[]) {
-// To test : a false aquarium
-    aq__initialize_aquarium(&aquarium, (struct dimension) {1000, 1000});
-    aq__add_view(&aquarium, (struct position) {250, 250}, (struct dimension) {500, 500}, "Cookie");
-    aq__add_view(&aquarium, (struct position) {100, 100}, (struct dimension) {900, 900}, "Donald");
-    // end of the test
-
-    char * res = malloc(sizeof(400));
-    struct client *henry = malloc(sizeof(struct client));
-    henry->id = NULL;
-    asw__hello("\n", res, henry);
-    printf("main\t%s", res);
-    asw__hello("\n", res, henry);
-    printf("main\t%s", res);
-    asw__hello("\n", res, henry);
-    printf("main\t%s", res);
-
-    // Henry a la vue "Cookie"
-    aq__add_fish_to_aqv(&aquarium,"Cookie",fish__create(BLOBFISH, 10, 20, "Bibi",4,5));
-    aq__add_fish_to_aqv(&aquarium,"Cookie",fish__create(BLOBFISH, 40, 50, "Bobo",4,5));
-
-    asw__get_fishes("\n",res,henry);
-    printf("main\t%s",res);
-    return EXIT_SUCCESS;
-}
-*/
