@@ -12,4 +12,5 @@ find_package(Threads REQUIRED)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wall -lreadline -lpthread -D_PROCESS_ -D_GNU_SOURCE")
 
 
-add_subdirectory(Poseidon)
+add_subdirectory(Poseidon/src)
+add_subdirectory(Poseidon/tst)
