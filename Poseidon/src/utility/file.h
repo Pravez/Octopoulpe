@@ -6,7 +6,7 @@
 #include <string.h>
 
 #include "../model/aquarium.h"
-#include "../utility/tools.h"
+#include "tools.h"
 
 struct aquarium_view_properties{
     struct position _position;

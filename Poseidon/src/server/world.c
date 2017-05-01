@@ -6,7 +6,7 @@
 
 #include "world.h"
 #include "../model/aquarium.h"
-#include "../server/client.h"
+#include "client.h"
 
 extern struct aquarium *aquarium;
 extern struct vector* observers;
