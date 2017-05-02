@@ -21,8 +21,8 @@ pthread_t thread_world;
 int main(int argc, char* argv[]){
 
     _set_verbosity(TRUE);
-    _console_log(LOG_LOW, "Starting Octopoulpe");
-    _console_log(LOG_LOW, "Initializing values ...");
+    CONSOLE_LOG_INFO("Starting Octopoulpe");
+    CONSOLE_LOG_INFO("Initializing values ...");
 
     // Initialisation of the aquarium
     aquarium = malloc(sizeof(struct aquarium));
@@ -39,17 +39,17 @@ int main(int argc, char* argv[]){
         DISPLAY_TIMEOUT_VALUE = _get_value(config_vector, "display-timeout-value");
         CONTROLLER_PORT = _get_value(config_vector, "controller-port")+4;
         _delete_tvector(config_vector);
-        _console_log(LOG_LOW, "Successfully parsed config file");
+        CONSOLE_LOG_INFO("Successfully parsed config file");
 
         //First we allocate the mutex and lock it
         pthread_mutex_init(&mutex_observers, NULL);
         pthread_mutex_lock(&mutex_observers);
 
-        _console_log(LOG_LOW, "Launching threads ...");
+        CONSOLE_LOG_INFO("Launching threads ...");
         CHK_ERROR(pthread_create(&thread_world, NULL, world_process, NULL), "world thread");
         CHK_ERROR(pthread_create(&thread_menu, NULL, main_menu, NULL), "main_menu thread")
         CHK_ERROR(pthread_create(&thread_server, NULL, server_process, NULL), "server thread");
-        _console_log(LOG_LOW, "Done !");
+        CONSOLE_LOG_INFO("Done !");
 
 
         pthread_join(thread_server, NULL);
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]){
 
         return EXIT_SUCCESS;
     }else{
-        _console_log(LOG_HIGH, "Impossible to find controller.cfg config file");
+        CONSOLE_LOG_ERR("Impossible to find controller.cfg config file");
     }
 
 

@@ -1,6 +1,8 @@
 #ifndef POSEIDON_TOOLS_H
 #define POSEIDON_TOOLS_H
 
+#include "data.h"
+
 #define boolean int
 #define TRUE 1
 #define FALSE 0
@@ -10,6 +12,18 @@
 #define CHCK_NULL_INT(x, name) if(x == NULL){ fprintf(stderr, "FUNC %s : A VALUE IS NULL : %s\n", __func__, name); return -1; }
 #define RAND_IN_RANGE(range, min) rand() % range + min
 
+#define RED "\e[31m"
+#define YELLOW "\e[33m"
+#define BOLD "\e[1m"
+#define REDBOLD "\e[31;1m"
+#define YELLOWBOLD "\e[33;1m"
+#define RESET "\e[0m"
+
+boolean verbosity;
+
+#define CONSOLE_LOG_ERR(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ err ] \t"REDBOLD message RESET"\n", ##__VA_ARGS__)
+#define CONSOLE_LOG_WARN(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ warn ] \t"YELLOW message RESET"\n", ##__VA_ARGS__)
+#define CONSOLE_LOG_INFO(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ info ] \t" message "\n", ##__VA_ARGS__);
 
 struct position {
     double x;
@@ -48,23 +62,7 @@ struct dimension __dimension(int width, int height);
 boolean check_in_screen(struct position s_pos, struct dimension dimensions, struct position position);
 
 
-#define LOG_HIGH 4
-#define LOG_MEDIUM 3
-#define LOG_LOW 2
-#define LOG_SECTION 1
-
-#define RED "\e[31m"
-#define YELLOW "\e[33m"
-#define BOLD "\e[1m"
-#define REDBOLD "\e[31;1m"
-#define YELLOWBOLD "\e[33;1m"
-#define RESET "\e[0m"
-
-boolean verbosity;
-
 void _set_verbosity(int value);
-
-void _console_log(int priority, char *messages);
 
 char *concatenate_strings(int qty, ...);
 

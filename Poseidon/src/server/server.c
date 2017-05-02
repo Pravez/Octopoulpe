@@ -132,7 +132,7 @@ void* server__check_connections(void* args){
                 if(en->_thread._authenticated){
                     LOCK(&en->_thread._time_mutex);
                     if(difftime(now, en->_thread._last_ping) > (double) MAXIMUM_IDLE_TIME){
-                        _console_log(LOG_MEDIUM, "Thread has not sent anything for 10 seconds, terminating it ...");
+                        CONSOLE_LOG_WARN("Thread has not sent anything for %d seconds, terminating it ...", MAXIMUM_IDLE_TIME);
                         en->_thread._connected = FALSE;
                         shutdown(en->_thread._socket_fd, SHUT_RD);
                     }

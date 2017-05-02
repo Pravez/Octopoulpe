@@ -28,7 +28,10 @@ void *client__start(void *arg) {
         bzero(thread->_last_message, BUFFER_SIZE);
 
         code_return = (int) read(thread->_socket_fd, thread->_last_message, BUFFER_SIZE - 1);
-        CHK_ERROR(code_return, "Error reading from socket")
+        if(code_return == -1){
+            //Error reading from socket
+            CONSOLE_LOG_ERR("Error reading from socket");
+        }
 
         if (thread->_connected) {
             //We update last time client sent a message
@@ -81,14 +84,14 @@ char *client__parse_command(char buffer[BUFFER_SIZE], struct thread_p *thread) {
         }
     } else if (!strcmp(token, "log")) {
         return send__logout(thread);
-    } else if (thread->_client->id != NULL) {
+    } else if (!strcmp(token, "ping")) {
+        return send__ping(thread->_client);
+    } else if (thread->_client != NULL) {
         if (!strcmp(token, "getFishes")) {
             return send__fishes(thread->_client);
         } else if (!strcmp(token, "getFishesContinuously")) {
             send__fishes_continuously(thread);
             return "End of transaction";
-        } else if (!strcmp(token, "ping")) {
-            return send__ping(thread->_client);
         } else if (!strcmp(token, "addFish")) {
             return send__add_fish(thread->_client);
         } else if (!strcmp(token, "delFish")) {
