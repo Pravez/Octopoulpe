@@ -24,9 +24,9 @@ public class Aquarium extends Application {
 
     //config attributes
     private String id;
-    private int pingTimeslice;
+    private long pingTimeslice; //in millisecondes
     private String imagesURL;
-    protected int timeElpased = 0;
+    protected long timeElpased = 0;
 
     //animation attributes
     private int timer = 0;
@@ -52,7 +52,7 @@ public class Aquarium extends Application {
         //Creation of the console window
         console = new Console(this, 400, 400);
         console.show();
-        //config();
+        config();
         console.suggestInput("hello in as " + id);
 
         fishes = new ArrayList<Fish>();
@@ -88,7 +88,7 @@ public class Aquarium extends Application {
                 //if (continuously)
                 //    console.parser.communicator.getAswGoal();
 
-                if (timeElpased >= pingTimeslice) {
+                if (timeElpased >= pingTimeslice*1000000) {
                     timeElpased = 0;
                     console.parser.communicator.send("ping 12345");
                 }
@@ -140,7 +140,8 @@ public class Aquarium extends Application {
                                 break;
                             case "display-timeout-value":
                                 System.out.println("DEBUG : TIMESLICE " + words[2]);
-                                pingTimeslice = Integer.parseInt(words[2]);
+                                pingTimeslice = Integer.parseInt(words[2])*1000;
+                                System.out.println("DEBUG : the timeslice for ping is of " + pingTimeslice + " millisecondes");
                                 break;
                             case "resources":
                                 System.out.println("DEBUG : RESSOURCE " + words[2]);
@@ -151,7 +152,7 @@ public class Aquarium extends Application {
                         }
                     }
                 }
-                console.parser.communicator.config(address, port);
+                //console.parser.communicator.config(address, port);
             } catch (IOException e) {
                 System.out.println("DEBUG : DIDN'T FOUND FILE ! Exception : " + e.toString());
             }
