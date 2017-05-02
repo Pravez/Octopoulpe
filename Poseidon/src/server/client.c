@@ -68,6 +68,9 @@ char *client__parse_command(char buffer[BUFFER_SIZE], struct thread_p *thread) {
     char *cmd;
     asprintf(&cmd, "%s", buffer);
 
+    if(cmd[strlen(cmd)-1] == '\n')
+        return "Please enter a command ending with '\\n'";
+
     if (strlen(cmd) > 1)
         cmd[strlen(cmd) - 2] = '\0';
 
