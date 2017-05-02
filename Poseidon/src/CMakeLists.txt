@@ -17,6 +17,11 @@ set(SOURCE_FILES main.c
         utility/hashmap.c
         utility/hashmap.h server/world.c server/world.h utility/data.h server/send.c server/send.h server/client.c server/client.h)
 
-add_executable(Server_default ${SOURCE_FILES})
-target_link_libraries(Server_default ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(Server_default readline)
+add_executable(Server ${SOURCE_FILES})
+target_link_libraries(Server ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(Server readline)
+
+add_custom_command(TARGET Server
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_CURRENT_SOURCE_DIR}/../controller.cfg
+        $<TARGET_FILE_DIR:Server>)

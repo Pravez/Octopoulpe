@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <signal.h>
+#include <arpa/inet.h>
 #include "send.h"
 #include "../utility/data.h"
 #include "../utility/vector.h"
@@ -29,6 +30,9 @@ char *send__client_id(struct thread_p *thread) {
 
     if (asw__hello(str, &result, thread) == HELLO_FAILURE) {
         thread->_authenticated = FALSE;
+    }else{
+        if(thread->_client->id != NULL)
+            CONSOLE_LOG_INFO("Authenticated Client %s with View %s", inet_ntoa(thread->_client_socket.sin_addr), thread->_client->id);
     }
 
     free(str);
@@ -65,6 +69,7 @@ void *send__regular_sender(void *arg) {
 }
 
 void send__fishes_continuously(struct thread_p *thread) {
+    CONSOLE_LOG_INFO("Starting to send continuously to %s", thread->_client->id);
     thread->_client->_is_observer = TRUE;
     v__add(observers, thread, THREAD);
     pthread_create(&thread->_client->_continuous_sender, NULL, send__regular_sender, thread);
@@ -73,7 +78,7 @@ void send__fishes_continuously(struct thread_p *thread) {
     pthread_kill(thread->_client->_continuous_sender, SIGNAL_STOP_SENDING);
     pthread_join(thread->_client->_continuous_sender, NULL);
 
-    printf("END OF SENDING\n");
+    CONSOLE_LOG_INFO("Stopping to send continuously to %s", thread->_client->id);
 
     thread->_client->_is_observer = FALSE;
     v__remove_by_data(observers, thread);

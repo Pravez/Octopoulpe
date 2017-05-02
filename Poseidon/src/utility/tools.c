@@ -8,6 +8,7 @@
 #include "tools.h"
 #include "data.h"
 
+char temp_input[80];
 
 struct position __position(int x, int y) {
     struct position pos = {x, y};
@@ -21,7 +22,7 @@ struct dimension __dimension(int width, int height) {
 
 boolean check_in_screen(struct position s_pos, struct dimension dimensions, struct position position) {
     if (position.x >= s_pos.x && position.y >= s_pos.y) {
-        struct position e_pos = __position(s_pos.x + dimensions.width, s_pos.y + dimensions.height); //end_position
+        struct position e_pos = __position((int) (s_pos.x + dimensions.width), (int) (s_pos.y + dimensions.height)); //end_position
         if (position.x <= e_pos.x && position.y <= e_pos.y)
             return TRUE;
     }
@@ -31,24 +32,6 @@ boolean check_in_screen(struct position s_pos, struct dimension dimensions, stru
 
 void _set_verbosity(int value) {
     verbosity = value;
-}
-
-void _console_log(int priority, char *message) {
-    switch (priority) {
-        case LOG_HIGH :
-            fprintf(stdout, "[ err ] \t"REDBOLD"%s"RESET"\n", message);
-            break;
-        case LOG_MEDIUM:
-            if (verbosity)
-                fprintf(stdout, "[ warn ] \t"YELLOW"%s"RESET"\n", message);
-            break;
-        case LOG_LOW:
-            if (verbosity)
-                fprintf(stdout, "[ info ] \t%s\n", message);
-            break;
-        default:
-            break;
-    }
 }
 
 char *concatenate_strings(int qty, ...) {

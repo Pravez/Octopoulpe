@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <stdio.h>
+#include <arpa/inet.h>
 
 #include "client.h"
 #include "send.h"
@@ -27,8 +28,12 @@ void *client__start(void *arg) {
         //We clear entire array
         bzero(thread->_last_message, BUFFER_SIZE);
 
-        code_return = (int) read(thread->_socket_fd, thread->_last_message, BUFFER_SIZE - 1);
-        CHK_ERROR(code_return, "Error reading from socket")
+        code_return = (int) read(thread->_socket_fd, thread->_last_message, BUFFER_SIZE);
+        if(code_return == -1){
+            //Error reading from socket
+            CONSOLE_LOG_ERR("Error reading from socket, client from IP %s reset connection", inet_ntoa(thread->_client_socket.sin_addr));
+            thread->_connected = FALSE;
+        }
 
         if (thread->_connected) {
             //We update last time client sent a message
@@ -42,7 +47,7 @@ void *client__start(void *arg) {
             code_return = (int) write(thread->_socket_fd, "\n", 1);
             CHK_ERROR(code_return, "Error writing to socket")
 
-        } else {
+        } else if (code_return != -1) {
             //We parse command
             response = client__parse_command(thread->_last_message, thread);
 
@@ -81,14 +86,14 @@ char *client__parse_command(char buffer[BUFFER_SIZE], struct thread_p *thread) {
         }
     } else if (!strcmp(token, "log")) {
         return send__logout(thread);
-    } else if (thread->_client->id != NULL) {
+    } else if (!strcmp(token, "ping")) {
+        return send__ping(thread->_client);
+    } else if (thread->_client != NULL) {
         if (!strcmp(token, "getFishes")) {
             return send__fishes(thread->_client);
         } else if (!strcmp(token, "getFishesContinuously")) {
             send__fishes_continuously(thread);
             return "End of transaction";
-        } else if (!strcmp(token, "ping")) {
-            return send__ping(thread->_client);
         } else if (!strcmp(token, "addFish")) {
             return send__add_fish(thread->_client);
         } else if (!strcmp(token, "delFish")) {
@@ -113,6 +118,8 @@ void client__init(struct thread_p *client_thread) {
 }
 
 void client__destroy(struct thread_entry *client_thread) {
+    CONSOLE_LOG_INFO("Disconnected client from IP %s", inet_ntoa(client_thread->_thread._client_socket.sin_addr))
+
     LOCK(&threads_list_mutex);
     LIST_REMOVE(client_thread, thread_entries);
     UNLOCK(&threads_list_mutex);
@@ -126,4 +133,5 @@ void client__destroy(struct thread_entry *client_thread) {
     close(client_thread->_thread._socket_fd);
     pthread_mutex_destroy(&client_thread->_thread._time_mutex);
     free(client_thread);
+
 }

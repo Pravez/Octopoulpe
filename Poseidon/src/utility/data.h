@@ -34,4 +34,6 @@ int CONTROLLER_PORT;
 
 #define BUFFER_SIZE 256
 
+#define CONSOLE_OUTPUT stdout
+
 #endif //POSEIDON_DATA_H

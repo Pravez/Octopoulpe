@@ -9,6 +9,8 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wall -lreadline -lpthread -D_PROCE
 find_package(Java REQUIRED)
 include(UseJava)
 
+set(POSEIDON_DIR Poseidon)
+
 add_subdirectory(Poseidon/src)
 add_subdirectory(Poseidon/tst)
 add_subdirectory(Aquarium/src)
