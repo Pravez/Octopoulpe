@@ -46,6 +46,10 @@ void _console_log(int priority, char *message) {
             if (verbosity)
                 fprintf(stdout, "[ info ] \t%s\n", message);
             break;
+        case LOG_TEST:
+            if (verbosity)
+                fprintf(stdout, "[  "GREENBOLD"OK"RESET"  ] \t%s\n", message);
+            break;
         default:
             break;
     }

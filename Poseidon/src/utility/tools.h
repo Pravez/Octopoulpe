@@ -52,6 +52,7 @@ boolean check_in_screen(struct position s_pos, struct dimension dimensions, stru
 #define LOG_MEDIUM 3
 #define LOG_LOW 2
 #define LOG_SECTION 1
+#define LOG_TEST 0
 
 #define RED "\e[31m"
 #define YELLOW "\e[33m"
@@ -59,6 +60,8 @@ boolean check_in_screen(struct position s_pos, struct dimension dimensions, stru
 #define REDBOLD "\e[31;1m"
 #define YELLOWBOLD "\e[33;1m"
 #define RESET "\e[0m"
+#define GREEN "\e[32m"
+#define GREENBOLD "\e[32;1m"
 
 boolean verbosity;
 

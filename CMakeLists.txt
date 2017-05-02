@@ -11,4 +11,6 @@ include(UseJava)
 
 add_subdirectory(Poseidon/src)
 add_subdirectory(Poseidon/tst)
-add_subdirectory(Aquarium/src)
+#add_subdirectory(Aquarium/src)
+
+enable_testing()

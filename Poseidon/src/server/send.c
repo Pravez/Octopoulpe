@@ -8,6 +8,7 @@
 #include "../utility/vector.h"
 
 static const char *delim = SERVER_CMD_DELIMITER;
+static const char *end_delim = SERVER_END_CMD_DELIMITER;
 static const char *val_delim = SERVER_FISHVAL_DELIMITER;
 extern struct vector *observers;
 
@@ -16,10 +17,10 @@ char *send__client_id(struct thread_p *thread) {
 
     char *in = strtok(NULL, delim);
     char *as = strtok(NULL, delim);
-    char *id = strtok(NULL, delim);
+    char *id = strtok(NULL, end_delim);
     char *str = NULL;
-    if (in != NULL){
-        if(as != NULL && id != NULL && strtok(NULL, delim) == NULL){
+    if (in != NULL && strcmp(in,"\n")!=0){
+        if(as != NULL && id != NULL && strtok(NULL,delim) == NULL){
             asprintf(&str, "%s %s %s", in, as, id);
         }else{
             asprintf(&result, "NOK : Please use : hello in as [view id]\n");
