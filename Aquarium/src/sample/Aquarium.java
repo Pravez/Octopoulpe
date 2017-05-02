@@ -26,7 +26,7 @@ public class Aquarium extends Application {
     private String id;
     private int pingTimeslice;
     private String imagesURL;
-    private int timeElpased = 0;
+    protected int timeElpased = 0;
 
     //animation attributes
     private int timer = 0;
@@ -84,11 +84,9 @@ public class Aquarium extends Application {
         new AnimationTimer() {
             @Override
             public void handle(long now) {
-                //System.out.println("DEBUG : now = " + (now/1000000));
                 timer++;
-                if (continuously)
-                    console.parser.communicator.getAswGoal();
-                //console.checkMessage();
+                //if (continuously)
+                //    console.parser.communicator.getAswGoal();
 
                 if (timeElpased >= pingTimeslice) {
                     timeElpased = 0;

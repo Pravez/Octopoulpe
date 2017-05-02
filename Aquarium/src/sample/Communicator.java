@@ -26,8 +26,9 @@ public class Communicator {
         boolean connected = false;
         while (!connected) {
             try {
-                System.out.println("Try to connect at " + InetAddress.getLocalHost().toString().split("/")[1] + ", with port = " + port);
-                socket = new Socket(InetAddress.getByName(InetAddress.getLocalHost().toString().split("/")[1]), 2009); //TODO : change ADDRESS and port
+                //System.out.println("Try to connect at " + InetAddress.getLocalHost().toString().split("/")[1] + ", with port = " + port);
+                //socket = new Socket(InetAddress.getByName(InetAddress.getLocalHost().toString().split("/")[1]), 2009); //TODO : change ADDRESS and port
+                socket = new Socket(InetAddress.getByName(address), port);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 inContinuously = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 connected = true;
@@ -40,7 +41,7 @@ public class Communicator {
     }
 
     public void getAswGoal() {
-        if (socket != null && socket.isConnected()) {
+        if (isConnected()) {
             try {
                 String message = in.readLine();
                 System.out.println("DEBUG : ON ESSAI DE RECUPERER UN GOAL : " + message);
@@ -70,7 +71,7 @@ public class Communicator {
     }
 
     public void getAswHello() {
-        if (socket != null && socket.isConnected()) {
+        if (isConnected()) {
             boolean answered = false;
             while (!answered) {
                 try {
@@ -87,7 +88,7 @@ public class Communicator {
     }
 
     public void getAswAdd(String name, int x, int y, int w, int h, String model) {
-        if (socket != null && socket.isConnected()) {
+        if (isConnected()) {
             boolean answered = false;
             while (!answered) {
                 try {
@@ -105,7 +106,7 @@ public class Communicator {
     }
 
     public void getAswStart(String n) {
-        if (socket != null && socket.isConnected()) {
+        if (isConnected()) {
             boolean answered = false;
             while (!answered) {
                 try {
@@ -121,7 +122,7 @@ public class Communicator {
     }
 
     public void getAswDel(String name) {
-        if (socket != null && socket.isConnected()) {
+        if (isConnected()) {
             boolean answered = false;
             while (!answered) {
                 try {
@@ -139,9 +140,11 @@ public class Communicator {
     }
 
     public void send(String s) {
-        if (socket != null && socket.isConnected()) {
+        System.out.println("DEBUG : On envoie " + s);
+        if (isConnected()) {
             try {
                 PrintWriter out =  new PrintWriter(socket.getOutputStream());
+                console.aquarium.timeElpased = 0;
                 out.println(s);
                 out.flush();
             } catch (IOException e) {System.out.println("DEBUG : Exception in send !!");}
