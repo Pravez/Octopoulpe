@@ -4,16 +4,16 @@
 #include <string.h>
 #include <pthread.h>
 #include <signal.h>
+#include <arpa/inet.h>
 #include "server.h"
-#include "send.h"
-#include "../utility/data.h"
 #include "../utility/vector.h"
 
 LIST_HEAD(listhead, thread_entry) thread_head = LIST_HEAD_INITIALIZER(thread_head);
 
 extern struct aquarium *aquarium;
+extern int SERVER_READY;
 extern pthread_mutex_t mutex_observers;
-struct vector* observers;
+struct vector *observers;
 
 static int check_threads_connection = TRUE;
 static struct server_p server;
@@ -35,6 +35,7 @@ void *server_process(void *arg) {
 #endif //_PROCESS_
 
 void server__init(struct server_p *server, int port) {
+    CONSOLE_LOG_INFO("Initializing Server ...");
     //We initialize observers vector
     observers = malloc(sizeof(struct vector));
     v__init(observers, DEFAULT_OBSERVERS_QTY);
@@ -64,15 +65,17 @@ void server__init(struct server_p *server, int port) {
 
     //If we get a sigstop, we stop everything
     signal(SIGNAL_END_EVERYTHING, server__stop);
+
+    SERVER_READY = TRUE;
 }
 
-void server__stop(int signo){
-    if(signo == SIGNAL_END_EVERYTHING){
+void server__stop(int signo) {
+    if (signo == SIGNAL_END_EVERYTHING) {
         server_working = FALSE;
         check_threads_connection = FALSE;
 
-        struct thread_entry* en;
-        LIST_FOREACH(en, &thread_head, thread_entries){
+        struct thread_entry *en;
+        LIST_FOREACH(en, &thread_head, thread_entries) {
             en->_thread._connected = FALSE;
             pthread_join(en->_thread._thread, NULL);
             LIST_REMOVE(en, thread_entries);
@@ -86,7 +89,7 @@ void server__stop(int signo){
 }
 
 void server__wait_connection(struct server_p *server) {
-    struct thread_entry* entry = NULL;
+    struct thread_entry *entry = NULL;
 
     //We listen to connections
     listen(server->_listen_socket_fd, LISTEN_QUEUE);
@@ -98,41 +101,44 @@ void server__wait_connection(struct server_p *server) {
 
         //Waiting for a connection
         if ((entry->_thread._socket_fd = accept(server->_listen_socket_fd, &entry->_thread._client_socket,
-                                                (socklen_t *) &entry->_thread._addr_len)) != -1){
+                                                (socklen_t *) &entry->_thread._addr_len)) != -1) {
 
             LOCK(&threads_list_mutex);
             LIST_INSERT_HEAD(&thread_head, entry, thread_entries);
             UNLOCK(&threads_list_mutex);
 
             CHK_ERROR(pthread_create(&entry->_thread._thread, NULL, client__start, entry),
-                      "Error creating thread") //when do we destroy the thread ?
-        }else{
+                      "Error creating thread")
+            CONSOLE_LOG_INFO("Authenticated client from IP %s", inet_ntoa(entry->_thread._client_socket.sin_addr));
+
+        } else {
             break;
         }
 
 
     }
 
-    if(entry != NULL)
+    if (entry != NULL)
         free(entry);
 
     close(server->_listen_socket_fd);
 }
 
-void* server__check_connections(void* args){
+void *server__check_connections(void *args) {
     time_t now;
-    struct thread_entry* en;
+    struct thread_entry *en;
 
-    while(check_threads_connection){
-        if(!LIST_EMPTY(&thread_head)){
+    while (check_threads_connection) {
+        if (!LIST_EMPTY(&thread_head)) {
             time(&now);
 
             LOCK(&threads_list_mutex);
-            LIST_FOREACH(en, &thread_head, thread_entries){
-                if(en->_thread._authenticated){
+            LIST_FOREACH(en, &thread_head, thread_entries) {
+                if (en->_thread._authenticated) {
                     LOCK(&en->_thread._time_mutex);
-                    if(difftime(now, en->_thread._last_ping) > (double) MAXIMUM_IDLE_TIME){
-                        _console_log(LOG_MEDIUM, "Thread has not sent anything for 10 seconds, terminating it ...");
+                    if (difftime(now, en->_thread._last_ping) > (double) MAXIMUM_IDLE_TIME) {
+                        CONSOLE_LOG_WARN("Thread %s has not sent anything for %d seconds, terminating it ...",
+                                         en->_thread._client->id, MAXIMUM_IDLE_TIME);
                         en->_thread._connected = FALSE;
                         shutdown(en->_thread._socket_fd, SHUT_RD);
                     }

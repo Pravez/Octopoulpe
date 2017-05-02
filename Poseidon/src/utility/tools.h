@@ -1,6 +1,8 @@
 #ifndef POSEIDON_TOOLS_H
 #define POSEIDON_TOOLS_H
 
+#include "data.h"
+
 #define boolean int
 #define TRUE 1
 #define FALSE 0
@@ -10,6 +12,21 @@
 #define CHCK_NULL_INT(x, name) if(x == NULL){ fprintf(stderr, "FUNC %s : A VALUE IS NULL : %s\n", __func__, name); return -1; }
 #define RAND_IN_RANGE(range, min) rand() % range + min
 
+#define RED "\e[31m"
+#define YELLOW "\e[93m"
+#define GREEN "\e[92m"
+#define BOLD "\e[1m"
+#define REDBOLD "\e[91;1m"
+#define YELLOWBOLD "\e[93;1m"
+#define GREENBOLD "\e[32;1m"
+#define RESET "\e[0m"
+
+boolean verbosity;
+
+#define CONSOLE_LOG_ERR(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ "REDBOLD"ERROR"RESET" ] \t" message "\n", ##__VA_ARGS__);
+#define CONSOLE_LOG_WARN(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ "YELLOW"WARN"RESET" ] \t" message "\n", ##__VA_ARGS__);
+#define CONSOLE_LOG_INFO(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ "GREEN"INFO"RESET" ] \t" message "\n", ##__VA_ARGS__);
+#define CONSOLE_LOG_TEST(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ "GREENBOLD" OK "RESET" ] \t" message "\n", ##__VA_ARGS__);
 
 struct position {
     double x;
@@ -21,7 +38,7 @@ struct movement {
     int y;
 };
 
-struct relative_position{
+struct relative_position {
     int x;
     int y;
 };
@@ -48,26 +65,11 @@ struct dimension __dimension(int width, int height);
 boolean check_in_screen(struct position s_pos, struct dimension dimensions, struct position position);
 
 
-#define LOG_HIGH 4
-#define LOG_MEDIUM 3
-#define LOG_LOW 2
-#define LOG_SECTION 1
-#define LOG_TEST 0
-
-#define RED "\e[31m"
-#define YELLOW "\e[33m"
-#define BOLD "\e[1m"
-#define REDBOLD "\e[31;1m"
-#define YELLOWBOLD "\e[33;1m"
-#define RESET "\e[0m"
-#define GREEN "\e[32m"
-#define GREENBOLD "\e[32;1m"
-
-boolean verbosity;
-
 void _set_verbosity(int value);
 
-void _console_log(int priority, char *messages);
+void check_input();
+
+void apply_input();
 
 char *concatenate_strings(int qty, ...);
 
@@ -76,8 +78,11 @@ char *m_strcat(char *dest, char *src);
 double add_to_coordinate(double start, double val, int max_value);
 
 struct position add_to_position(struct position p, double x, double y);
+
 int position_equals(struct position pos1, struct position pos2);
+
 int in_bounds(struct position starting_point, struct dimension dim, struct position pos);
+
 int msleep(unsigned long milisec);
 
 /**

@@ -54,7 +54,7 @@ int aq__remove_fish(struct aquarium *aquarium, char *fish_id) {
     struct fish* fish = NULL;
     if (hashmap_get(aquarium->_fishes, fish_id, (any_t *) &fish) == MAP_OK) {
         hashmap_remove(aquarium->_fishes, fish->_id);
-        _console_log(LOG_MEDIUM, "Removed fish");
+        CONSOLE_LOG_INFO("Removed fish %s", fish_id);
     }
 
     //If we found it it has a presence in at least one view

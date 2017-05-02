@@ -9,6 +9,7 @@
 #include "client.h"
 
 extern struct aquarium *aquarium;
+extern int WORLD_READY;
 extern struct vector* observers;
 extern pthread_mutex_t mutex_observers;
 
@@ -22,10 +23,12 @@ void *world_process(void *pVoid) {
 }
 
 int world_init() {
+    CONSOLE_LOG_INFO("Initializing Aquarium's world");
     srand((unsigned int) time(NULL));
     aquarium->_running = TRUE;
     update_rate = UPDATE_INTERVAL < 0 ? 1.0 / (-UPDATE_INTERVAL) : UPDATE_INTERVAL;
 
+    WORLD_READY = TRUE;
 
     return 0;
 }
