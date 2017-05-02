@@ -18,11 +18,17 @@ pthread_t thread_menu;
 pthread_t thread_server;
 pthread_t thread_world;
 
+int WORLD_READY;
+int SERVER_READY;
+
 int main(int argc, char* argv[]){
 
     _set_verbosity(TRUE);
     CONSOLE_LOG_INFO("Starting Octopoulpe");
     CONSOLE_LOG_INFO("Initializing values ...");
+
+    WORLD_READY = FALSE;
+    SERVER_READY = FALSE;
 
     // Initialisation of the aquarium
     aquarium = malloc(sizeof(struct aquarium));

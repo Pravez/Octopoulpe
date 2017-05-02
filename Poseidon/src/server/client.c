@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <stdio.h>
+#include <arpa/inet.h>
 
 #include "client.h"
 #include "send.h"
@@ -27,10 +28,11 @@ void *client__start(void *arg) {
         //We clear entire array
         bzero(thread->_last_message, BUFFER_SIZE);
 
-        code_return = (int) read(thread->_socket_fd, thread->_last_message, BUFFER_SIZE - 1);
+        code_return = (int) read(thread->_socket_fd, thread->_last_message, BUFFER_SIZE);
         if(code_return == -1){
             //Error reading from socket
-            CONSOLE_LOG_ERR("Error reading from socket");
+            CONSOLE_LOG_ERR("Error reading from socket, client from IP %s reset connection", inet_ntoa(thread->_client_socket.sin_addr));
+            thread->_connected = FALSE;
         }
 
         if (thread->_connected) {
@@ -45,7 +47,7 @@ void *client__start(void *arg) {
             code_return = (int) write(thread->_socket_fd, "\n", 1);
             CHK_ERROR(code_return, "Error writing to socket")
 
-        } else {
+        } else if (code_return != -1) {
             //We parse command
             response = client__parse_command(thread->_last_message, thread);
 

@@ -19,7 +19,7 @@ struct client {
 };
 
 struct thread_p{
-    struct sockaddr _client_socket;
+    struct sockaddr_in _client_socket;
     int _addr_len;
     int _socket_fd;
 

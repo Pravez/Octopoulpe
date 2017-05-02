@@ -13,17 +13,18 @@
 #define RAND_IN_RANGE(range, min) rand() % range + min
 
 #define RED "\e[31m"
-#define YELLOW "\e[33m"
+#define YELLOW "\e[93m"
+#define GREEN "\e[92m"
 #define BOLD "\e[1m"
-#define REDBOLD "\e[31;1m"
-#define YELLOWBOLD "\e[33;1m"
+#define REDBOLD "\e[91;1m"
+#define YELLOWBOLD "\e[93;1m"
 #define RESET "\e[0m"
 
 boolean verbosity;
 
-#define CONSOLE_LOG_ERR(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ err ] \t"REDBOLD message RESET"\n", ##__VA_ARGS__)
-#define CONSOLE_LOG_WARN(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ warn ] \t"YELLOW message RESET"\n", ##__VA_ARGS__)
-#define CONSOLE_LOG_INFO(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ info ] \t" message "\n", ##__VA_ARGS__);
+#define CONSOLE_LOG_ERR(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ "REDBOLD"ERROR"RESET" ] \t" message "\n", ##__VA_ARGS__);
+#define CONSOLE_LOG_WARN(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ "YELLOW"WARN"RESET" ] \t" message "\n", ##__VA_ARGS__);
+#define CONSOLE_LOG_INFO(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ "GREEN"INFO"RESET" ] \t" message "\n", ##__VA_ARGS__);
 
 struct position {
     double x;
@@ -35,7 +36,7 @@ struct movement {
     int y;
 };
 
-struct relative_position{
+struct relative_position {
     int x;
     int y;
 };
@@ -64,6 +65,10 @@ boolean check_in_screen(struct position s_pos, struct dimension dimensions, stru
 
 void _set_verbosity(int value);
 
+void check_input();
+
+void apply_input();
+
 char *concatenate_strings(int qty, ...);
 
 char *m_strcat(char *dest, char *src);
@@ -71,8 +76,11 @@ char *m_strcat(char *dest, char *src);
 double add_to_coordinate(double start, double val, int max_value);
 
 struct position add_to_position(struct position p, double x, double y);
+
 int position_equals(struct position pos1, struct position pos2);
+
 int in_bounds(struct position starting_point, struct dimension dim, struct position pos);
+
 int msleep(unsigned long milisec);
 
 /**

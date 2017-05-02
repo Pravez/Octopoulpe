@@ -19,8 +19,11 @@ static const char *delim = " ";
 extern struct aquarium* aquarium;
 extern pthread_t thread_server;
 extern pthread_t thread_world;
+extern int WORLD_READY;
+extern int SERVER_READY;
 
 void display_menu() {
+    while(!WORLD_READY || !SERVER_READY);
     printf("Welcome to "REDBOLD"Octopoulpe"RESET" main menu ! Enter a command to continue ...\n");
 }
 

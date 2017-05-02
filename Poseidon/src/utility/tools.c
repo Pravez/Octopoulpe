@@ -8,6 +8,7 @@
 #include "tools.h"
 #include "data.h"
 
+char temp_input[80];
 
 struct position __position(int x, int y) {
     struct position pos = {x, y};
