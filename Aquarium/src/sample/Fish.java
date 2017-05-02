@@ -122,7 +122,7 @@ public class Fish {
 
         if (!goal.equals(new Point(-1, -1))) {
             timeGoal -= timeElapsed;
-            System.out.println("DEBUG : Il s'est écoulé " + timeElapsed + " millisecondes");
+            System.out.println("DEBUG : Il s'est ecoule " + timeElapsed + " millisecondes");
             System.out.println("DEBUG : Il nous reste " + timeGoal + " millisecondes");
 
             if (timeGoal <= 0) {
@@ -141,7 +141,7 @@ public class Fish {
                 System.out.println("DEBUG : On doit faire " + distToDoX + " en X");
                 System.out.println("DEBUG : On doit faire " + distToDoY + " en Y");
 
-                System.out.println("DEBUG : On était en " + x + "/" + y);
+                System.out.println("DEBUG : On etait en " + x + "/" + y);
 
                 if (goal.x > x)
                     x += distToDoX;

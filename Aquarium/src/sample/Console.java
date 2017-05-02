@@ -80,7 +80,7 @@ public class Console extends Stage {
                     display.appendText("> " + action + System.lineSeparator());
                     input.clear();
 
-                    System.out.println("DEBUG : On a rentré : " + action);
+                    System.out.println("DEBUG : On a rentree : " + action);
                     parser(action);
                     break;
                 case UP:
@@ -121,7 +121,7 @@ public class Console extends Stage {
                 connected = true;
             } catch (IOException e) {
                 connected = false;
-                //System.out.println("Problème de connexion : " + e.toString());
+                //System.out.println("Probleme de connexion : " + e.toString());
             }
         }
         System.out.println("CONNECTE !!!!!!!!!");
@@ -249,10 +249,10 @@ public class Console extends Stage {
             case "status" :
                 if (args.length == 1) {
                     if (socket != null && socket.isConnected()) {
-                        display.appendText("< OK : Connecté au contrôleur, " + aquarium.toString() + System.lineSeparator());
+                        display.appendText("< OK : Connecte au contrôleur, " + aquarium.toString() + System.lineSeparator());
                     }
                     else
-                        display.appendText("< NOK : Connexion non trouvée."  + aquarium.toString() + System.lineSeparator());
+                        display.appendText("< NOK : Connexion non trouvee."  + aquarium.toString() + System.lineSeparator());
                 }
                 else
                     display.appendText("< NOK. The command 'status' doesn't expect arguments." + System.lineSeparator());
@@ -261,7 +261,7 @@ public class Console extends Stage {
                 if (args.length == 6) {
                     try {
                         if (!checkMobilityModel(args[5]))
-                            display.appendText("< NOK : modèle de mobilité non supporté" + System.lineSeparator());
+                            display.appendText("< NOK : modele de mobilite non supporte" + System.lineSeparator());
                         else {
                             send(action);
                             getAswAdd(args[1], Integer.parseInt(args[3].split("x")[0]), Integer.parseInt(args[3].split("x")[1]), Integer.parseInt(args[4].split("x")[0]), Integer.parseInt(args[4].split("x")[1]), args[5]);
