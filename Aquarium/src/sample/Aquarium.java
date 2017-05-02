@@ -52,7 +52,7 @@ public class Aquarium extends Application {
         //Creation of the console window
         console = new Console(this, 400, 400);
         console.show();
-        config();
+        //config();
         console.suggestInput("hello in as " + id);
 
         fishes = new ArrayList<Fish>();
@@ -87,12 +87,12 @@ public class Aquarium extends Application {
                 //System.out.println("DEBUG : now = " + (now/1000000));
                 timer++;
                 if (continuously)
-                    console.getAswGoal();
+                    console.parser.communicator.getAswGoal();
                 //console.checkMessage();
 
                 if (timeElpased >= pingTimeslice) {
                     timeElpased = 0;
-                    console.send("ping 12345");
+                    console.parser.communicator.send("ping 12345");
                 }
 
                 if (timer%15 == 0) {
@@ -153,7 +153,7 @@ public class Aquarium extends Application {
                         }
                     }
                 }
-                console.config(address, port);
+                console.parser.communicator.config(address, port);
             } catch (IOException e) {
                 System.out.println("DEBUG : DIDN'T FOUND FILE ! Exception : " + e.toString());
             }
