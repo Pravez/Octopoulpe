@@ -54,20 +54,19 @@ int asw__hello(char *arg, char **res, struct thread_p *thread) {
     struct client *id;
 
     if (arg != NULL) {
-        char *argv[4];
+        char *argv[2];
         char *cpy;
         asprintf(&cpy, "%s", arg);
 
-        argv[0] = strtok(cpy, " "); // in
-        argv[1] = strtok(NULL, " "); // as
-        argv[2] = strtok(NULL, " "); // wanted id
+        argv[0] = strtok(cpy, " "); // id
+        argv[1] = strtok(NULL, " "); // spaces
 
         // Seeking for an available id
-        if ((!strcmp(argv[0], "in") && !strcmp(argv[1], "as") && (argv[2] != NULL) && strcmp(argv[2], " ")) ||
-            !strcmp(argv[0], "\n") || !strcmp(argv[0], " \n")) {
-            id = available_id(strtok(argv[2], " "));
-        } else {
-            asprintf(res, "NOK : Invalid syntax for 'hello'. Corrects syntaxes are :\n'hello in as <wanted id>'\n'hello'\n");
+        if (argv[1] == NULL && argv[0] != NULL) {
+            id = available_id(argv[0]);
+        }
+        else {
+            asprintf(res, "NOK : no spaces allowed in the view id\n");
             return HELLO_INVALID;
         }
 

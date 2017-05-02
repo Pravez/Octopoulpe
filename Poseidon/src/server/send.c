@@ -22,7 +22,7 @@ char *send__client_id(struct thread_p *thread) {
     char *str = NULL;
     if (in != NULL && strcmp(in,"\n")!=0){
         if(as != NULL && id != NULL && strtok(NULL,delim) == NULL){
-            asprintf(&str, "%s %s %s", in, as, id);
+            asprintf(&str, "%s", id);
         }else{
             asprintf(&result, "NOK : Please use : hello in as [view id]\n");
             return result;

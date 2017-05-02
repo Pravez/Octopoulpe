@@ -116,7 +116,7 @@ void tst__send_client_id()
     /* hello in as \n */
     cmd = strdup("hello in as   \n");
     strtok(cmd,delim);
-    assert(strcmp(send__client_id(&henry),"NOK : Please use : hello in as [view id]\n")==0);
+    assert(strcmp(send__client_id(&henry),"NOK : no spaces allowed in the view id\n")==0);
     CONSOLE_LOG_TEST("Reception of \"hello in as\"");
 
     /* without \n at the end */
@@ -126,6 +126,9 @@ int main()
 {
   _set_verbosity(FALSE);
   _set_test_verbosity(TRUE);
+
+  // Intern communication
   tst__send_client_id();
+
   return 0;
 }
