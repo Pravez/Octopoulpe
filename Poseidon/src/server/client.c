@@ -118,6 +118,8 @@ void client__init(struct thread_p *client_thread) {
 }
 
 void client__destroy(struct thread_entry *client_thread) {
+    CONSOLE_LOG_INFO("Disconnected client from IP %s", inet_ntoa(client_thread->_thread._client_socket.sin_addr))
+
     LOCK(&threads_list_mutex);
     LIST_REMOVE(client_thread, thread_entries);
     UNLOCK(&threads_list_mutex);
@@ -131,4 +133,5 @@ void client__destroy(struct thread_entry *client_thread) {
     close(client_thread->_thread._socket_fd);
     pthread_mutex_destroy(&client_thread->_thread._time_mutex);
     free(client_thread);
+
 }

@@ -274,6 +274,7 @@ asw__add_fish(char *id, struct relative_position pos, struct dimension dimension
                                          UPDATE_INTERVAL);
         aq__add_fish_to_aqv(aquarium, cli->aqv->_id, fish);
         asprintf(res, "OK : Fish %s successfully added\n", id);
+        CONSOLE_LOG_INFO("%s added fish %s", cli->id, id);
     }else{
         asprintf(res, "NOK : fish already exists\n");
     }
@@ -284,6 +285,7 @@ void asw__start_fish(char *arg, char **res){
         asprintf(res, "NOK :  Impossible to find fish %s\n", arg);
     }else{
         asprintf(res, "OK : Fish %s started !\n", arg);
+        CONSOLE_LOG_INFO("Fish %s started", arg);
     }
 }
 
@@ -292,5 +294,6 @@ void asw__del_fish(char *arg, char **res){
         asprintf(res, "NOK : Impossible to find fish %s\n", arg);
     }else{
         asprintf(res, "OK : Fish %s removed !\n", arg);
+        CONSOLE_LOG_INFO("Fish %s removed", arg);
     }
 }
