@@ -117,7 +117,7 @@ public class Aquarium extends Application {
     }
 
     private void config() {
-        //TODO : On suppose que le config est correctement fait  et complété ?
+        //TODO : On suppose que le config est correctement fait  et complete ?
             try {
                 List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/src/sample/affichage.cfg"), StandardCharsets.ISO_8859_1);
 
@@ -181,7 +181,7 @@ public class Aquarium extends Application {
     }
 
     public String toString() {
-        String s = new String(fishes.size() + " poisson(s) trouvé(s)" + System.lineSeparator());
+        String s = new String(fishes.size() + " poisson(s) trouve(s)" + System.lineSeparator());
 
         for (Fish f: fishes) {
             s += "Fish " + f.toString(width, height) + System.lineSeparator();
