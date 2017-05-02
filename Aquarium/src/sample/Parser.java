@@ -12,6 +12,7 @@ public class Parser {
 
     protected Console console;
     protected Communicator communicator;
+    public Thread continuously;
 
     public Parser(Console c, TextArea ta) {
         console = c;
@@ -104,8 +105,8 @@ public class Parser {
                 if (args.length == 1) {
                     communicator.send(action);
                     console.display.appendText("< OK" + System.lineSeparator());
-                    //continuously = new Thread(new ContinuouslyHandler(inContinuously, aquarium));
-                    //continuously.run();
+                    continuously = new Thread(new ContinuouslyHandler(console, communicator.inContinuously));
+                    continuously.run();
                     System.out.println("DEBUG : ON SORT DE CETTE MERDE");
                 }
                 else

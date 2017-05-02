@@ -12,7 +12,7 @@ public class Communicator {
     private Console console;
     private Socket socket;
     private BufferedReader in;
-    private BufferedReader inContinuously;
+    protected BufferedReader inContinuously;
 
     public Communicator(Console c) {
         console = c;
