@@ -34,6 +34,10 @@ void _set_verbosity(int value) {
     verbosity = value;
 }
 
+void _set_test_verbosity(int value) {
+    test_verbosity = value;
+}
+
 char *concatenate_strings(int qty, ...) {
     va_list list;
     va_start(list, qty);

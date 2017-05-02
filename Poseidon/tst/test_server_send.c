@@ -124,7 +124,8 @@ void tst__send_client_id()
 
 int main()
 {
-  _set_verbosity(TRUE);
+  _set_verbosity(FALSE);
+  _set_test_verbosity(TRUE);
   tst__send_client_id();
   return 0;
 }

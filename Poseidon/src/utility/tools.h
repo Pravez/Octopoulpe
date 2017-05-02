@@ -22,11 +22,12 @@
 #define RESET "\e[0m"
 
 boolean verbosity;
+boolean test_verbosity;
 
 #define CONSOLE_LOG_ERR(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ "REDBOLD"ERROR"RESET" ] \t" message "\n", ##__VA_ARGS__);
 #define CONSOLE_LOG_WARN(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ "YELLOW"WARN"RESET" ] \t" message "\n", ##__VA_ARGS__);
 #define CONSOLE_LOG_INFO(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ "GREEN"INFO"RESET" ] \t" message "\n", ##__VA_ARGS__);
-#define CONSOLE_LOG_TEST(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ "GREENBOLD" OK "RESET" ] \t" message "\n", ##__VA_ARGS__);
+#define CONSOLE_LOG_TEST(message, ...) if(test_verbosity) fprintf(CONSOLE_OUTPUT, "[ "GREENBOLD" OK "RESET" ] \t" message "\n", ##__VA_ARGS__);
 
 struct position {
     double x;
@@ -66,6 +67,8 @@ boolean check_in_screen(struct position s_pos, struct dimension dimensions, stru
 
 
 void _set_verbosity(int value);
+
+void _set_test_verbosity(int value);
 
 void check_input();
 
