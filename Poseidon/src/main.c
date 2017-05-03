@@ -9,8 +9,8 @@
 #include "view/view.h"
 #include "server/world/world.h"
 
-
 extern struct _tvector* config_vector;
+extern boolean readline_started;
 struct aquarium* aquarium;
 
 pthread_mutex_t mutex_observers;
@@ -23,9 +23,8 @@ int WORLD_READY;
 int SERVER_READY;
 
 int main(int argc, char* argv[]){
-
-
     _set_verbosity(TRUE);
+    readline_started = FALSE;
     CONSOLE_LOG_INFO("Starting Octopoulpe");
     CONSOLE_LOG_INFO("Initializing values ...");
 

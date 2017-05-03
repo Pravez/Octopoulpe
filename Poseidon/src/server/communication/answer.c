@@ -156,7 +156,7 @@ char *asw__log(char *arg, struct thread_p *thread) {
 
         thread->_authenticated = FALSE;
         thread->_connected = FALSE;
-        return "OK : bye\n";
+        return "bye\n";
     }
 }
 
@@ -217,9 +217,9 @@ void asw__remove_aquarium() {
 
 void asw__ping(char *arg, char **res, struct client *client) {
     if (arg != NULL) {
-        asprintf(res, "OK : pong %s\n", arg);
+        asprintf(res, "pong %s\n", arg);
     } else {
-        asprintf(res, "NOK : Please give a value with ping");
+        asprintf(res, "Please give a value with ping");
     }
 }
 

@@ -33,7 +33,7 @@ void *client__start(void *arg) {
         code_return = (int) read(thread->_socket_fd, thread->_last_message, BUFFER_SIZE);
         if(code_return == -1){
             //Error reading from socket
-            CONSOLE_LOG_ERR("Error reading from socket, client from IP %s reset connection", inet_ntoa(thread->_client_socket.sin_addr));
+            CONSOLE_LOG_ERR("Client from IP %s reset connection", inet_ntoa(thread->_client_socket.sin_addr));
             thread->_connected = FALSE;
         }
 
@@ -42,21 +42,29 @@ void *client__start(void *arg) {
             LOCK(&thread->_time_mutex);
             time(&thread->_last_ping);
             UNLOCK(&thread->_time_mutex);
-        }
 
-        if (code_return == 2) {
-            //fix the segfault in case of empty message
-            code_return = (int) write(thread->_socket_fd, "\n", 1);
-            CHK_ERROR(code_return, "Error writing to socket")
+            if(thread->_authenticated){
+                if(strcmp(thread->_client_name, thread->_client->id)) {
+                    CONSOLE_LOG_WARN("Removing Client from view %s", thread->_client_name);
+                    thread->_connected = FALSE;
+                    code_return = -1;
+                }
+            }
 
-        } else if (code_return != -1) {
-            //We parse command
-            response = client__parse_command(thread->_last_message, thread);
+            if (code_return == 2) {
+                //fix the segfault in case of empty message
+                code_return = (int) write(thread->_socket_fd, "\n", 1);
+                CHK_ERROR(code_return, "Error writing to socket")
 
-            //We write answer
-            if (response != NULL) {
-                code_return = (int) write(thread->_socket_fd, response, strlen(response));
-                CHK_ERROR(code_return, "Error writing to socket");
+            } else if (code_return != -1) {
+                //We parse command
+                response = client__parse_command(thread->_last_message, thread);
+
+                //We write answer
+                if (response != NULL) {
+                    code_return = (int) write(thread->_socket_fd, response, strlen(response));
+                    CHK_ERROR(code_return, "Error writing to socket");
+                }
             }
         }
     }
@@ -84,7 +92,7 @@ char *client__parse_command(char buffer[BUFFER_SIZE], struct thread_p *thread) {
         if (!thread->_authenticated) {
             return send__client_id(thread);
         } else {
-            return "Already authenticated\n";
+            return "NOK : Already authenticated\n";
         }
     } else if (!strcmp(token, "log")) {
         return send__logout(thread);
