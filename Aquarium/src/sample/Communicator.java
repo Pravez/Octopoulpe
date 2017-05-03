@@ -28,7 +28,7 @@ public class Communicator {
             try {
                 System.out.println("Try to connect at " + InetAddress.getLocalHost().toString().split("/")[1] + ", with port = " + port);
                 //socket = new Socket(InetAddress.getByName(InetAddress.getLocalHost().toString().split("/")[1]), 2009); //TODO : change ADDRESS and port
-                socket = new Socket(InetAddress.getLocalHost().toString().split("/")[1], port);
+                socket = new Socket(InetAddress.getByName(address), port);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 inContinuously = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 connected = true;
