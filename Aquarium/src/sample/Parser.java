@@ -100,6 +100,13 @@ public class Parser {
                 else
                     console.display.appendText("< NOK. Usage : 'getFishesContinuously'" + System.lineSeparator());
                 break;
+            case "stopSendContinuously":
+                if (args.length == 1) {
+                    communicator.send(action);
+                }
+                else
+                    console.display.appendText("< NOK. Usage : 'stopSendContinuously'" + System.lineSeparator());
+                break;
             case "setGoal" :
                 if (args.length == 5) {
                     if (console.aquarium.hasFish(args[1])) {
