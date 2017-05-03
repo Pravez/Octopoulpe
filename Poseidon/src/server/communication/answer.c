@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "answer.h"
-#include "../model/aquarium.h"
+#include "../../model/aquarium.h"
 
 extern struct aquarium *aquarium;
 
@@ -129,7 +129,7 @@ int asw__iterate_fishes(any_t *res, any_t fish) {
 void asw__get_fishes(char **res, struct client *cli) {
     if (cli != NULL && cli->aqv != NULL) {
         if (hashmap_length(cli->aqv->_fishes) == 0) {
-            asprintf(res, "list []\n");
+            asprintf(res, "list\n");
         } else {
             char *fishes_str = NULL;
             hashmap_iterate(cli->aqv->_fishes, (PFany) asw__iterate_fishes, &fishes_str);
@@ -217,7 +217,7 @@ void asw__remove_aquarium() {
 
 void asw__ping(char *arg, char **res, struct client *client) {
     if (arg != NULL) {
-        asprintf(res, "OK : pong %s", arg);
+        asprintf(res, "OK : pong %s\n", arg);
     } else {
         asprintf(res, "NOK : Please give a value with ping");
     }

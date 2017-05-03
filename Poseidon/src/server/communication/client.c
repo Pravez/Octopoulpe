@@ -4,14 +4,16 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <arpa/inet.h>
+#include <bits/sigthread.h>
+#include <bits/signum.h>
 
 #include "client.h"
 #include "send.h"
+#include "../../utility/vector.h"
 
 struct thread_entry;
 
 static const char *delim = SERVER_CMD_DELIMITER;
-
 
 void *client__start(void *arg) {
 
@@ -68,9 +70,6 @@ char *client__parse_command(char buffer[BUFFER_SIZE], struct thread_p *thread) {
     char *cmd;
     asprintf(&cmd, "%s", buffer);
 
-    if(cmd[strlen(cmd)-1] == '\n')
-        return "Please enter a command ending with '\\n'";
-
     if (strlen(cmd) > 1)
         cmd[strlen(cmd) - 2] = '\0';
 
@@ -95,14 +94,15 @@ char *client__parse_command(char buffer[BUFFER_SIZE], struct thread_p *thread) {
         if (!strcmp(token, "getFishes")) {
             return send__fishes(thread->_client);
         } else if (!strcmp(token, "getFishesContinuously")) {
-            send__fishes_continuously(thread);
-            return "End of transaction";
+            return send__fishes_continuously(thread);
         } else if (!strcmp(token, "addFish")) {
             return send__add_fish(thread->_client);
         } else if (!strcmp(token, "delFish")) {
             return send__delete_fish();
         } else if (!strcmp(token, "startFish")) {
             return send__start_fish();
+        } else if(!strcmp(token, "stopSendContinuously")){
+            return send__stop_send_continuously(thread);
         }
     } else {
         return "Please authenticate yourself with a `hello` command first\n";
@@ -121,14 +121,15 @@ void client__init(struct thread_p *client_thread) {
 }
 
 void client__destroy(struct thread_entry *client_thread) {
-    CONSOLE_LOG_INFO("Disconnected client from IP %s", inet_ntoa(client_thread->_thread._client_socket.sin_addr))
 
     LOCK(&threads_list_mutex);
     LIST_REMOVE(client_thread, thread_entries);
     UNLOCK(&threads_list_mutex);
 
     if (client_thread->_thread._client != NULL) {
-        client_thread->_thread._client->_is_observer = FALSE;
+        if(client_thread->_thread._client->_is_observer){
+            __stop_send_continuously(&client_thread->_thread);
+        }
         client_thread->_thread._client->is_free = TRUE;
     }
 
@@ -137,4 +138,5 @@ void client__destroy(struct thread_entry *client_thread) {
     pthread_mutex_destroy(&client_thread->_thread._time_mutex);
     free(client_thread);
 
+    CONSOLE_LOG_INFO("Disconnected client from IP %s", inet_ntoa(client_thread->_thread._client_socket.sin_addr))
 }

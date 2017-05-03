@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <readline.h>
 
 #include "server/parser.h"
 #include "server/server.h"
 #include "model/aquarium.h"
 #include "view/view.h"
-#include "server/world.h"
+#include "server/world/world.h"
 
 
 extern struct _tvector* config_vector;
@@ -22,6 +23,7 @@ int WORLD_READY;
 int SERVER_READY;
 
 int main(int argc, char* argv[]){
+
 
     _set_verbosity(TRUE);
     CONSOLE_LOG_INFO("Starting Octopoulpe");
@@ -43,7 +45,7 @@ int main(int argc, char* argv[]){
         parse_config_file("controller.cfg");
         UPDATE_INTERVAL = _get_value(config_vector, "fish-update-interval");
         DISPLAY_TIMEOUT_VALUE = _get_value(config_vector, "display-timeout-value");
-        CONTROLLER_PORT = _get_value(config_vector, "controller-port")+4;
+        CONTROLLER_PORT = _get_value(config_vector, "controller-port");
         _delete_tvector(config_vector);
         CONSOLE_LOG_INFO("Successfully parsed config file");
 
