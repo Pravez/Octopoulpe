@@ -29,11 +29,11 @@ public class ReceiveHandler implements Runnable {
                         handleGoal(args);
                         break;
                     case "no":
-                        console.display.appendText("< " + message + System.lineSeparator());
+                        //console.display.appendText("< " + message + System.lineSeparator());
                         //TODO : what we can do if no greeting ?
                         break;
                     case "greeting":
-                        console.display.appendText("< " + message + System.lineSeparator());
+                        //console.display.appendText("< " + message + System.lineSeparator());
                         console.setId(args[1]);
                         break;
                     case "NOK":
@@ -54,7 +54,7 @@ public class ReceiveHandler implements Runnable {
                         break;
                 }
 
-                if (args[0] != "ping") {
+                if (args[0] != "pong") {
                     console.display.appendText("< " + message + System.lineSeparator());
                 }
 
