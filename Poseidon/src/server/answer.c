@@ -283,7 +283,7 @@ void asw__start_fish(char *arg, char **res){
     if(aq__set_fish_running_state(aquarium, arg, 1) == -1){
         asprintf(res, "NOK :  Impossible to find fish %s\n", arg);
     }else{
-        asprintf(res, "OK : Fish %s started !\n", arg);
+        asprintf(res, "OK : Fish %s successfully started !\n", arg);
         CONSOLE_LOG_INFO("Fish %s started", arg);
     }
 }
@@ -292,7 +292,7 @@ void asw__del_fish(char *arg, char **res){
     if(aq__remove_fish(aquarium, arg) == 0){
         asprintf(res, "NOK : Impossible to find fish %s\n", arg);
     }else{
-        asprintf(res, "OK : Fish %s removed !\n", arg);
+        asprintf(res, "OK : Fish %s successfully removed !\n", arg);
         CONSOLE_LOG_INFO("Fish %s removed", arg);
     }
 }

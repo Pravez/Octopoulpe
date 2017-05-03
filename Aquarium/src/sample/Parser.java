@@ -26,7 +26,6 @@ public class Parser {
             case "hello" :
                 if (args.length == 4 || args.length == 1) {
                     communicator.send(action);
-                    communicator.getAswHello();
                 }
                 else
                     console.display.appendText("< NOK. Usage : 'hello' or 'hello in as ID'" + System.lineSeparator());
@@ -55,11 +54,8 @@ public class Parser {
                         if (!checkMobilityModel(args[5]))
                             console.display.appendText("< NOK : modele de mobilite non supporte" + System.lineSeparator());
                         else {
+                            console.addFishToHandle(args[1], Integer.parseInt(args[3].split("x")[0]), Integer.parseInt(args[3].split("x")[1]), Integer.parseInt(args[4].split("x")[0]), Integer.parseInt(args[4].split("x")[1]));
                             communicator.send(action);
-                            communicator.getAswAdd(args[1], Integer.parseInt(args[3].split("x")[0]), Integer.parseInt(args[3].split("x")[1]), Integer.parseInt(args[4].split("x")[0]), Integer.parseInt(args[4].split("x")[1]), args[5]);
-                            //To debug :
-                            console.aquarium.addFish(args[1], Integer.parseInt(args[3].split("x")[0]), Integer.parseInt(args[3].split("x")[1]), Integer.parseInt(args[4].split("x")[0]), Integer.parseInt(args[4].split("x")[1]));
-                            //console.display.appendText("< OK" + System.lineSeparator());
                         }
                     } catch (NumberFormatException e) {
                         console.display.appendText("< NOK ! " + e.getMessage().split("\"")[1] + " is supposed to be an integer." + System.lineSeparator());
@@ -72,8 +68,6 @@ public class Parser {
                 if (args.length == 2) {
                     if (console.aquarium.hasFish(args[1])) {
                         communicator.send(action);
-                        communicator.getAswStart(args[1]);
-                        console.display.appendText("< OK" + System.lineSeparator());
                     }
                     else
                         console.display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
@@ -85,8 +79,6 @@ public class Parser {
                 if (args.length == 2) {
                     if (console.aquarium.hasFish(args[1])) {
                         communicator.send(action);
-                        communicator.getAswDel(args[1]);
-                        console.display.appendText("< OK" + System.lineSeparator());
                     }
                     else
                         console.display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
@@ -97,8 +89,6 @@ public class Parser {
             case "getFishes":
                 if (args.length == 1) {
                     communicator.send(action);
-                    communicator.getAswGoal();
-                    console.display.appendText("< OK" + System.lineSeparator());
                 }
                 else
                     console.display.appendText("< NOK. Usage : 'getFishes'" + System.lineSeparator());
@@ -106,10 +96,6 @@ public class Parser {
             case "getFishesContinuously":
                 if (args.length == 1) {
                     communicator.send(action);
-                    console.display.appendText("< OK" + System.lineSeparator());
-                    continuously = new Thread(new ContinuouslyHandler(console, communicator.inContinuously));
-                    continuously.run();
-                    System.out.println("DEBUG : ON SORT DE CETTE MERDE");
                 }
                 else
                     console.display.appendText("< NOK. Usage : 'getFishesContinuously'" + System.lineSeparator());

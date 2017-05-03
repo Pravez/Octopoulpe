@@ -33,15 +33,15 @@ public class Aquarium extends Application {
     private long previousTime = 0;
 
     //display attributes
-    private int width = 650;
-    private int height = 400;
+    protected int width = 650;
+    protected int height = 400;
     private final Pane aquarium = new Pane();
     private ImageView background;
 
     //general attributes
     private ArrayList<Fish> fishes;
     private Console console;
-    private boolean continuously;
+    private boolean hasNew=false;
 
     //others
     private int konamiCode = 0;
@@ -56,7 +56,6 @@ public class Aquarium extends Application {
         console.suggestInput("hello in as " + id);
 
         fishes = new ArrayList<Fish>();
-        continuously = false;
 
         //initialisation of the aquarium
         final URL url = getClass().getResource("Images/bg.png");
@@ -85,8 +84,11 @@ public class Aquarium extends Application {
             @Override
             public void handle(long now) {
                 timer++;
-                //if (continuously)
-                //    console.parser.communicator.getAswGoal();
+                if (hasNew) {
+                    hasNew = false;
+                    aquarium.getChildren().remove(1, aquarium.getChildren().size()); //remove all except background
+                    aquarium.getChildren().addAll(getAllViews(1));
+                }
 
                 if (timeElpased >= pingTimeslice*1000000) {
                     timeElpased = 0;
@@ -166,10 +168,6 @@ public class Aquarium extends Application {
         }
     }
 
-    public void setContinuously(boolean c) {
-        continuously = c;
-    }
-
     public boolean hasFish(String name) {
         for (Fish f: fishes) {
             if (f.getName().contentEquals(name))
@@ -233,6 +231,11 @@ public class Aquarium extends Application {
             res.add(f.get_View(nb));
         }
         return res;
+    }
+
+    public void addFish(Fish f) {
+        hasNew = true; //to know that another thread add a fish (just the main thread can add it at the view)
+        fishes.add(f);
     }
 
     public void addFish(String name, int x, int y, int w, int h) {

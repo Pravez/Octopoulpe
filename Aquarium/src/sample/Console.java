@@ -39,10 +39,14 @@ public class Console extends Stage {
 
     Thread continuously;
 
+    ArrayList<Fish> toHandle;
+
     public Console(Aquarium a, int w, int h) {
         aquarium = a;
         this.setTitle("Console");
         Pane entry = new Pane();
+
+        toHandle = new ArrayList<Fish>();
 
         display = new TextArea();
         display.setEditable(false);
@@ -60,6 +64,29 @@ public class Console extends Stage {
 
         this.setScene(new Scene(entry, w, h));
         parser = new Parser(this, display);
+    }
+
+    public void addFishToHandle(String n, int x, int y, int w, int h) {
+        System.out.println("DEBUG : on ajoute le poisson " + n + " avec pos=" + x + "/" + y + " et w=" + w + " et h=" +h);
+        toHandle.add(new Fish(x*aquarium.width/100, y*aquarium.height/100, w*aquarium.width/100, h*aquarium.height/100, n));
+    }
+
+    public void removeFishToHandle(Fish f) {
+        toHandle.remove(f);
+    }
+
+    public void popFishToHandle(String n) {
+        Fish res = null;
+        for (Fish f : toHandle) {
+            System.out.println("DEBUG : ON PASSE PAR " + f.toString());
+            if (f.getName().contentEquals(n)) {
+                System.out.println("DEBUG : ON POP " + f.toString());
+                aquarium.addFish(f);
+                res = f;
+            }
+        }
+        if (res != null)
+            toHandle.remove(res);
     }
 
     public void setId(String id) {
