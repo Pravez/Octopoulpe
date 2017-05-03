@@ -47,7 +47,7 @@ public class Console extends Stage {
     private ComboBox comboBox;
 
 
-    protected final List<String> history;
+    protected List<String> history;
     protected int historyCount = 0;
 
     private int width;
@@ -61,10 +61,16 @@ public class Console extends Stage {
         aquarium = a;
         width = w;
         height = h;
-        this.setTitle("Console");
-        entry = new Pane();
+
+        initDisplay();
 
         toHandle = new ArrayList<Fish>();
+        parser = new Parser(this, display);
+    }
+
+    private void initDisplay() {
+        this.setTitle("Console");
+        entry = new Pane();
 
         display = new TextArea();
         display.setEditable(false);
@@ -75,13 +81,12 @@ public class Console extends Stage {
         initComboBox();
 
         vb = new VBox();
-        display.setMinHeight(h-input.getHeight()-toolbar.getHeight()-50); //-10 for the height of windows itself
-        display.setMaxHeight(h-input.getHeight()-toolbar.getHeight()-50);
+        display.setMinHeight(height-input.getHeight()-toolbar.getHeight()-50); //-50 for the height of windows itself
+        display.setMaxHeight(height-input.getHeight()-toolbar.getHeight()-50);
         vb.getChildren().addAll(toolbar, display, input);
         entry.getChildren().add(vb);
 
-        this.setScene(new Scene(entry, w, h));
-        parser = new Parser(this, display);
+        this.setScene(new Scene(entry, width, height));
     }
 
     public void addFishToHandle(String n, int x, int y, int w, int h) {
@@ -169,13 +174,13 @@ public class Console extends Stage {
     private void initComboBox() {
         comboBox = new ComboBox();
         comboBox.getItems().addAll("addFish PoissonRouge at 50x50, 15x15, RandomWayPoint",
-                "addFish PoissonClown at 50x50, 10x10, VerticalWayPoint",
-                "addFish PoissonNain at 50x50, 10x10, HorizontalWayPoint",
-                "startFish PoissonRouge",
-                "delFish PoissonRouge",
-                "getFishes",
-                "getFishesContinuously",
-                "stopSendContinuously");
+                                                "addFish PoissonClown at 50x50, 10x10, VerticalWayPoint",
+                                                "addFish PoissonNain at 50x50, 10x10, HorizontalWayPoint",
+                                                "startFish PoissonRouge",
+                                                "delFish PoissonRouge",
+                                                "getFishes",
+                                                "getFishesContinuously",
+                                                "stopSendContinuously");
         comboBox.setPromptText("Quick order");
         comboBox.setEditable(true);
         comboBox.setMinWidth(width);
@@ -205,94 +210,31 @@ public class Console extends Stage {
     private void initTab() {
 
         Label tab1 = new Label("Fishes");
-        tab1.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
-                if (e.getButton() == MouseButton.PRIMARY) {
-                    Alert alert = new Alert(INFORMATION);
-                    alert.setHeaderText("Fishes available : ");
-                    alert.setTitle("Fishes");
-                    alert.setHeight(200);
-                    alert.setContentText("Here the fishes available : " + System.lineSeparator() +getFishesAvailable() );
-
-                    alert.showAndWait().ifPresent(response -> {
-                        if (response == ButtonType.OK) {
-                            alert.close();
-                        }
-                    });
-                }
-            }
-        });
+        initInfoTab(tab1,"Fishes", "Fishes available : ", "Here the fishes available : " + System.lineSeparator() +getFishesAvailable() );
 
         Label tab2 = new Label("Mobility Models");
-        tab2.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
-                if (e.getButton() == MouseButton.PRIMARY) {
-                    Alert alert = new Alert(INFORMATION);
-                    alert.setHeaderText("Mobility models available : : ");
-                    alert.setTitle("Mobility Models");
-                    alert.setHeight(200);
-                    alert.setContentText("Here the models available : " + System.lineSeparator() + getModelsAvailable() );
-
-                    alert.showAndWait().ifPresent(response -> {
-                        if (response == ButtonType.OK) {
-                            alert.close();
-                        }
-                    });
-                }
-            }
-        });
+        initInfoTab(tab2, "Mobility Models", "Mobility models available : ", "Here the models available : " + System.lineSeparator() + getModelsAvailable());
 
         Label tab3 = new Label("Help");
-        tab3.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
-                if (e.getButton() == MouseButton.PRIMARY) {
-                    Alert alert = new Alert(INFORMATION);
-                    alert.setHeaderText("Commands available : ");
-                    alert.setTitle("Help");
-                    alert.setHeight(200);
-                    alert.setContentText("Here the command available : " + System.lineSeparator()
-                            + " - hello [in as ID]" + System.lineSeparator()
-                            + " - status " + System.lineSeparator()
-                            + " - startFish name " + System.lineSeparator()
-                            + " - addFish name x y w h modelMoving " + System.lineSeparator()
-                            + " - delFish name " + System.lineSeparator()
-                            + " - setGoal name x y delay" + System.lineSeparator()
-                            + " - getFishes " + System.lineSeparator()
-                            + " - getFishesContinuously " + System.lineSeparator() );
-
-                    alert.showAndWait().ifPresent(response -> {
-                        if (response == ButtonType.OK) {
-                            alert.close();
-                        }
-                    });
-                }
-            }
-        });
+        initInfoTab(tab3, "Help", "Commands available : ", "Here the command available : " + System.lineSeparator()
+                                                                        + " - hello [in as ID]" + System.lineSeparator()
+                                                                        + " - status " + System.lineSeparator()
+                                                                        + " - startFish name " + System.lineSeparator()
+                                                                        + " - addFish name x y w h modelMoving " + System.lineSeparator()
+                                                                        + " - delFish name " + System.lineSeparator()
+                                                                        + " - setGoal name x y delay" + System.lineSeparator()
+                                                                        + " - getFishes " + System.lineSeparator()
+                                                                        + " - getFishesContinuously " + System.lineSeparator());
 
         Label tab4 = new Label("About");
-        tab4.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
-                if (e.getButton() == MouseButton.PRIMARY) {
-                    Alert alert = new Alert(INFORMATION);
-                    alert.setHeaderText("About the software");
-                    alert.setTitle("About");
-                    alert.setHeight(200);
-                    alert.setContentText("This software was made for a student's project as part of ENSEIRB-MATMECA's studies." + System.lineSeparator()
-                            + " Contributors : " + System.lineSeparator()
-                            + " Paul Breton " + System.lineSeparator()
-                            + " Paul Gaulier " + System.lineSeparator()
-                            + " Louise Mouret" + System.lineSeparator()
-                            + " Laurie-Anne Parant " + System.lineSeparator()
-                            + " Nicolas Vidal " + System.lineSeparator());
+        initInfoTab(tab4, "About", "About the software", "This software was made for a student's project as part of ENSEIRB-MATMECA's studies." + System.lineSeparator()
+                                                                        + " Contributors : " + System.lineSeparator()
+                                                                        + " Paul Breton " + System.lineSeparator()
+                                                                        + " Paul Gaulier " + System.lineSeparator()
+                                                                        + " Louise Mouret" + System.lineSeparator()
+                                                                        + " Laurie-Anne Parant " + System.lineSeparator()
+                                                                        + " Nicolas Vidal " + System.lineSeparator());
 
-                    alert.showAndWait().ifPresent(response -> {
-                        if (response == ButtonType.OK) {
-                            alert.close();
-                        }
-                    });
-                }
-            }
-        });
 
         CheckBox cb = new CheckBox("Quick order");
         cb.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -316,7 +258,23 @@ public class Console extends Stage {
     }
 
     private void initInfoTab(Label l, String title, String header, String content) {
+        l.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    Alert alert = new Alert(INFORMATION);
+                    alert.setHeaderText(header);
+                    alert.setTitle(title);
+                    alert.setHeight(200);
+                    alert.setContentText(content);
 
+                    alert.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.OK) {
+                            alert.close();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private String getModelsAvailable() {
@@ -333,7 +291,6 @@ public class Console extends Stage {
     }
 
     private String getFishesAvailable() {
-        //TODO : use function in class Fish ?
             File directory = new File(  System.getProperty("user.dir") + "/src/sample/Images/");
             System.out.println("DEBUG : Directory " + directory.toString() + " exists : " + directory.exists());
             String[] listFiles = directory.list();
