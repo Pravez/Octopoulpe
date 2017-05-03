@@ -85,7 +85,7 @@ public class Aquarium extends Application {
             public void handle(long now) {
                 timer++;
 
-                if (console.threadIsOver() || !console.parser.communicator.isConnected()) {
+                if (console.threadIsOver() ) {//|| !console.parser.communicator.isConnected()) {
                     console.logOut();
                     System.exit(1);
                 }
@@ -159,7 +159,7 @@ public class Aquarium extends Application {
                         }
                     }
                 }
-                console.parser.communicator.config(address, port);
+                //console.parser.communicator.config(address, port);
             } catch (IOException e) {
                 System.out.println("DEBUG : DIDN'T FOUND FILE ! Exception : " + e.toString());
             }

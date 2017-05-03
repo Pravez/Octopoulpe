@@ -1,8 +1,15 @@
 package sample;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -10,6 +17,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -24,13 +32,20 @@ import static javafx.scene.control.Alert.AlertType.INFORMATION;
 public class Console extends Stage {
 
     public Aquarium aquarium;
+
     private ToolBar toolbar;
     private String id;
 
     protected Parser parser;
 
+    //Display
+    Pane entry;
+    VBox vb;
     protected TextArea display;
     private TextField input;
+    private ComboBox comboBox;
+
+
     protected final List<String> history;
     protected int historyCount = 0;
 
@@ -44,7 +59,7 @@ public class Console extends Stage {
     public Console(Aquarium a, int w, int h) {
         aquarium = a;
         this.setTitle("Console");
-        Pane entry = new Pane();
+        entry = new Pane();
 
         toHandle = new ArrayList<Fish>();
 
@@ -55,7 +70,42 @@ public class Console extends Stage {
         initTab();
         initInput();
 
-        VBox vb = new VBox();
+        comboBox = new ComboBox();
+        comboBox.getItems().addAll("addFish PoissonRouge at 50x50, 15x15, RandomWayPoint",
+                "addFish PoissonClown at 50x50, 10x10, VerticalWayPoint",
+                "addFish PoissonNain at 50x50, 10x10, HorizontalWayPoint",
+                "startFish PoissonRouge",
+                "delFish PoissonRouge",
+                "getFishes",
+                "getFishesContinuously",
+                "stopSendContinuously");
+        comboBox.setPromptText("Quick order");
+        comboBox.setEditable(true);
+        comboBox.setMinWidth(w);
+        comboBox.setMaxWidth(w);
+        comboBox.addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case ENTER:
+                    String action = input.getText();
+                    history.add(action);
+                    historyCount++;
+                    display.appendText("> " + action + System.lineSeparator());
+                    input.clear();
+
+                    System.out.println("DEBUG : On a rentree : " + action);
+                    parser.parser(action);
+                    break;
+            }});
+
+        comboBox.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue ov, String t, String t1) {
+                input.setText(t1);
+            }
+        });
+
+
+        vb = new VBox();
         display.setMinHeight(h-input.getHeight()-toolbar.getHeight()-50); //-10 for the height of windows itself
         display.setMaxHeight(h-input.getHeight()-toolbar.getHeight()-50);
         input.setPrefColumnCount(20);
@@ -90,7 +140,7 @@ public class Console extends Stage {
     }
 
     public boolean threadIsOver() {
-        return (parser.communicator.reicever.getState() == Thread.State.TERMINATED);
+        return (parser.communicator.reicever != null && parser.communicator.reicever.getState() == Thread.State.TERMINATED);
     }
 
     public void setId(String id) {
@@ -217,13 +267,31 @@ public class Console extends Stage {
                     alert.showAndWait().ifPresent(response -> {
                         if (response == ButtonType.OK) {
                             alert.close();
-                        }
-                    });
+                    }
+                });
+            }
+        }
+        });
+
+        CheckBox cb = new CheckBox("Quick order");
+        cb.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                //cb.setSelected(!newValue);
+                if (newValue) {
+                    vb.getChildren().remove(input);
+                    vb.getChildren().add(comboBox);
+                    entry.getChildren().setAll(vb);
+                }
+                else {
+                    vb.getChildren().remove(comboBox);
+                    vb.getChildren().add(input);
+                    entry.getChildren().setAll(vb);
                 }
             }
         });
 
-        toolbar = new ToolBar(tab3, new Separator(), tab1, new Separator(), tab2);
+        toolbar = new ToolBar(tab3, new Separator(), tab1, new Separator(), tab2, new Separator(), cb);
     }
 
     private String getFishesAvailable() {

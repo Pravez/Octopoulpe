@@ -41,7 +41,8 @@ public class Communicator {
 
     public void logOut() {
         try {
-            socket.close();
+            if (socket != null)
+                socket.close();
         }catch (IOException e) {System.out.println("Exception : " + e.toString());}
     }
 
