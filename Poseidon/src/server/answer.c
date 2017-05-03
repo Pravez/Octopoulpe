@@ -129,7 +129,7 @@ int asw__iterate_fishes(any_t *res, any_t fish) {
 void asw__get_fishes(char **res, struct client *cli) {
     if (cli != NULL && cli->aqv != NULL) {
         if (hashmap_length(cli->aqv->_fishes) == 0) {
-            asprintf(res, "list []\n");
+            asprintf(res, "list\n");
         } else {
             char *fishes_str = NULL;
             hashmap_iterate(cli->aqv->_fishes, (PFany) asw__iterate_fishes, &fishes_str);

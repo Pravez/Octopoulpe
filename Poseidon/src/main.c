@@ -45,7 +45,7 @@ int main(int argc, char* argv[]){
         parse_config_file("controller.cfg");
         UPDATE_INTERVAL = _get_value(config_vector, "fish-update-interval");
         DISPLAY_TIMEOUT_VALUE = _get_value(config_vector, "display-timeout-value");
-        CONTROLLER_PORT = _get_value(config_vector, "controller-port")+4;
+        CONTROLLER_PORT = _get_value(config_vector, "controller-port");
         _delete_tvector(config_vector);
         CONSOLE_LOG_INFO("Successfully parsed config file");
 

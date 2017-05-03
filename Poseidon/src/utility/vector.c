@@ -13,7 +13,7 @@ void v__destroy(struct vector *vector) {
 
 void _v__resize(struct vector *vector){
     vector->_size *= 2;
-    vector->_items = realloc(vector->_items, vector->_size);
+    vector->_items = realloc(vector->_items, vector->_size*sizeof(struct vector_item));
 }
 
 int v__add(struct vector *vector, void *data, enum TTYPE type) {

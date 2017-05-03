@@ -75,20 +75,17 @@ void *send__regular_sender(void *arg) {
     }
 }
 
-void send__fishes_continuously(struct thread_p *thread) {
-    CONSOLE_LOG_INFO("Starting to send continuously to %s", thread->_client->id);
-    thread->_client->_is_observer = TRUE;
-    v__add(observers, thread, THREAD);
-    pthread_create(&thread->_client->_continuous_sender, NULL, send__regular_sender, thread);
+char* send__fishes_continuously(struct thread_p *thread) {
+    if(!thread->_client->_is_observer) {
+        CONSOLE_LOG_INFO("Starting to send continuously to %s", thread->_client->id);
+        thread->_client->_is_observer = TRUE;
+        v__add(observers, thread, THREAD);
+        pthread_create(&thread->_client->_continuous_sender, NULL, send__regular_sender, thread);
+        return "OK : Started transaction\n";
+    }else{
+        return "NOK : You already are in a transaction\n";
+    }
 
-    read(thread->_socket_fd, NULL, 256 - 1);
-    pthread_kill(thread->_client->_continuous_sender, SIGNAL_STOP_SENDING);
-    pthread_join(thread->_client->_continuous_sender, NULL);
-
-    CONSOLE_LOG_INFO("Stopping to send continuously to %s", thread->_client->id);
-
-    thread->_client->_is_observer = FALSE;
-    v__remove_by_data(observers, thread);
 }
 
 char *send__add_fish(struct client *client) {
@@ -163,3 +160,21 @@ char *send__start_fish() {
     return result;
 }
 
+char* send__stop_send_continuously(struct thread_p* thread){
+    if(thread->_client->_is_observer) {
+        __stop_send_continuously(thread);
+        return "OK : End of transaction\n";
+    }else{
+        return "NOK : You're not in transaction\n";
+    }
+}
+
+void __stop_send_continuously(struct thread_p* thread){
+    pthread_kill(thread->_client->_continuous_sender, SIGNAL_STOP_SENDING);
+    pthread_join(thread->_client->_continuous_sender, NULL);
+
+    CONSOLE_LOG_INFO("Stopping to send continuously to %s", thread->_client->id);
+
+    thread->_client->_is_observer = FALSE;
+    v__remove_by_data(observers, thread);
+}
