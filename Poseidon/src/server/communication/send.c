@@ -32,9 +32,11 @@ char *send__client_id(struct thread_p *thread) {
     if (asw__hello(str, &result, thread) == HELLO_FAILURE) {
         thread->_authenticated = FALSE;
     } else {
-        if (thread->_client->id != NULL)
-        CONSOLE_LOG_INFO("Authenticated Client %s with View %s", inet_ntoa(thread->_client_socket.sin_addr),
-                         thread->_client->id);
+        if (thread->_client->id != NULL) {
+            CONSOLE_LOG_INFO("Authenticated Client %s with View %s", inet_ntoa(thread->_client_socket.sin_addr),
+                             thread->_client->id);
+            asprintf(&thread->_client_name, "%s", thread->_client->id);
+        }
     }
 
     free(str);

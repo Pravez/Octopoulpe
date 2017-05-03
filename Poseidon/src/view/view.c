@@ -16,14 +16,14 @@ static char *line_read = (char *) NULL;
 const char *prompt = YELLOW"Octopoulple "YELLOWBOLD"$ > "RESET;
 static const char *delim = " ";
 
-extern struct aquarium* aquarium;
+extern struct aquarium *aquarium;
 extern pthread_t thread_server;
 extern pthread_t thread_world;
 extern int WORLD_READY;
 extern int SERVER_READY;
 
 void display_menu() {
-    while(!WORLD_READY || !SERVER_READY);
+    while (!WORLD_READY || !SERVER_READY);
     printf("Welcome to "REDBOLD"Octopoulpe"RESET" main menu ! Enter a command to continue ...\n");
 }
 
@@ -58,9 +58,9 @@ int handle_line() {
         display_help();
     else {
         token = strtok(line, delim);
-        if(token != NULL) {
+        if (token != NULL) {
             //^C handling
-            if(*token == -1)
+            if (*token == -1)
                 return 0;
 
             if (!strcmp(token, "load")) {
@@ -73,7 +73,7 @@ int handle_line() {
                 cmd__call(ADD);
             } else if (!strcmp(token, "list")) {
                 cmd__call(LIST);
-            } else if (!strcmp(token, "delete")) {
+            } else if (!strcmp(token, "del")) {
                 cmd__call(DELETE);
             } else if (!strcmp(token, "save")) {
                 cmd__call(SAVE);
@@ -91,16 +91,18 @@ int handle_line() {
 }
 
 
-
 int cmd__call(enum command cmd) {
     if (aquarium == NULL && (cmd == SAVE || cmd == ADD || cmd == LIST || cmd == DELETE || cmd == SHOW)) {
         RETURN_ERROR_MSG("Impossible to execute this action with non-existing aquarium ... create one first.", 0)
     }
 
-    if(aquarium != NULL && (cmd == LOAD || cmd == INIT)){
+    if (aquarium != NULL && (cmd == LOAD || cmd == INIT)) {
         printf("\t> An aquarium already exists ... Remove it ? (y/n)\n");
-        //TODO
-        return 0;
+        char answer[4];
+        scanf("%s", answer);
+        if (strcmp(answer, "y")) {
+            return 0;
+        }
     }
 
     switch (cmd) {
@@ -118,7 +120,8 @@ int cmd__call(enum command cmd) {
             return cmd__save_aquarium();
         case LIST:
             return cmd__list();
-        default:break;
+        default:
+            break;
     }
 
     return 0;
@@ -142,18 +145,18 @@ int cmd__init_aquarium() {
 int cmd__load_file() {
     char *string = strtok(NULL, delim);
 
-    if(aquarium != NULL)
+    if (aquarium != NULL)
         aq__remove_aquarium(aquarium);
 
-    if(access(string, F_OK) != -1){
+    if (access(string, F_OK) != -1) {
         aquarium = load_file(string);
-        if(aquarium == NULL){
-            RETURN_ERROR_MSG("Error while reading input file, are you sure it has the right format", 0)
-        }else{
+        if (aquarium == NULL) {
+            RETURN_ERROR_MSG("Error while reading input file, are you sure it has the right format ?\n", 0)
+        } else {
             printf("\t> Successfully loaded file \n");
         }
-    }else{
-        RETURN_ERROR_MSG("Impossible to find file, please verify if it exists.", 0)
+    } else {
+        RETURN_ERROR_MSG("Impossible to find file, please verify if it exists.\n", 0)
     }
 
 
@@ -162,15 +165,22 @@ int cmd__load_file() {
 
 int cmd__show_aquarium() {
     char *string = strtok(NULL, delim);
-    if(string != NULL) {
+    if (string != NULL) {
         if (!strcmp(string, "aquarium")) {
             display_aquarium(aquarium);
             return 1;
         } else {
-            display_view(aq__get_view_by_id(aquarium, string));
+            struct aquarium_view *view = aq__get_view_by_id(aquarium, string);
+            if (view != NULL) {
+                display_view(view);
+            } else {
+                printf("\t> Could not find a view with name %s\n", string);
+                return 0;
+            }
+
             return 2;
         }
-    }else{
+    } else {
         printf("\t> Please precise what thing you want to show\n");
         return 0;
     }
@@ -178,9 +188,9 @@ int cmd__show_aquarium() {
 
 int cmd__add() {
     char *string = strtok(NULL, delim);
-    if(string != NULL) {
+    if (string != NULL) {
         if (!strcmp(string, "view")) {
-            char* id, *width, *height, *off_x, *off_y;
+            char *id, *width, *height, *off_x, *off_y;
 
             id = strtok(NULL, " ");
             off_x = strtok(NULL, "x");
@@ -188,11 +198,11 @@ int cmd__add() {
             width = strtok(NULL, "+");
             height = strtok(NULL, "+");
 
-            if(id != NULL && off_x != NULL && off_y != NULL && width != NULL && height != NULL){
-                if(atoi(off_x) != -1 && atoi(off_y) != -1 && atoi(width) != -1 && atoi(height) != -1){
-                    char* returned = aq__add_view(aquarium, (struct position) {atoi(off_x), atoi(off_y)},
+            if (id != NULL && off_x != NULL && off_y != NULL && width != NULL && height != NULL) {
+                if (atoi(off_x) != -1 && atoi(off_y) != -1 && atoi(width) != -1 && atoi(height) != -1) {
+                    char *returned = aq__add_view(aquarium, (struct position) {atoi(off_x), atoi(off_y)},
                                                   (struct dimension) {atoi(width), atoi(height)}, id);
-                    if(returned == NULL)
+                    if (returned == NULL)
                         printf("\t> Unable to add view : ID %s already taken\n", id);
                     else
                         printf("\t> Added view with ID : %s\n", returned);
@@ -206,7 +216,7 @@ int cmd__add() {
         } else {
             printf("\t> Cannot add %s, unable to handle it.\n", string);
         }
-    }else{
+    } else {
         printf("\t> Please precise what thing you want to add (view)\n");
     }
 
@@ -217,8 +227,22 @@ int cmd__delete() {
     char *string = strtok(NULL, delim);
 
     if (!strcmp(string, "view")) {
-        aqv__remove_aquarium_view(aq__get_view_by_id(aquarium, string));
-        return 1;
+        char *view_name = strtok(NULL, delim);
+        if(view_name != NULL){
+            struct aquarium_view *view = aq__get_view_by_id(aquarium, view_name);
+            if (view != NULL) {
+                aq__remove_aquarium_view(aquarium, view_name);
+                printf("\t> Removed view with name %s, clients will be notified.\n", view_name);
+
+            } else {
+                printf("\t> Could not find a view with name %s\n", view_name);
+                return 0;
+            }
+            return 1;
+        }else{
+            printf("\t> Please give a name to remove view\n");
+            return 0;
+        }
     } else {
         printf("\t> Please precise what thing you want to delete (view)\n");
         return 0;
@@ -245,21 +269,21 @@ int cmd__list() {
 int cmd__save_aquarium() {
     char *string = strtok(NULL, delim);
 
-    if(string != NULL){
+    if (string != NULL) {
         //Check if the file exists
-        if(access(string, F_OK) != -1){
+        if (access(string, F_OK) != -1) {
             printf("\t> File exists ... Erase ? (y/n) ");
             char answer[4];
             scanf("%s", answer);
-            if(!strcmp(answer, "y")){
+            if (!strcmp(answer, "y")) {
                 write_file(aquarium, string);
                 printf("\t> Successfully saved aquarium in %s\n", string);
             }
-        }else{
+        } else {
             write_file(aquarium, string);
             printf("\t> Successfully saved aquarium in %s\n", string);
         }
-    }else{
+    } else {
         RETURN_ERROR_MSG("Please give a file name ...\n", 0)
     }
 
@@ -282,7 +306,7 @@ void __end__() {
     pthread_join(thread_world, NULL);
 
     printf("\t> Clearing data ...\n");
-    if(aquarium != NULL) {
+    if (aquarium != NULL) {
         aq__remove_aquarium(aquarium);
         free(aquarium);
     }

@@ -28,6 +28,7 @@ struct thread_p{
     int _authenticated;
 
     struct client* _client;
+    char* _client_name;
     char _last_message[BUFFER_SIZE];
 
     time_t _last_ping;
