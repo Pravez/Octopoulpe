@@ -12,7 +12,7 @@ public class Communicator {
     private Console console;
     private Socket socket;
     protected BufferedReader in;
-    private Thread reicever;
+    protected Thread reicever;
 
     public Communicator(Console c) {
         console = c;
@@ -37,6 +37,12 @@ public class Communicator {
         System.out.println("DEBUG : Connexion etablie");
         reicever = new Thread(new ReceiveHandler(console, in));
         reicever.start();
+    }
+
+    public void logOut() {
+        try {
+            socket.close();
+        }catch (IOException e) {System.out.println("Exception : " + e.toString());}
     }
 
     public void send(String s) {

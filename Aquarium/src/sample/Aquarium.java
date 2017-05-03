@@ -84,6 +84,12 @@ public class Aquarium extends Application {
             @Override
             public void handle(long now) {
                 timer++;
+
+                if (console.threadIsOver()) {
+                    console.logOut();
+                    System.exit(1);
+                }
+
                 if (hasNew) {
                     hasNew = false;
                     aquarium.getChildren().remove(1, aquarium.getChildren().size()); //remove all except background
@@ -241,7 +247,7 @@ public class Aquarium extends Application {
     public void addFish(String name, int x, int y, int w, int h) {
               Fish f = new Fish(x*width/100, y*height/100, w*width/100, h*height/100, name);
               fishes.add(f);
-              aquarium.getChildren().add(f.get_View(0));
+              hasNew = true;
     }
 
     public void setStarted(String name) {

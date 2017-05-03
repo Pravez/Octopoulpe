@@ -89,6 +89,10 @@ public class Console extends Stage {
             toHandle.remove(res);
     }
 
+    public boolean threadIsOver() {
+        return (parser.communicator.reicever.getState() == Thread.State.TERMINATED);
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -136,6 +140,11 @@ public class Console extends Stage {
                     break;
             }
         });
+    }
+
+    public void logOut() {
+        parser.communicator.logOut();
+        this.close();
     }
 
     private void initTab() {
