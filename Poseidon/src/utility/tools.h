@@ -2,6 +2,7 @@
 #define POSEIDON_TOOLS_H
 
 #include "data.h"
+#include <readline/readline.h>
 
 #define boolean int
 #define TRUE 1
@@ -24,9 +25,9 @@
 boolean verbosity;
 boolean test_verbosity;
 
-#define CONSOLE_LOG_ERR(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ "REDBOLD"ERROR"RESET" ] \t" message "\n", ##__VA_ARGS__);
-#define CONSOLE_LOG_WARN(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ "YELLOW"WARN"RESET" ] \t" message "\n", ##__VA_ARGS__);
-#define CONSOLE_LOG_INFO(message, ...) if(verbosity) fprintf(CONSOLE_OUTPUT, "[ "GREEN"INFO"RESET" ] \t" message "\n", ##__VA_ARGS__);
+#define CONSOLE_LOG_ERR(message, ...) if(verbosity) rl_message(CONSOLE_OUTPUT, "[ "REDBOLD"ERROR"RESET" ] \t" message "\n", ##__VA_ARGS__);
+#define CONSOLE_LOG_WARN(message, ...) if(verbosity) rl_message(CONSOLE_OUTPUT, "[ "YELLOW"WARN"RESET" ] \t" message "\n", ##__VA_ARGS__);
+#define CONSOLE_LOG_INFO(message, ...) if(verbosity) rl_save_prompt(); rl_message("[ "GREEN"INFO"RESET" ] \t" message "\n", ##__VA_ARGS__); rl_restore_prompt(); rl_clear_message();
 #define CONSOLE_LOG_TEST(message, ...) if(test_verbosity) fprintf(CONSOLE_OUTPUT, "[ "GREENBOLD" OK "RESET" ] \t" message "\n", ##__VA_ARGS__);
 
 struct position {

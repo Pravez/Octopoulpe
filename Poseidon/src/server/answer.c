@@ -217,7 +217,7 @@ void asw__remove_aquarium() {
 
 void asw__ping(char *arg, char **res, struct client *client) {
     if (arg != NULL) {
-        asprintf(res, "OK : pong %s", arg);
+        asprintf(res, "OK : pong %s\n", arg);
     } else {
         asprintf(res, "NOK : Please give a value with ping");
     }

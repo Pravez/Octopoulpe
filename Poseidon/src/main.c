@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <readline.h>
 
 #include "server/parser.h"
 #include "server/server.h"
@@ -22,6 +23,7 @@ int WORLD_READY;
 int SERVER_READY;
 
 int main(int argc, char* argv[]){
+
 
     _set_verbosity(TRUE);
     CONSOLE_LOG_INFO("Starting Octopoulpe");
