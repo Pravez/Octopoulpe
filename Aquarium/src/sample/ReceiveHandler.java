@@ -32,11 +32,9 @@ public class ReceiveHandler implements Runnable {
                         handleGoal(args);
                         break;
                     case "no":
-                        //console.display.appendText("< " + message + System.lineSeparator());
                         //TODO : what we can do if no greeting ?
                         break;
                     case "greeting":
-                        //console.display.appendText("< " + message + System.lineSeparator());
                         console.setId(args[1]);
                         break;
                     case "NOK":
@@ -66,6 +64,7 @@ public class ReceiveHandler implements Runnable {
             } catch (IOException e) {e.printStackTrace();}
         }
     }
+
     public void handleGoal(String[] args) {
 
         for (int i = 2; i < args.length; i = i + 7) {

@@ -85,7 +85,7 @@ public class Aquarium extends Application {
             public void handle(long now) {
                 timer++;
 
-                if (console.threadIsOver()) {
+                if (console.threadIsOver() || !console.parser.communicator.isConnected()) {
                     console.logOut();
                     System.exit(1);
                 }
@@ -166,7 +166,6 @@ public class Aquarium extends Application {
         }
 
     public void setFishSize(String name, int w, int h) {
-        System.out.println("DEBUG : SET SIZE");
         for (Fish f: fishes) {
             if (f.getName().contentEquals(name)) {
                 f.setSize(w*width/100, h*height/100);
@@ -203,20 +202,19 @@ public class Aquarium extends Application {
                 if (ke.getCode() == KeyCode.UP && (konamiCode == 0 || konamiCode == 1)) {
                     konamiCode++;
                 }
-                else if (ke.getCode() == KeyCode.DOWN&& (konamiCode == 2 || konamiCode == 3)) {
+                else if (ke.getCode() == KeyCode.DOWN && (konamiCode == 2 || konamiCode == 3)) {
                     konamiCode++;
                 }
-                else if (ke.getCode() == KeyCode.LEFT&& (konamiCode == 4 || konamiCode == 6)) {
+                else if (ke.getCode() == KeyCode.LEFT && (konamiCode == 4 || konamiCode == 6)) {
                     konamiCode++;
                 }
-                else if (ke.getCode() == KeyCode.RIGHT&& (konamiCode == 5 || konamiCode == 7)){
+                else if (ke.getCode() == KeyCode.RIGHT && (konamiCode == 5 || konamiCode == 7)){
                     konamiCode++;
                 }
-                else if (ke.getCode() == KeyCode.B&& konamiCode == 8 ){
+                else if (ke.getCode() == KeyCode.B && konamiCode == 8 ){
                     konamiCode++;
                 }
                 else if (ke.getCode() == KeyCode.A&& konamiCode == 9 ){
-                    System.out.println("DEBUG : KONAMI CODE !!!");
                     final URL url = getClass().getResource("Images/bb.png");
                     final Image bg = new Image(url.toExternalForm());
                     background =  new ImageView(bg);
