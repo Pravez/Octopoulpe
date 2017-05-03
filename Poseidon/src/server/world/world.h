@@ -1,8 +1,8 @@
 #ifndef POSEIDON_WORLD_H
 #define POSEIDON_WORLD_H
 
-#include "../model/fish.h"
-#include "../utility/tools.h"
+#include "../../model/fish.h"
+#include "../../utility/tools.h"
 
 void * world_process(void *pVoid);
 int world_init();

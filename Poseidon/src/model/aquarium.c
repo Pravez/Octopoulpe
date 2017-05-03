@@ -3,7 +3,7 @@
 #include <string.h>
 #include "aquarium.h"
 #include "aquarium.h"
-#include "../server/answer.h"
+#include "../server/communication/answer.h"
 
 #define DEFAULT_VIEWS_QUANTITY 5
 

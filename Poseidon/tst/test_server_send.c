@@ -10,8 +10,8 @@
 #include "../src/server/server.h"
 #include "../src/model/aquarium.h"
 #include "../src/view/view.h"
-#include "../src/server/world.h"
-#include "../src/server/send.h"
+#include "../src/server/world/world.h"
+#include "../src/server/communication/send.h"
 
 static const char *delim = " ";
 
@@ -47,6 +47,7 @@ void tst__send_client_id()
     aquarium = malloc(sizeof(struct aquarium));
     aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
     aq__add_view(aquarium, (struct position) {250, 250}, (struct dimension) {500, 500}, "Cookie");
+
     aq__add_view(aquarium, (struct position) {100, 100}, (struct dimension) {900, 900}, "Donald");
 
     struct thread_p henry;

@@ -8,7 +8,7 @@
 
 #include "view.h"
 #include "../utility/file.h"
-#include "../server/interface.h"
+#include "../server/communication/interface.h"
 
 #define RETURN_ERROR_MSG(message, errcode) printf("\t> %s\n", message); return errcode;
 

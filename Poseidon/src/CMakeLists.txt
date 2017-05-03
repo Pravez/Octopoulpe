@@ -1,7 +1,7 @@
 set(SOURCE_FILES
         server/parser.c
         server/server.c
-        server/answer.c
+        server/communication/answer.c
         utility/tools.c
         utility/fish_type.c
         view/view.c
@@ -15,7 +15,7 @@ set(SOURCE_FILES
         model/aquarium_view.c
         model/aquarium_view.h
         utility/hashmap.c
-        utility/hashmap.h server/world.c server/world.h utility/data.h server/send.c server/send.h server/client.c server/client.h)
+        utility/hashmap.h server/world/world.c server/world/world.h utility/data.h server/communication/send.c server/communication/send.h server/communication/client.c server/communication/client.h)
 
 add_library(SERVER_LIB ${SOURCE_FILES})
 add_executable(Server main.c)

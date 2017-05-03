@@ -8,8 +8,8 @@
 
 #include "../utility/tools.h"
 #include "../utility/data.h"
-#include "answer.h"
-#include "client.h"
+#include "communication/answer.h"
+#include "communication/client.h"
 
 struct server_p{
     struct sockaddr_in _server_socket;

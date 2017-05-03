@@ -5,8 +5,8 @@
 #include <signal.h>
 #include <arpa/inet.h>
 #include "send.h"
-#include "../utility/data.h"
-#include "../utility/vector.h"
+#include "../../utility/data.h"
+#include "../../utility/vector.h"
 
 static const char *delim = SERVER_CMD_DELIMITER;
 static const char *end_delim = SERVER_END_CMD_DELIMITER;
@@ -20,10 +20,10 @@ char *send__client_id(struct thread_p *thread) {
     char *as = strtok(NULL, delim);
     char *id = strtok(NULL, end_delim);
     char *str = NULL;
-    if (in != NULL && strcmp(in,"\n")!=0){
-        if(as != NULL && id != NULL && strtok(NULL,delim) == NULL){
+    if (in != NULL && strcmp(in, "\n") != 0) {
+        if (as != NULL && id != NULL && strtok(NULL, delim) == NULL) {
             asprintf(&str, "%s", id);
-        }else{
+        } else {
             asprintf(&result, "NOK : Please use : hello in as [view id]\n");
             return result;
         }
@@ -31,9 +31,10 @@ char *send__client_id(struct thread_p *thread) {
 
     if (asw__hello(str, &result, thread) == HELLO_FAILURE) {
         thread->_authenticated = FALSE;
-    }else{
-        if(thread->_client->id != NULL)
-            CONSOLE_LOG_INFO("Authenticated Client %s with View %s", inet_ntoa(thread->_client_socket.sin_addr), thread->_client->id);
+    } else {
+        if (thread->_client->id != NULL)
+        CONSOLE_LOG_INFO("Authenticated Client %s with View %s", inet_ntoa(thread->_client_socket.sin_addr),
+                         thread->_client->id);
     }
 
     free(str);
@@ -41,12 +42,10 @@ char *send__client_id(struct thread_p *thread) {
 }
 
 char *send__fishes(struct client *client) {
-    char * arg = strtok(NULL,end_delim);
+    char *arg = strtok(NULL, end_delim);
     char *result = NULL;
-    if(arg != NULL)
-    {
+    if (arg != NULL) {
         asprintf(&result, "NOK : no arguments allowed in getFishes\n");
-        printf("arg : '%s'\n",arg);
     }
     asw__get_fishes(&result, client);
     return result;
@@ -75,14 +74,14 @@ void *send__regular_sender(void *arg) {
     }
 }
 
-char* send__fishes_continuously(struct thread_p *thread) {
-    if(!thread->_client->_is_observer) {
+char *send__fishes_continuously(struct thread_p *thread) {
+    if (!thread->_client->_is_observer) {
         CONSOLE_LOG_INFO("Starting to send continuously to %s", thread->_client->id);
         thread->_client->_is_observer = TRUE;
         v__add(observers, thread, THREAD);
         pthread_create(&thread->_client->_continuous_sender, NULL, send__regular_sender, thread);
         return "OK : Started transaction\n";
-    }else{
+    } else {
         return "NOK : You already are in a transaction\n";
     }
 
@@ -105,9 +104,9 @@ char *send__add_fish(struct client *client) {
         return result;
     }
 
-    if(rel_pos[strlen(rel_pos) - 1] == ',')
+    if (rel_pos[strlen(rel_pos) - 1] == ',')
         rel_pos[strlen(rel_pos) - 1] = '\0';
-    if(size[strlen(size) - 1] == ',')
+    if (size[strlen(size) - 1] == ',')
         size[strlen(size) - 1] = '\0';
 
     struct relative_position pos;
@@ -130,11 +129,11 @@ char *send__logout(struct thread_p *thread) {
 }
 
 char *send__delete_fish() {
-    char* result;
-    char* id = strtok(NULL, delim);
-    if(id != NULL && strtok(NULL, delim) == NULL){
+    char *result;
+    char *id = strtok(NULL, delim);
+    if (id != NULL && strtok(NULL, delim) == NULL) {
         asw__del_fish(id, &result);
-    }else{
+    } else {
         asprintf(&result, "NOK : Please use : delFish [fish id]\n");
     }
     return result;
@@ -148,28 +147,28 @@ char *send__ping(struct client *client) {
 }
 
 char *send__start_fish() {
-    char* result;
+    char *result;
 
-    char* id = strtok(NULL, delim);
-    if(id != NULL && strtok(NULL, delim) == NULL){
+    char *id = strtok(NULL, delim);
+    if (id != NULL && strtok(NULL, delim) == NULL) {
         asw__start_fish(id, &result);
-    }else{
+    } else {
         asprintf(&result, "NOK : Please use : startFish [fish id]\n");
     }
 
     return result;
 }
 
-char* send__stop_send_continuously(struct thread_p* thread){
-    if(thread->_client->_is_observer) {
+char *send__stop_send_continuously(struct thread_p *thread) {
+    if (thread->_client->_is_observer) {
         __stop_send_continuously(thread);
         return "OK : End of transaction\n";
-    }else{
+    } else {
         return "NOK : You're not in transaction\n";
     }
 }
 
-void __stop_send_continuously(struct thread_p* thread){
+void __stop_send_continuously(struct thread_p *thread) {
     pthread_kill(thread->_client->_continuous_sender, SIGNAL_STOP_SENDING);
     pthread_join(thread->_client->_continuous_sender, NULL);
 

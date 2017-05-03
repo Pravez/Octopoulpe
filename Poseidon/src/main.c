@@ -7,7 +7,7 @@
 #include "server/server.h"
 #include "model/aquarium.h"
 #include "view/view.h"
-#include "server/world.h"
+#include "server/world/world.h"
 
 
 extern struct _tvector* config_vector;
