@@ -1,4 +1,4 @@
 add_executable(test_server_send test_server_send.c)
+target_link_libraries(test_server_send SERVER_LIB)
 target_link_libraries(test_server_send ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(test_server_send readline)
-target_link_libraries(test_server_send SERVER_LIB)
