@@ -33,7 +33,7 @@ void *client__start(void *arg) {
         code_return = (int) read(thread->_socket_fd, thread->_last_message, BUFFER_SIZE);
         if(code_return == -1){
             //Error reading from socket
-            CONSOLE_LOG_ERR("Error reading from socket, client from IP %s reset connection", inet_ntoa(thread->_client_socket.sin_addr));
+            CONSOLE_LOG_ERR("Client from IP %s reset connection", inet_ntoa(thread->_client_socket.sin_addr));
             thread->_connected = FALSE;
         }
 

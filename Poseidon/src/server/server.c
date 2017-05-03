@@ -75,14 +75,15 @@ void server__stop(int signo) {
         check_threads_connection = FALSE;
 
         struct thread_entry *en;
+        LOCK(&threads_list_mutex);
         LIST_FOREACH(en, &thread_head, thread_entries) {
             en->_thread._connected = FALSE;
             pthread_join(en->_thread._thread, NULL);
             LIST_REMOVE(en, thread_entries);
             free(en);
         }
-
         pthread_join(server._link_keeper, NULL);
+        UNLOCK(&threads_list_mutex);
 
         shutdown(server._listen_socket_fd, SHUT_RDWR);
     }

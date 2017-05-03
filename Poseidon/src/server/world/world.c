@@ -112,13 +112,13 @@ int update_fishes(any_t nothing, any_t item) {
 
 #ifdef DEBUG
         fprintf(stderr, "Fish %s is at %d, %d\n", fish->_id, (int) fish->_current.x, (int) fish->_current.y);
-#endif DEBUG
+#endif
 
         if (position_equals(fish->_current, fish->_goal)) {
             fish->_goal = determine_new_position(fish->_goal, fish);
 #ifdef DEBUG
             fprintf(stderr, "Fish %s has new goal ! : %d, %d\n", fish->_id, (int) fish->_goal.x, (int) fish->_goal.y);
-#endif DEBUG
+#endif
 
         }
     }

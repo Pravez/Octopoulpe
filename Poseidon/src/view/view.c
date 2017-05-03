@@ -286,6 +286,9 @@ void __end__() {
 
 void *main_menu(void *args) {
     //__init__();
+#ifndef NOREADLINE
+    readline_started = TRUE;
+#endif
     display_menu();
 
     while (1) {
