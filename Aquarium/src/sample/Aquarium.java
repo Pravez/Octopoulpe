@@ -108,7 +108,6 @@ public class Aquarium extends Application {
                         f.update((now/1000000) - previousTime);
                     }
                 }
-
                 previousTime = now/1000000;
             }
         }.start();

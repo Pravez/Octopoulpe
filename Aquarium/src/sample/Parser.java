@@ -57,7 +57,9 @@ public class Parser {
                         else {
                             communicator.send(action);
                             communicator.getAswAdd(args[1], Integer.parseInt(args[3].split("x")[0]), Integer.parseInt(args[3].split("x")[1]), Integer.parseInt(args[4].split("x")[0]), Integer.parseInt(args[4].split("x")[1]), args[5]);
-                            console.display.appendText("< OK" + System.lineSeparator());
+                            //To debug :
+                            console.aquarium.addFish(args[1], Integer.parseInt(args[3].split("x")[0]), Integer.parseInt(args[3].split("x")[1]), Integer.parseInt(args[4].split("x")[0]), Integer.parseInt(args[4].split("x")[1]));
+                            //console.display.appendText("< OK" + System.lineSeparator());
                         }
                     } catch (NumberFormatException e) {
                         console.display.appendText("< NOK ! " + e.getMessage().split("\"")[1] + " is supposed to be an integer." + System.lineSeparator());
