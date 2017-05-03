@@ -159,6 +159,28 @@ void tst__send_client_id()
     // Done in client.c while parsing the command
 }
 
+void tst__send_fishes()
+{
+    aquarium = malloc(sizeof(struct aquarium));
+    aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
+    aq__add_view(aquarium, (struct position) {250, 250}, (struct dimension) {500, 500}, "N1");
+    aq__add_view(aquarium, (struct position) {100, 100}, (struct dimension) {900, 900}, "N2");
+    aq__add_view(aquarium, (struct position) {2, 5}, (struct dimension) {900, 900}, "N3");
+    aq__add_view(aquarium, (struct position) {10, 20}, (struct dimension) {900, 900}, "N4");
+    aq__add_view(aquarium, (struct position) {20, 30}, (struct dimension) {900, 900}, "N5");
+
+    struct thread_p henry;
+    henry._client = malloc(sizeof(struct client *));
+
+    char * cmd = strdup("hello ino aso N1\n");
+    strtok(cmd,delim);
+    assert(strcmp(send__client_id(&henry),"greeting N1\n")==0);
+
+    cmd=strdup("gestFishes\n");
+    strtok(cmd,delim);
+    printf("res : '%s'",send__fishes(henry._client));
+}
+
 int main()
 {
   _set_verbosity(FALSE);
@@ -166,6 +188,7 @@ int main()
 
   // Intern communication
   tst__send_client_id();
+  tst__send_fishes();
 
   return 0;
 }

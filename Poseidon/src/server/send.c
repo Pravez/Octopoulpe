@@ -41,7 +41,13 @@ char *send__client_id(struct thread_p *thread) {
 }
 
 char *send__fishes(struct client *client) {
+    char * arg = strtok(NULL,end_delim);
     char *result = NULL;
+    if(arg != NULL)
+    {
+        asprintf(&result, "NOK : no arguments allowed in getFishes\n");
+        printf("arg : '%s'\n",arg);
+    }
     asw__get_fishes(&result, client);
     return result;
 }
