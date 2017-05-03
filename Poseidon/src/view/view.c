@@ -180,33 +180,37 @@ int cmd__add() {
     char *string = strtok(NULL, delim);
     if(string != NULL) {
         if (!strcmp(string, "view")) {
-            char* id = strtok(NULL, " ");
-            char *value = strtok(NULL, "x");
+            char* id, *width, *height, *off_x, *off_y;
 
-            int width, height, off_x, off_y;
-            off_x = atoi(value);
-            value = strtok(NULL, "+");
-            off_y = atoi(value);
-            value = strtok(NULL, "+");
-            width = atoi(value);
-            value = strtok(NULL, "+");
-            height = atoi(value);
+            id = strtok(NULL, " ");
+            off_x = strtok(NULL, "x");
+            off_y = strtok(NULL, "+");
+            width = strtok(NULL, "+");
+            height = strtok(NULL, "+");
 
-            char* returned = aq__add_view(aquarium, (struct position) {off_x, off_y}, (struct dimension) {width, height}, id);
-            if(returned == NULL)
-                printf("\t> Unable to add view : ID %s already taken\n", id);
-            else
-                printf("\t> Added view with ID : %s\n", returned);
+            if(id != NULL && off_x != NULL && off_y != NULL && width != NULL && height != NULL){
+                if(atoi(off_x) != -1 && atoi(off_y) != -1 && atoi(width) != -1 && atoi(height) != -1){
+                    char* returned = aq__add_view(aquarium, (struct position) {atoi(off_x), atoi(off_y)},
+                                                  (struct dimension) {atoi(width), atoi(height)}, id);
+                    if(returned == NULL)
+                        printf("\t> Unable to add view : ID %s already taken\n", id);
+                    else
+                        printf("\t> Added view with ID : %s\n", returned);
 
-            return 1;
+                    return 1;
+                }
+            }
+
+            printf("\t> Please verify you're using the correct syntax\n");
+
         } else {
             printf("\t> Cannot add %s, unable to handle it.\n", string);
-            return 0;
         }
     }else{
         printf("\t> Please precise what thing you want to add (view)\n");
-        return 0;
     }
+
+    return 0;
 }
 
 int cmd__delete() {
@@ -216,7 +220,7 @@ int cmd__delete() {
         aqv__remove_aquarium_view(aq__get_view_by_id(aquarium, string));
         return 1;
     } else {
-        //Do other stuff with delete ...
+        printf("\t> Please precise what thing you want to delete (view)\n");
         return 0;
     }
 }
@@ -245,18 +249,18 @@ int cmd__save_aquarium() {
         //Check if the file exists
         if(access(string, F_OK) != -1){
             printf("\t> File exists ... Erase ? (y/n) ");
-            char answer[1];
+            char answer[4];
             scanf("%s", answer);
             if(!strcmp(answer, "y")){
                 write_file(aquarium, string);
-                printf("\t> Successfully saved aquarium in %s", string);
+                printf("\t> Successfully saved aquarium in %s\n", string);
             }
         }else{
             write_file(aquarium, string);
-            printf("\t> Successfully saved aquarium in %s", string);
+            printf("\t> Successfully saved aquarium in %s\n", string);
         }
     }else{
-        RETURN_ERROR_MSG("Please give a file name ...", 0)
+        RETURN_ERROR_MSG("Please give a file name ...\n", 0)
     }
 
     return 1;
