@@ -31,7 +31,7 @@ public class Parser {
                     console.display.appendText("< NOK. Usage : 'hello' or 'hello in as ID'" + System.lineSeparator());
                 break;
             case "log" :
-                if (args.length == 2 && args[1] == "out") {
+                if (args.length == 2 && args[1].contentEquals("out")) {
                     communicator.send(action);
                 }
                 else
