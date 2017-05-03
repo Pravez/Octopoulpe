@@ -1,1 +1,3 @@
 RandomWayPoint
+HorizontalWayPoint
+VerticalWayPoint

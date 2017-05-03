@@ -16,8 +16,8 @@ public class ReceiveHandler implements Runnable {
     }
 
     public void run() {
-
-        while(true){
+        boolean running = true;
+        while(running){
             try {
                 message = in.readLine();
                 System.out.println("DEBUG : ON ESSAI DE RECUPERER UN MESSAGE : " + message);
@@ -25,29 +25,32 @@ public class ReceiveHandler implements Runnable {
                 for (String s : args)
                     System.out.println("DEBUG : ON A DANS ARGS: " + s);
                 switch (args[0]) {
+                    case "bye":
+                        running = false;
+                        break;
                     case "list":
                         handleGoal(args);
                         break;
                     case "no":
-                        //console.display.appendText("< " + message + System.lineSeparator());
                         //TODO : what we can do if no greeting ?
                         break;
                     case "greeting":
-                        //console.display.appendText("< " + message + System.lineSeparator());
                         console.setId(args[1]);
                         break;
                     case "NOK":
                         console.display.appendText(message + System.lineSeparator());
                         break;
                     case "OK":
-                        if (args[5].contentEquals("added")) {
-                            console.popFishToHandle(args[3]);
-                        }
-                        if (args[5].contentEquals("started")) {
-                            console.aquarium.setStarted(args[3]);
-                        }
-                        if (args[5].contentEquals("removed")) {
-                            console.aquarium.removeFish(args[3]);
+                        if (args.length > 4) {
+                            if (args[5].contentEquals("added")) {
+                                console.popFishToHandle(args[3]);
+                            }
+                            if (args[5].contentEquals("started")) {
+                                console.aquarium.setStarted(args[3]);
+                            }
+                            if (args[5].contentEquals("removed")) {
+                                console.aquarium.removeFish(args[3]);
+                            }
                         }
                         break;
                     default:
@@ -61,6 +64,7 @@ public class ReceiveHandler implements Runnable {
             } catch (IOException e) {e.printStackTrace();}
         }
     }
+
     public void handleGoal(String[] args) {
 
         for (int i = 2; i < args.length; i = i + 7) {

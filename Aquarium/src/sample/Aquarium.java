@@ -84,6 +84,12 @@ public class Aquarium extends Application {
             @Override
             public void handle(long now) {
                 timer++;
+
+                if (console.threadIsOver() || !console.parser.communicator.isConnected()) {
+                    console.logOut();
+                    System.exit(1);
+                }
+
                 if (hasNew) {
                     hasNew = false;
                     aquarium.getChildren().remove(1, aquarium.getChildren().size()); //remove all except background
@@ -160,7 +166,6 @@ public class Aquarium extends Application {
         }
 
     public void setFishSize(String name, int w, int h) {
-        System.out.println("DEBUG : SET SIZE");
         for (Fish f: fishes) {
             if (f.getName().contentEquals(name)) {
                 f.setSize(w*width/100, h*height/100);
@@ -197,20 +202,19 @@ public class Aquarium extends Application {
                 if (ke.getCode() == KeyCode.UP && (konamiCode == 0 || konamiCode == 1)) {
                     konamiCode++;
                 }
-                else if (ke.getCode() == KeyCode.DOWN&& (konamiCode == 2 || konamiCode == 3)) {
+                else if (ke.getCode() == KeyCode.DOWN && (konamiCode == 2 || konamiCode == 3)) {
                     konamiCode++;
                 }
-                else if (ke.getCode() == KeyCode.LEFT&& (konamiCode == 4 || konamiCode == 6)) {
+                else if (ke.getCode() == KeyCode.LEFT && (konamiCode == 4 || konamiCode == 6)) {
                     konamiCode++;
                 }
-                else if (ke.getCode() == KeyCode.RIGHT&& (konamiCode == 5 || konamiCode == 7)){
+                else if (ke.getCode() == KeyCode.RIGHT && (konamiCode == 5 || konamiCode == 7)){
                     konamiCode++;
                 }
-                else if (ke.getCode() == KeyCode.B&& konamiCode == 8 ){
+                else if (ke.getCode() == KeyCode.B && konamiCode == 8 ){
                     konamiCode++;
                 }
                 else if (ke.getCode() == KeyCode.A&& konamiCode == 9 ){
-                    System.out.println("DEBUG : KONAMI CODE !!!");
                     final URL url = getClass().getResource("Images/bb.png");
                     final Image bg = new Image(url.toExternalForm());
                     background =  new ImageView(bg);
@@ -241,7 +245,7 @@ public class Aquarium extends Application {
     public void addFish(String name, int x, int y, int w, int h) {
               Fish f = new Fish(x*width/100, y*height/100, w*width/100, h*height/100, name);
               fishes.add(f);
-              aquarium.getChildren().add(f.get_View(0));
+              hasNew = true;
     }
 
     public void setStarted(String name) {
