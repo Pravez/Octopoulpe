@@ -131,7 +131,7 @@ public class Parser {
 
     private boolean checkMobilityModel(String m) {
         try {
-            List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/src/sample/MobilityModel.txt"), Charset.defaultCharset());
+            List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/src/sample/MobilityModels.txt"), Charset.defaultCharset());
 
             for (String s : lines) {
                 System.out.println("DEBUG : dans fichier, ligne :" + s);

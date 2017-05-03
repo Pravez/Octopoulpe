@@ -22,6 +22,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -58,6 +59,8 @@ public class Console extends Stage {
 
     public Console(Aquarium a, int w, int h) {
         aquarium = a;
+        width = w;
+        height = h;
         this.setTitle("Console");
         entry = new Pane();
 
@@ -69,46 +72,11 @@ public class Console extends Stage {
 
         initTab();
         initInput();
-
-        comboBox = new ComboBox();
-        comboBox.getItems().addAll("addFish PoissonRouge at 50x50, 15x15, RandomWayPoint",
-                "addFish PoissonClown at 50x50, 10x10, VerticalWayPoint",
-                "addFish PoissonNain at 50x50, 10x10, HorizontalWayPoint",
-                "startFish PoissonRouge",
-                "delFish PoissonRouge",
-                "getFishes",
-                "getFishesContinuously",
-                "stopSendContinuously");
-        comboBox.setPromptText("Quick order");
-        comboBox.setEditable(true);
-        comboBox.setMinWidth(w);
-        comboBox.setMaxWidth(w);
-        comboBox.addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
-            switch (keyEvent.getCode()) {
-                case ENTER:
-                    String action = input.getText();
-                    history.add(action);
-                    historyCount++;
-                    display.appendText("> " + action + System.lineSeparator());
-                    input.clear();
-
-                    System.out.println("DEBUG : On a rentree : " + action);
-                    parser.parser(action);
-                    break;
-            }});
-
-        comboBox.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue ov, String t, String t1) {
-                input.setText(t1);
-            }
-        });
-
+        initComboBox();
 
         vb = new VBox();
         display.setMinHeight(h-input.getHeight()-toolbar.getHeight()-50); //-10 for the height of windows itself
         display.setMaxHeight(h-input.getHeight()-toolbar.getHeight()-50);
-        input.setPrefColumnCount(20);
         vb.getChildren().addAll(toolbar, display, input);
         entry.getChildren().add(vb);
 
@@ -153,6 +121,7 @@ public class Console extends Stage {
 
     private void initInput() {
         input = new TextField ();
+        input.setPrefColumnCount(20);
         input.addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
             switch (keyEvent.getCode()) {
                 case ENTER:
@@ -197,14 +166,87 @@ public class Console extends Stage {
         this.close();
     }
 
+    private void initComboBox() {
+        comboBox = new ComboBox();
+        comboBox.getItems().addAll("addFish PoissonRouge at 50x50, 15x15, RandomWayPoint",
+                "addFish PoissonClown at 50x50, 10x10, VerticalWayPoint",
+                "addFish PoissonNain at 50x50, 10x10, HorizontalWayPoint",
+                "startFish PoissonRouge",
+                "delFish PoissonRouge",
+                "getFishes",
+                "getFishesContinuously",
+                "stopSendContinuously");
+        comboBox.setPromptText("Quick order");
+        comboBox.setEditable(true);
+        comboBox.setMinWidth(width);
+        comboBox.setMaxWidth(width);
+        comboBox.addEventHandler(KeyEvent.KEY_RELEASED, keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case ENTER:
+                    String action = input.getText();
+                    history.add(action);
+                    historyCount++;
+                    display.appendText("> " + action + System.lineSeparator());
+                    input.clear();
+
+                    System.out.println("DEBUG : On a rentree : " + action);
+                    parser.parser(action);
+                    break;
+            }});
+
+        comboBox.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue ov, String t, String t1) {
+                input.setText(t1);
+            }
+        });
+    }
+
     private void initTab() {
-        //TODO : Automatic listing with file ?
-        Label tab1 = new Label("Help");
+
+        Label tab1 = new Label("Fishes");
         tab1.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     Alert alert = new Alert(INFORMATION);
-                    System.out.println("DEBUG : HELP");
+                    alert.setHeaderText("Fishes available : ");
+                    alert.setTitle("Fishes");
+                    alert.setHeight(200);
+                    alert.setContentText("Here the fishes available : " + System.lineSeparator() +getFishesAvailable() );
+
+                    alert.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.OK) {
+                            alert.close();
+                        }
+                    });
+                }
+            }
+        });
+
+        Label tab2 = new Label("Mobility Models");
+        tab2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    Alert alert = new Alert(INFORMATION);
+                    alert.setHeaderText("Mobility models available : : ");
+                    alert.setTitle("Mobility Models");
+                    alert.setHeight(200);
+                    alert.setContentText("Here the models available : " + System.lineSeparator() + getModelsAvailable() );
+
+                    alert.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.OK) {
+                            alert.close();
+                        }
+                    });
+                }
+            }
+        });
+
+        Label tab3 = new Label("Help");
+        tab3.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+                if (e.getButton() == MouseButton.PRIMARY) {
+                    Alert alert = new Alert(INFORMATION);
                     alert.setHeaderText("Commands available : ");
                     alert.setTitle("Help");
                     alert.setHeight(200);
@@ -227,12 +269,11 @@ public class Console extends Stage {
             }
         });
 
-        Label tab2 = new Label("About");
-        tab2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        Label tab4 = new Label("About");
+        tab4.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     Alert alert = new Alert(INFORMATION);
-                    System.out.println("DEBUG : ABOUT");
                     alert.setHeaderText("About the software");
                     alert.setTitle("About");
                     alert.setHeight(200);
@@ -253,26 +294,6 @@ public class Console extends Stage {
             }
         });
 
-        Label tab3 = new Label("Fishes");
-        tab3.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
-                if (e.getButton() == MouseButton.PRIMARY) {
-                    Alert alert = new Alert(INFORMATION);
-                    System.out.println("DEBUG : FISH");
-                    alert.setHeaderText("Fishes available : ");
-                    alert.setTitle("Fishes");
-                    alert.setHeight(200);
-                    alert.setContentText("Here the fishes available : " + System.lineSeparator() +getFishesAvailable() );
-
-                    alert.showAndWait().ifPresent(response -> {
-                        if (response == ButtonType.OK) {
-                            alert.close();
-                    }
-                });
-            }
-        }
-        });
-
         CheckBox cb = new CheckBox("Quick order");
         cb.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -291,7 +312,24 @@ public class Console extends Stage {
             }
         });
 
-        toolbar = new ToolBar(tab3, new Separator(), tab1, new Separator(), tab2, new Separator(), cb);
+        toolbar = new ToolBar(tab1, new Separator(), tab2, new Separator(), tab3, new Separator(), tab4, new Separator(), cb);
+    }
+
+    private void initInfoTab(Label l, String title, String header, String content) {
+
+    }
+
+    private String getModelsAvailable() {
+        String res="";
+        try {
+
+            List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/src/sample/MobilityModels.txt"), StandardCharsets.UTF_8);
+            for (String s : lines) {
+                res += "- " + s + System.lineSeparator();
+            }
+        } catch (IOException e) {System.out.println("Exception : " + e.toString());}
+
+        return res;
     }
 
     private String getFishesAvailable() {
