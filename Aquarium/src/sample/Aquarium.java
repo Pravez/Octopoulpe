@@ -108,7 +108,6 @@ public class Aquarium extends Application {
                         f.update((now/1000000) - previousTime);
                     }
                 }
-
                 previousTime = now/1000000;
             }
         }.start();
@@ -152,7 +151,7 @@ public class Aquarium extends Application {
                         }
                     }
                 }
-                //console.parser.communicator.config(address, port);
+                console.parser.communicator.config(address, port);
             } catch (IOException e) {
                 System.out.println("DEBUG : DIDN'T FOUND FILE ! Exception : " + e.toString());
             }

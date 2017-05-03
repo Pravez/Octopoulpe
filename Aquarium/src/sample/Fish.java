@@ -57,7 +57,7 @@ public class Fish {
              }
         }
         if (! exist)
-            pictureFile = new String("poulpy"); //Default image
+            pictureFile = new String("PoissonNain"); //Default image
 
         System.out.println("DEBUG : Images/" + pictureFile + ".png");
 
