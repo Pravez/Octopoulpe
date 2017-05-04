@@ -47,6 +47,9 @@ int main(int argc, char* argv[]){
         CONTROLLER_PORT = _get_value(config_vector, "controller-port");
         _delete_tvector(config_vector);
         CONSOLE_LOG_INFO("Successfully parsed config file");
+        CONSOLE_LOG_INFO("Fish update interval is %d seconds", UPDATE_INTERVAL);
+        CONSOLE_LOG_INFO("Display timeout value is %d seconds", DISPLAY_TIMEOUT_VALUE);
+        CONSOLE_LOG_INFO("Controller port is %d", CONTROLLER_PORT);
 
         //First we allocate the mutex and lock it
         pthread_mutex_init(&mutex_observers, NULL);
