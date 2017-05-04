@@ -20,11 +20,11 @@ char *send__client_id(struct thread_p *thread) {
     char *as = strtok(NULL, delim);
     char *id = strtok(NULL, end_delim);
     char *str = NULL;
-    if (in != NULL && strcmp(in, "\n") != 0) {
-        if (strcmp(in,"in")==0 && strcmp(as,"as")==0 && id != NULL && strtok(NULL, delim) == NULL) {
+    if (in != NULL && strcmp(in, "\n") != 0 && as != NULL) {
+        if (strcmp(in, "in") == 0 && strcmp(as, "as") == 0 && id != NULL && strtok(NULL, delim) == NULL) {
             asprintf(&str, "%s", id);
         } else {
-            asprintf(&result, "NOK : Please use : hello in as [view id]\n");
+            asprintf(&result, "NOK\n");
             return result;
         }
     }
@@ -50,9 +50,8 @@ char *send__fishes(struct client *client) {
 
     /* Skiping the spaces */
     if (arg != NULL) {
-        asprintf(&result, "NOK : no arguments allowed in getFishes\n");
-    }
-    else{
+        asprintf(&result, "NOK\n");
+    } else {
         asw__get_fishes(&result, client);
     }
     return result;
@@ -87,9 +86,9 @@ char *send__fishes_continuously(struct thread_p *thread) {
         thread->_client->_is_observer = TRUE;
         v__add(observers, thread, THREAD);
         pthread_create(&thread->_client->_continuous_sender, NULL, send__regular_sender, thread);
-        return "OK : Started transaction\n";
+        return "OK\n";
     } else {
-        return "NOK : You already are in a transaction\n";
+        return "NOK\n";
     }
 
 }
@@ -132,12 +131,12 @@ char *send__add_fish(struct client *client) {
 
 char *send__logout(struct thread_p *thread) {
     char *end_line = strtok(NULL, end_delim);
-    char *out = strtok(end_line,delim);
-    char *arg = strtok(NULL,delim);
-    if(arg == NULL)
+    char *out = strtok(end_line, delim);
+    char *arg = strtok(NULL, delim);
+    if (arg == NULL)
         return asw__log(out, thread);
-    else{
-        return "NOK : no arguments allowed after 'log out' command\n";
+    else {
+        return "NOK\n";
     }
 }
 
@@ -147,7 +146,7 @@ char *send__delete_fish() {
     if (id != NULL && strtok(NULL, delim) == NULL) {
         asw__del_fish(id, &result);
     } else {
-        asprintf(&result, "NOK : Please use : delFish [fish id]\n");
+        asprintf(&result, "NOK\n");
     }
     return result;
 }
@@ -166,7 +165,7 @@ char *send__start_fish() {
     if (id != NULL && strtok(NULL, delim) == NULL) {
         asw__start_fish(id, &result);
     } else {
-        asprintf(&result, "NOK : Please use : startFish [fish id]\n");
+        asprintf(&result, "NOK\n");
     }
 
     return result;
@@ -175,9 +174,9 @@ char *send__start_fish() {
 char *send__stop_send_continuously(struct thread_p *thread) {
     if (thread->_client->_is_observer) {
         __stop_send_continuously(thread);
-        return "OK : End of transaction\n";
+        return "OK\n";
     } else {
-        return "NOK : You're not in transaction\n";
+        return "NOK\n";
     }
 }
 

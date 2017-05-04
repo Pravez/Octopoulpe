@@ -18,10 +18,12 @@ set(SOURCE_FILES
         utility/hashmap.h server/world/world.c server/world/world.h utility/data.h server/communication/send.c server/communication/send.h server/communication/client.c server/communication/client.h)
 
 add_library(SERVER_LIB ${SOURCE_FILES})
+target_link_libraries(SERVER_LIB readline)
+
 add_executable(Server main.c)
+target_link_libraries(Server SERVER_LIB)
 target_link_libraries(Server ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(Server readline)
-target_link_libraries(Server SERVER_LIB)
 
 add_custom_command(TARGET Server
         COMMAND ${CMAKE_COMMAND} -E copy_if_different

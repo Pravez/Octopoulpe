@@ -149,9 +149,9 @@ void asw__get_fishes(char **res, struct client *cli) {
  */
 char *asw__log(char *arg, struct thread_p *thread) {
     if (arg == NULL || strcmp(arg, "out")) {
-        return "NOK : Maybe you wanted to say `log out`\n";
+        return "NOK\n";
     } else if(thread == NULL) {
-        return "NOK : invalid client (thread argument could not be NULL)\n";
+        return "NOK\n";
     } else {
         if(thread->_authenticated == TRUE && thread->_client != NULL)
             thread->_client->is_free = TRUE;
@@ -221,7 +221,7 @@ void asw__ping(char *arg, char **res, struct client *client) {
     if (arg != NULL) {
         asprintf(res, "pong %s\n", arg);
     } else {
-        asprintf(res, "Please give a value with ping");
+        asprintf(res, "NOK");
     }
 }
 
@@ -234,7 +234,7 @@ asw__add_fish(char *id, struct relative_position pos, struct dimension dimension
 
     if (/*type == NONE || */mv_strategy == UNREGISTERED) {
         asprintf(res, "%s",/* type == NONE ? "> Fish type is not known\n" : "",*/
-                 /*mv_strategy == UNREGISTERED ? */"NOK : Moving strategy is not registered\n"/* : ""*/);
+                 /*mv_strategy == UNREGISTERED ? */"NOK\n"/* : ""*/);
         return;
     }
 
@@ -253,12 +253,10 @@ asw__add_fish(char *id, struct relative_position pos, struct dimension dimension
         char *posstr = NULL;
 
         if (dimcond)
-            asprintf(&dimstr, "NOK : Please verify the fish's dimensions, cannot exceed %dx%d\n", FISH_MAX_WIDTH,
-                     FISH_MAX_HEIGHT);
+            asprintf(&dimstr, "NOK\n");
         if (poscond)
             asprintf(&posstr,
-                     "NOK : Please check the position of your fish, cannot exceed %dx%d (considering size of the fish)\n",
-                     AQUARIUM_WIDTH, AQUARIUM_HEIGHT);
+                     "NOK\n");
 
         asprintf(res, "%s%s", dimstr == NULL ? "" : dimstr, posstr == NULL ? "" : posstr);
         if(dimstr != NULL)
@@ -274,27 +272,27 @@ asw__add_fish(char *id, struct relative_position pos, struct dimension dimension
         struct fish *fish = fish__create(NONE, (int) real_position.x, (int) real_position.y, id, mv_strategy, dimension,
                                          UPDATE_INTERVAL);
         aq__add_fish_to_aqv(aquarium, cli->aqv->_id, fish);
-        asprintf(res, "OK : Fish %s successfully added\n", id);
+        asprintf(res, "OK\n");
         CONSOLE_LOG_INFO("%s added fish %s", cli->id, id);
     }else{
-        asprintf(res, "NOK : fish already exists\n");
+        asprintf(res, "NOK\n");
     }
 }
 
 void asw__start_fish(char *arg, char **res){
     if(aq__set_fish_running_state(aquarium, arg, 1) == -1){
-        asprintf(res, "NOK :  Impossible to find fish %s\n", arg);
+        asprintf(res, "NOK\n");
     }else{
-        asprintf(res, "OK : Fish %s successfully started !\n", arg);
+        asprintf(res, "OK\n");
         CONSOLE_LOG_INFO("Fish %s started", arg);
     }
 }
 
 void asw__del_fish(char *arg, char **res){
     if(aq__remove_fish(aquarium, arg) == 0){
-        asprintf(res, "NOK : Impossible to find fish %s\n", arg);
+        asprintf(res, "NOK\n");
     }else{
-        asprintf(res, "OK : Fish %s successfully removed !\n", arg);
+        asprintf(res, "OK\n");
         CONSOLE_LOG_INFO("Fish %s removed", arg);
     }
 }
