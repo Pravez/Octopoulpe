@@ -20,6 +20,9 @@ public class Fish {
     private Point goal;
     private long timeGoal; //in millisecond
     private boolean started;
+    private double toDoX, toDoY;
+    private int doEach;
+    private int cpt;
 
     public Fish(int x, int y, int w, int h, String s) {
 
@@ -99,10 +102,19 @@ public class Fish {
         return name;
     }
 
-    public void setGoal(int x, int y, long d) {
+    public void setGoal(int x, int y, long d, long averageElapsed) {
         goal.x = x;
         goal.y = y;
         timeGoal = d;
+        cpt=0;
+        doEach = 1;
+        double nbUpdate = d/averageElapsed;
+        System.out.println("ON A X="+this.x+" ET Y="+this.y);
+        do {
+            toDoX = (x - this.x) / nbUpdate;
+            toDoY = (y - this.y) / nbUpdate;
+            nbUpdate /= ++doEach;
+        } while (toDoY < 1 || toDoX < 1);
     }
 
     public ImageView get_View(int nb) {
@@ -116,47 +128,34 @@ public class Fish {
 
         if (!goal.equals(new Point(-1, -1))) {
             timeGoal -= timeElapsed;
-            //System.out.println("DEBUG : Il s'est ecoule " + timeElapsed + " millisecondes");
-            //System.out.println("DEBUG : Il nous reste " + timeGoal + " millisecondes");
+                cpt++;
 
-            if (timeGoal <= 0) {
-                x = goal.x;
-                y = goal.y;
-                setPosition(x, y);
-                goal.x = -1;
-                goal.y = -1;
-            }
-            else {
-                int distToGoalX = Math.abs(x - goal.x);
-                int distToGoalY = Math.abs(y - goal.y);
-                long distToDoX = timeElapsed * distToGoalX / timeGoal;
-                long distToDoY = timeElapsed * distToGoalY / timeGoal;
+                if (cpt%doEach == 0) {
+                    if (goal.x != x) {
+                        if (goal.x < x && x + toDoX < goal.x)
+                            x = goal.x;
+                        else if (goal.x > x && x + toDoX > goal.x)
+                            x = goal.x;
+                        else
+                            x += toDoX;
+                    }
 
-                //System.out.println("DEBUG : On doit faire " + distToDoX + " en X");
-                //System.out.println("DEBUG : On doit faire " + distToDoY + " en Y");
-
-                //System.out.println("DEBUG : On etait en " + x + "/" + y);
-
-                if (goal.x > x)
-                    x += distToDoX;
-                else if (goal.x < x)
-                    x -= distToDoX;
-
-                if (goal.y > y)
-                    y += distToDoY;
-                else if (goal.y < y)
-                    y -= distToDoY;
+                    if (goal.y != y) {
+                        if (goal.y < y && y + toDoY < goal.y)
+                            y = goal.y;
+                        else if (goal.y > y && y + toDoY > goal.y)
+                            y = goal.y;
+                        else
+                            y += toDoY;
+                    }
+                }
 
                 setPosition(x, y);
 
                 if (goal.equals(new Point(x, y))) {
-                    view1.setRotate(0);
-                    view2.setRotate(0);
                     goal.x = -1;
                     goal.y = -1;
                 }
-            }
-
         }
     }
 }

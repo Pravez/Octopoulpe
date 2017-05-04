@@ -111,6 +111,10 @@ struct position add_to_position(struct position p, double x, double y) {
     return new;
 }
 
+struct position add_to_position_basic(struct position p, double x, double y){
+    return (struct position){p.x + x, p.y + y};
+}
+
 int position_equals(struct position pos1, struct position pos2){
     return ((int)pos1.x == (int)pos2.x) && ((int)pos1.y == (int)pos2.y);
 }
@@ -118,6 +122,17 @@ int position_equals(struct position pos1, struct position pos2){
 int in_bounds(struct position starting_point, struct dimension dim, struct position pos){
     return (pos.x >= starting_point.x && pos.x <= starting_point.x + dim.width)
             && (pos.y >= starting_point.y && pos.y <= starting_point.y + dim.height);
+}
+
+int in_outer_bounds(struct outer_bounds bounds, struct position pos){
+    int in = FALSE;
+    for(int i = 0; i < bounds._bounds_number && !in;i++){
+        if(in_bounds(bounds.bounds[i]._starting_position, bounds.bounds[i]._dimensions, pos)){
+            in = TRUE;
+        }
+    }
+
+    return in;
 }
 
 int msleep(unsigned long milisec) {

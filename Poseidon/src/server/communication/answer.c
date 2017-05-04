@@ -7,7 +7,6 @@
 
 extern struct aquarium *aquarium;
 static const char *delim = SERVER_CMD_DELIMITER;
-static const char *end_delim = SERVER_END_CMD_DELIMITER;
 
 /* Auxiliar functions*/
 /**

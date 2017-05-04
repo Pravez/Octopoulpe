@@ -18,10 +18,39 @@ aqv__initialize_aquarium_view(struct aquarium_view *aqv, struct position s_pos, 
 
     aqv->_inner._starting_position = s_pos;
     aqv->_inner._dimensions = dimension;
-    aqv->_outer._starting_position = add_to_position(aqv->_inner._starting_position, -aqv->_inner._dimensions.width / 5,
-                                                     -aqv->_inner._dimensions.height / 5);
-    aqv->_outer._dimensions = (struct dimension) {dimension.width + (aqv->_inner._dimensions.width / 5) * 2,
-                                                  dimension.height + (aqv->_inner._dimensions.height / 5) * 2};
+
+    //Now we determine the outer bounds (including possible "toriq modulos")
+    struct position outer_position = add_to_position_basic(aqv->_inner._starting_position,
+                                                           -aqv->_inner._dimensions.width / 5,
+                                                           -aqv->_inner._dimensions.height / 5);
+    aqv->_outer._bounds_number = 0;
+
+    if (outer_position.x < 0 && outer_position.y < 0) {
+        aqv->_outer.bounds[aqv->_outer._bounds_number]._starting_position = add_to_position(
+                aqv->_inner._starting_position, -aqv->_inner._dimensions.width / 5,
+                -aqv->_inner._dimensions.height / 5);
+        aqv->_outer.bounds[aqv->_outer._bounds_number]._dimensions = (struct dimension) {
+                (int) (AQUARIUM_WIDTH - aqv->_outer.bounds[aqv->_outer._bounds_number]._starting_position.x),
+                (int) (AQUARIUM_HEIGHT - aqv->_outer.bounds[aqv->_outer._bounds_number]._starting_position.y)};
+        aqv->_outer._bounds_number++;
+    }
+    if(outer_position.x < 0){
+        aqv->_outer.bounds[aqv->_outer._bounds_number]._starting_position = add_to_position(
+                aqv->_inner._starting_position, -aqv->_inner._dimensions.width / 5, 0);
+        aqv->_outer.bounds[aqv->_outer._bounds_number]._dimensions = (struct dimension) {
+                (int) (AQUARIUM_WIDTH - aqv->_outer.bounds[aqv->_outer._bounds_number]._starting_position.x),
+                aqv->_inner._dimensions.height + (aqv->_inner._dimensions.height / 5)};
+        aqv->_outer._bounds_number++;
+    }
+    if(outer_position.y < 0){
+        aqv->_outer.bounds[aqv->_outer._bounds_number]._starting_position = add_to_position(
+                aqv->_inner._starting_position, 0, -aqv->_inner._dimensions.height / 5);
+        aqv->_outer.bounds[aqv->_outer._bounds_number]._dimensions = (struct dimension) {
+                aqv->_inner._dimensions.width + (aqv->_inner._dimensions.width / 5),
+                (int) (AQUARIUM_HEIGHT - aqv->_outer.bounds[aqv->_outer._bounds_number]._starting_position.y)};
+        aqv->_outer._bounds_number++;
+    }
+
     aqv->_fishes = hashmap_new();
 
     return _views_ids - 1;

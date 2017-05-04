@@ -31,6 +31,7 @@ public class Aquarium extends Application {
     private long pingTimeslice; //in millisecondes
     private String imagesURL;
     protected long timeElpased = 0;
+    protected long timeSinceStart = 0;
 
     //animation attributes
     private int timer = 0;
@@ -107,7 +108,7 @@ public class Aquarium extends Application {
         new AnimationTimer() {
             @Override
             public void handle(long now) {
-                timer++;
+                timer++;;
 
                 if (console.threadIsOver() || !console.parser.communicator.isConnected()) {
                     writeLogs("Arret du programme.");
@@ -138,11 +139,12 @@ public class Aquarium extends Application {
 
                 if (previousTime != 0) {
                     timeElpased += previousTime;
+                    timeSinceStart+=(now / 1000000) - previousTime;
                     for (Fish f : fishes) {
-                        f.update((now/1000000) - previousTime);
+                        f.update((now / 1000000) - previousTime);
                     }
                 }
-                previousTime = now/1000000;
+                previousTime = now / 1000000;
             }
         }.start();
     }
@@ -293,7 +295,7 @@ public class Aquarium extends Application {
         for (Fish f : fishes ) {
             if (f.getName().equalsIgnoreCase(name)) {
                 writeLogs("Nouveau but pour le poisson "+ name+ " : aller en "+x+"x"+y+ " en " + d + " millisecondes/n");
-                f.setGoal(x*width/100, y*height/100, d);
+                f.setGoal(x*width/100, y*height/100, d, timeSinceStart/timer);
             }
         }
     }
