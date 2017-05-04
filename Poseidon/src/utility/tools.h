@@ -69,6 +69,11 @@ struct bounds {
     struct position _starting_position;
 };
 
+struct outer_bounds{
+    struct bounds bounds[4];
+    int _bounds_number;
+};
+
 struct array {
     int _length;
     void *_values;
@@ -93,9 +98,13 @@ double add_to_coordinate(double start, double val, int max_value);
 
 struct position add_to_position(struct position p, double x, double y);
 
+struct position add_to_position_basic(struct position p, double x, double y);
+
 int position_equals(struct position pos1, struct position pos2);
 
 int in_bounds(struct position starting_point, struct dimension dim, struct position pos);
+
+int in_outer_bounds(struct outer_bounds bounds, struct position pos);
 
 int msleep(unsigned long milisec);
 

@@ -8,7 +8,7 @@
 #define DEF_FISHES_SIZE 50
 
 struct aquarium_view {
-    struct bounds _outer;
+    struct outer_bounds _outer;
     struct bounds _inner;
     char *_id;
     map_t _fishes;

@@ -19,7 +19,7 @@ void *world_process(void *pVoid) {
     world_init();
     world_loop();
 
-    return NULL;
+    pthread_exit(NULL);
 }
 
 int world_init() {
@@ -81,11 +81,11 @@ struct movement next_movement(struct fish *fish) {
 
 void update_view_content(struct aquarium_view *aqv, struct fish *fish) {
     if (hashmap_get(aqv->_fishes, fish->_id, NULL) == MAP_OK) {
-        if (!in_bounds(aqv->_outer._starting_position, aqv->_outer._dimensions, fish->_current)) {
+        if (!in_outer_bounds(aqv->_outer, fish->_current)) {
             aqv__remove_fish(aqv, fish);
         }
     } else {
-        if (in_bounds(aqv->_outer._starting_position, aqv->_outer._dimensions, fish->_current)) {
+        if (in_outer_bounds(aqv->_outer, fish->_current)) {
             aqv__add_fish(aqv, fish);
         }
     }

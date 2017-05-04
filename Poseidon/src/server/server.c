@@ -73,6 +73,7 @@ void server__stop(int signo) {
     if (signo == SIGNAL_END_EVERYTHING) {
         server_working = FALSE;
         check_threads_connection = FALSE;
+        pthread_kill(server._link_keeper, SIGNAL_NOTIFICATION);
 
         struct thread_entry *en;
         LOCK(&threads_list_mutex);
