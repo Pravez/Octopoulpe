@@ -35,7 +35,7 @@ int main(int argc, char* argv[]){
     aquarium = malloc(sizeof(struct aquarium));
     aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
     
-    char* view1 = aq__add_view(aquarium, (struct position) {250, 250}, (struct dimension){250, 250}, "N1");
+    aq__add_view(aquarium, (struct position) {250, 250}, (struct dimension){250, 250}, "N1");
 
     //Job to do with config file ... (before launching server)
     if(access("controller.cfg", F_OK) != -1) {
@@ -68,34 +68,4 @@ int main(int argc, char* argv[]){
     }else{
         CONSOLE_LOG_ERR("Impossible to find controller.cfg config file");
     }
-
-
-    // To test : a false aquarium
-    /*    aquarium = malloc(sizeof(struct aquarium));
-        aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
-        aq__add_view(aquarium, (struct position) {250, 250}, (struct dimension) {500, 500}, "Cookie");
-        aq__add_view(aquarium, (struct position) {100, 100}, (struct dimension) {900, 900}, "Donald");
-        // end of the test
-
-        char * res = malloc(sizeof(400));
-        struct client *henry = malloc(sizeof(struct client));
-        henry->id = NULL;
-        asw__hello("\n", res, henry);
-        printf("main\t%s", res);
-        asw__hello("\n", res, henry);
-        printf("main\t%s", res);
-        asw__hello("\n", res, henry);
-        printf("main\t%s", res);
-
-        // Henry a la vue "Cookie"
-        struct dimension def = (struct dimension){1, 1};
-        aq__add_fish_to_aqv(aquarium,"Cookie",fish__create(BLOBFISH, 10, 20, "Bibi", HANDV, def));
-        aq__add_fish_to_aqv(aquarium,"Cookie",fish__create(BLOBFISH, 40, 50, "Bobo",HANDV,def));
-
-        asw__get_fishes("\n",res,henry);
-        printf("main\t%s",res);
-
-        asw__log("out\n",res,henry);
-        printf("main\t%s",res);
-        return EXIT_SUCCESS;*/
 }

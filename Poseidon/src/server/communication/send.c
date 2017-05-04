@@ -21,7 +21,7 @@ char *send__client_id(struct thread_p *thread) {
     char *id = strtok(NULL, end_delim);
     char *str = NULL;
     if (in != NULL && strcmp(in, "\n") != 0) {
-        if (as != NULL && id != NULL && strtok(NULL, delim) == NULL) {
+        if (strcmp(in,"in")==0 && strcmp(as,"as")==0 && id != NULL && strtok(NULL, delim) == NULL) {
             asprintf(&str, "%s", id);
         } else {
             asprintf(&result, "NOK : Please use : hello in as [view id]\n");
@@ -44,12 +44,17 @@ char *send__client_id(struct thread_p *thread) {
 }
 
 char *send__fishes(struct client *client) {
-    char *arg = strtok(NULL, end_delim);
+    char *end_line = strtok(NULL, end_delim);
+    char *arg = strtok(end_line, delim);
     char *result = NULL;
+
+    /* Skiping the spaces */
     if (arg != NULL) {
         asprintf(&result, "NOK : no arguments allowed in getFishes\n");
     }
-    asw__get_fishes(&result, client);
+    else{
+        asw__get_fishes(&result, client);
+    }
     return result;
 }
 
