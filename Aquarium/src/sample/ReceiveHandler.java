@@ -33,6 +33,7 @@ public class ReceiveHandler implements Runnable {
     }
 
     synchronized private void handleOK() {
+        while (orderHistory.isEmpty()) {System.out.println("DEBUG : On attend, c'est vide.");};
         String order = orderHistory.pop();
         String[] argsOrder = order.split (" |\\, ");
         switch (argsOrder[0]) {
