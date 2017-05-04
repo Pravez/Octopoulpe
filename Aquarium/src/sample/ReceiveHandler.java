@@ -41,6 +41,7 @@ public class ReceiveHandler implements Runnable {
                 console.aquarium.addFish(argsOrder[1], Integer.parseInt(argsOrder[3].split("x")[0]), Integer.parseInt(argsOrder[3].split("x")[1]), Integer.parseInt(argsOrder[4].split("x")[0]), Integer.parseInt(argsOrder[4].split("x")[1]));
                 break;
             case "startFish":
+                System.out.println("DEBUG : DETECT START FISH");
                 console.aquarium.setStarted(argsOrder[1]);
                 break;
             case "delFish":

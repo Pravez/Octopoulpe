@@ -271,8 +271,10 @@ public class Aquarium extends Application {
 
     public void setStarted(String name) {
         for (Fish f: fishes) {
-            if (f.getName().contentEquals(name))
+            if (f.getName().contentEquals(name)) {
+                System.out.println("FOUND FISH : " + name);
                 f.setStarted(true);
+            }
         }
     }
 
