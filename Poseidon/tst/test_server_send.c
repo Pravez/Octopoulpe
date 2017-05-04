@@ -22,7 +22,6 @@ void* send__regular_sender(void* arg);
 void send__fishes_continuously(struct thread_p* thread);
 char* send__add_fish(struct client* client);
 char* send__delete_fish();
-char* send__logout(struct thread_p* thread);
 char* send__ping(struct client* client);
 char* send__start_fish();
 */
@@ -156,14 +155,14 @@ void tst__send_client_id()
     cmd = strdup("hello in\n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
-    assert(strcmp(res,"NOK : Please use : hello in as [view id]\n")==0);
+    assert(strcmp(res,"no greeting\n")==0);
     free(res);
 
     /* hello in \n */
     cmd = strdup("hello in   \n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
-    assert(strcmp(res,"NOK : Please use : hello in as [view id]\n")==0);
+    assert(strcmp(res,"no greeting\n")==0);
     free(res);
     CONSOLE_LOG_TEST("\"hello in\"");
 
@@ -171,14 +170,14 @@ void tst__send_client_id()
     cmd = strdup("hello in as\n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
-    assert(strcmp(res,"NOK : Please use : hello in as [view id]\n")==0);
+    assert(strcmp(res,"no greeting\n")==0);
     free(res);
 
     /* hello in as \n */
     cmd = strdup("hello in as   \n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
-    assert(strcmp(res,"NOK : no spaces allowed in the view id\n")==0);
+    assert(strcmp(res,"no greeting\n")==0);
     free(res);
     CONSOLE_LOG_TEST("\"hello in as\"");
 
@@ -186,7 +185,7 @@ void tst__send_client_id()
     cmd = strdup("hello in nawak id\n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
-    assert(strcmp(res,"NOK : Please use : hello in as [view id]\n")==0);
+    assert(strcmp(res,"no greeting\n")==0);
     free(res);
     CONSOLE_LOG_TEST("\"hello word word id\" (not valid keywords)");
 
@@ -249,7 +248,7 @@ void tst__send_fishes()
     cmd=strdup("getFishes   something   arg1    arg2         arg3    \n");
     strtok(cmd,delim);
     res= send__fishes(henry._client);
-    assert(strcmp(res,"NOK : no arguments allowed in getFishes\n")==0);
+    assert(strcmp(res,"NOK\n")==0);
     free(res);
     CONSOLE_LOG_TEST("\"getFishes some arguments\" (invalid syntax)");
 }
@@ -260,7 +259,7 @@ void tst__send_logout(){
     char * cmd = strdup("log out\n");
     strtok(cmd,delim);
     res = send__logout(NULL);
-    assert(strcmp(res,"NOK : invalid client (thread argument could not be NULL)\n")==0);
+    assert(strcmp(res,"NOK\n")==0);
     CONSOLE_LOG_TEST("\"log out\" (with NULL thread argument)");
 
     struct thread_p henry;
@@ -275,13 +274,42 @@ void tst__send_logout(){
     cmd = strdup("log out arg arg \n");
     strtok(cmd,delim);
     res = send__logout(&henry);
-    assert(strcmp(res,"NOK : no arguments allowed after 'log out' command\n")==0);
+    assert(strcmp(res,"NOK\n")==0);
 
     cmd = strdup("log out arg\n");
     strtok(cmd,delim);
     res = send__logout(&henry);
-    assert(strcmp(res,"NOK : no arguments allowed after 'log out' command\n")==0);
+    assert(strcmp(res,"NOK\n")==0);
     CONSOLE_LOG_TEST("\"log out some arguments\"");
+}
+
+void tst__send_ping(){
+    char * res;
+    char * cmd = strdup("ping 666    \n");
+    strtok(cmd,delim);
+    res = send__ping(NULL);
+    assert(strcmp(res,"NOK\n")==0);
+    CONSOLE_LOG_TEST("\"ping number\" (with NULL thread argument)");
+
+    struct thread_p henry;
+    henry._client = malloc(sizeof(struct client *));
+
+    cmd = strdup("ping    666      \n");
+    strtok(cmd,delim);
+    res = send__ping(henry._client);
+    assert(strcmp(res,"pong 666\n")==0);
+
+    cmd = strdup("ping    abc   \n");
+    strtok(cmd,delim);
+    res = send__ping(henry._client);
+    assert(strcmp(res,"pong abc\n")==0);
+    CONSOLE_LOG_TEST("\"ping something(number or string)\"");
+
+    cmd = strdup("ping   666   suparg   \n");
+    strtok(cmd,delim);
+    res = send__ping(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+    CONSOLE_LOG_TEST("\"ping number more arguments\"");
 }
 
 int main()
@@ -293,6 +321,7 @@ int main()
   tst__send_client_id();
   tst__send_fishes();
   tst__send_logout();
+  tst__send_ping();
 
   return 0;
 }

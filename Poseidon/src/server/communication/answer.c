@@ -6,6 +6,8 @@
 #include "../../model/aquarium.h"
 
 extern struct aquarium *aquarium;
+static const char *delim = SERVER_CMD_DELIMITER;
+static const char *end_delim = SERVER_END_CMD_DELIMITER;
 
 /* Auxiliar functions*/
 /**
@@ -66,7 +68,7 @@ int asw__hello(char *arg, char **res, struct thread_p *thread) {
             id = available_id(argv[0]);
         }
         else {
-            asprintf(res, "NOK : no spaces allowed in the view id\n");
+            asprintf(res, "no greeting\n");
             return HELLO_INVALID;
         }
 
@@ -218,10 +220,13 @@ void asw__remove_aquarium() {
 }
 
 void asw__ping(char *arg, char **res, struct client *client) {
-    if (arg != NULL) {
-        asprintf(res, "pong %s\n", arg);
+    char *pingarg = strtok(arg, delim);
+    char *suparg = strtok(NULL,delim);
+
+    if (pingarg != NULL && client != NULL && suparg == NULL) {
+        asprintf(res, "pong %s\n", pingarg);
     } else {
-        asprintf(res, "NOK");
+        asprintf(res, "NOK\n");
     }
 }
 

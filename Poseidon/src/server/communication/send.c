@@ -20,13 +20,11 @@ char *send__client_id(struct thread_p *thread) {
     char *as = strtok(NULL, delim);
     char *id = strtok(NULL, end_delim);
     char *str = NULL;
-    if (in != NULL && strcmp(in, "\n") != 0 && as != NULL) {
-        if (strcmp(in, "in") == 0 && strcmp(as, "as") == 0 && id != NULL && strtok(NULL, delim) == NULL) {
-            asprintf(&str, "%s", id);
-        } else {
-            asprintf(&result, "NOK\n");
-            return result;
-        }
+    if (in != NULL && strcmp(in, "in") == 0 && as != NULL && strcmp(as, "as") == 0 && id != NULL) {
+        asprintf(&str, "%s", id);
+    } else if (in !=NULL && strcmp(in,"\n")!= 0) {
+        asprintf(&result, "no greeting\n");
+        return result;
     }
 
     if (asw__hello(str, &result, thread) == HELLO_FAILURE) {
@@ -152,7 +150,7 @@ char *send__delete_fish() {
 }
 
 char *send__ping(struct client *client) {
-    char *value = strtok(NULL, delim);
+    char *value = strtok(NULL, end_delim);
     char *result = NULL;
     asw__ping(value, &result, client);
     return result;
