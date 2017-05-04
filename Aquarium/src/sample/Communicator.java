@@ -18,11 +18,9 @@ public class Communicator {
     protected Thread receiver;
     protected ReceiveHandler handler;
 
-    protected LinkedList<String> orderHistory;
 
     public Communicator(Console c) {
         console = c;
-        orderHistory = new LinkedList<String>();
     }
 
     public boolean isConnected() {

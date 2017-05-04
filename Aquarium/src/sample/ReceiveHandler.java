@@ -3,6 +3,7 @@ package sample;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.LinkedList;
 
 public class ReceiveHandler implements Runnable {
 
@@ -13,12 +14,18 @@ public class ReceiveHandler implements Runnable {
     BufferedReader in;
 
     boolean running;
+    protected LinkedList<String> orderHistory;
 
     public ReceiveHandler(Console c, BufferedReader in) {
         this.in = in;
         running = true;
         console = c;
         communicator = console.parser.communicator;
+        orderHistory = new LinkedList<String>();
+    }
+
+    public void addToHistory(String s) {
+        orderHistory.add(s);
     }
 
     public void stop() {
@@ -26,7 +33,7 @@ public class ReceiveHandler implements Runnable {
     }
 
     synchronized private void handleOK() {
-        String order = communicator.orderHistory.pop();
+        String order = orderHistory.pop();
         String[] argsOrder = order.split (" |\\, ");
         switch (argsOrder[0]) {
             case "addFish":
