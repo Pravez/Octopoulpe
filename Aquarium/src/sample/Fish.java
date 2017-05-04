@@ -101,10 +101,10 @@ public class Fish {
     }
 
     public ImageView get_View(int nb) {
-        if (nb == 0)
-            return view1;
-        else
+        if (nb == 1 && started)
             return view2;
+        else
+            return view1;
     }
 
     public void update(long timeElapsed) {
@@ -143,9 +143,10 @@ public class Fish {
                     y -= distToDoY;
 
                 setPosition(x, y);
-                //System.out.println("DEBUG : On est maintenant en " + x + "/" + y);
 
                 if (goal.equals(new Point(x, y))) {
+                    view1.setRotate(0);
+                    view2.setRotate(0);
                     goal.x = -1;
                     goal.y = -1;
                 }

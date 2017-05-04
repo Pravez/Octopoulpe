@@ -13,15 +13,3 @@
 
 > Connexion etablie.
 
-> Nouvelle entree : addFish PoissonRouge at 50x50, 15x15, RandomWayPoint/n
-> On envoie au serveur : addFish PoissonRouge at 50x50, 15x15, RandomWayPoint
-
-> On recoit : OK
-> Nouvelle entree : startFish PoissonRouge/n
-> On envoie au serveur : startFish PoissonRouge
-
-> On recoit : OK
-> Nouvelle entree : delFish PoissonRouge/n
-> On envoie au serveur : delFish PoissonRouge
-
-> On recoit : OK

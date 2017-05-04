@@ -16,6 +16,7 @@ public class Communicator {
     private Socket socket;
     protected BufferedReader in;
     protected Thread receiver;
+    protected ReceiveHandler handler;
 
     protected LinkedList<String> orderHistory;
 
@@ -41,16 +42,18 @@ public class Communicator {
             }
         }
         console.aquarium.writeLogs("Connexion etablie.\n");
-        receiver = new Thread(new ReceiveHandler(console, in));
+        handler = new ReceiveHandler(console, in);
+        receiver = new Thread(handler);
         receiver.start();
     }
 
-    public void logOut() {
+    synchronized public void logOut() {
         try {
-            if (socket != null)
+            if (socket != null) {
                 socket.close();
+            }
         }catch (IOException e) {System.out.println("Exception : " + e.toString()); console.aquarium.writeLogs("Exception lors de la fermeture de socket\n");}
-    }
+         }
 
     public void send(String s) {
         console.aquarium.writeLogs("On envoie au serveur : " +s+"\n");

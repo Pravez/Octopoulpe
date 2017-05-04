@@ -2,6 +2,7 @@ package sample;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.SocketException;
 
 public class ReceiveHandler implements Runnable {
 
@@ -11,17 +12,25 @@ public class ReceiveHandler implements Runnable {
     String message;
     BufferedReader in;
 
+    boolean running;
+
     public ReceiveHandler(Console c, BufferedReader in) {
         this.in = in;
+        running = true;
         console = c;
         communicator = console.parser.communicator;
     }
 
-    public void run() {
-        boolean running = true;
+    public void stop() {
+        running = false;
+    }
+
+    synchronized public void run() {
         while(running){
             try {
-                message = in.readLine();
+                try {
+                    message = in.readLine();
+
                 console.aquarium.writeLogs("On recoit : " + message);
                 String[] args = message.split(" |\\[|\\]|\\,");
                 for (String s : args)
@@ -65,6 +74,7 @@ public class ReceiveHandler implements Runnable {
                 if (args[0] != "pong") {
                     console.display.appendText("< " + message + System.lineSeparator());
                 }
+                } catch (SocketException e) {running = false;}
             } catch (IOException e) {e.printStackTrace();}
         }
     }

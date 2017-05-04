@@ -150,8 +150,7 @@ public class Console extends Stage {
                                                 "startFish PoissonRouge",
                                                 "delFish PoissonRouge",
                                                 "getFishes",
-                                                "getFishesContinuously",
-                                                "stopSendContinuously");
+                                                "getFishesContinuously");
         comboBox.setPromptText("Quick order");
         comboBox.setEditable(true);
         comboBox.setMinWidth(width);
@@ -163,6 +162,7 @@ public class Console extends Stage {
                     history.add(action);
                     historyCount++;
                     display.appendText("> " + action + System.lineSeparator());
+                    comboBox.setValue(null);
                     input.clear();
 
                     aquarium.writeLogs("Nouvelle entree : "+ action+ "/n");

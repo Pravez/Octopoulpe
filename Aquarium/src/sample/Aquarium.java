@@ -2,6 +2,7 @@ package sample;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -10,6 +11,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -71,6 +73,13 @@ public class Aquarium extends Application {
         primaryStage.setMaxHeight(height);
         primaryStage.setMaxWidth(width);
         primaryStage.setScene(new Scene(aquarium, width, height));
+
+        Platform.setImplicitExit(false);
+        primaryStage.setOnCloseRequest(event -> {
+            console.parser.communicator.handler.stop();
+            console.logOut();
+            System.exit(1);
+        });
         primaryStage.show();
 
         initKonami();
