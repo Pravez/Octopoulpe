@@ -55,8 +55,8 @@ public class Parser {
                             console.display.appendText("< NOK : modele de mobilite non supporte" + System.lineSeparator());
                         else {
                             //console.addFishToHandle(args[1], Integer.parseInt(args[3].split("x")[0]), Integer.parseInt(args[3].split("x")[1]), Integer.parseInt(args[4].split("x")[0]), Integer.parseInt(args[4].split("x")[1]));
-                            communicator.send(action);
                             communicator.orderHistory.add(action);
+                            communicator.send(action);
                         }
                     } catch (NumberFormatException e) {
                         console.display.appendText("< NOK ! " + e.getMessage().split("\"")[1] + " is supposed to be an integer." + System.lineSeparator());
@@ -68,8 +68,8 @@ public class Parser {
             case "startFish":
                 if (args.length == 2) {
                     if (console.aquarium.hasFish(args[1])) {
-                        communicator.send(action);
                         communicator.orderHistory.add(action);
+                        communicator.send(action);
                     }
                     else
                         console.display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
@@ -80,8 +80,8 @@ public class Parser {
             case "delFish":
                 if (args.length == 2) {
                     if (console.aquarium.hasFish(args[1])) {
-                        communicator.send(action);
                         communicator.orderHistory.add(action);
+                        communicator.send(action);
                     }
                     else
                         console.display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
