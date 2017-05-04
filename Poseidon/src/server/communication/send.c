@@ -92,19 +92,25 @@ char *send__fishes_continuously(struct thread_p *thread) {
 }
 
 char *send__add_fish(struct client *client) {
+
+    const char *coma = ",";
+
     char *result = NULL;
 
-    char *id = strtok(NULL, delim);
-    //char *fish_type = strtok(NULL, delim);
-    char *at = strtok(NULL, delim);
-    char *rel_pos = strtok(NULL, delim);
-    char *size = strtok(NULL, delim);
-    char *strategy = strtok(NULL, delim);
+    char *id = strtok(NULL, delim); printf("id : \t'%s'\n",id);
+    char *at = strtok(NULL, delim); printf("at : \t'%s'\n",at);
+    char *tmp_rel_pos = strtok(NULL, coma);
+    char *tmp_size = strtok(NULL, coma);
+    char *tmp_strategy = strtok(NULL, end_delim);
 
-    if (id == NULL || /*fish_type == NULL ||*/ at == NULL || rel_pos == NULL || size == NULL ||
-        strategy == NULL || strtok(NULL, delim) != NULL) {
-        asprintf(&result, "NOK : Please check you gave the correct arguments :\n addFish [fish name] at "
-                "[posX]x[posY], [width]x[height], [moving strategy]\n");
+    char * rel_pos = strtok(tmp_rel_pos, delim); printf("rel_pos : \t'%s'\n",rel_pos);
+    char *size = strtok(tmp_size, delim); printf("size : \t'%s'\n",size);
+    char *strategy = strtok(tmp_strategy, delim); printf("strategy : '%s'\n",strategy);
+    char *suparg = strtok(NULL, delim); printf("suparg : \t'%s'\n",suparg);
+
+    if(client == NULL || suparg != NULL || id == NULL || at == NULL || rel_pos == NULL || size == NULL || strategy == NULL){
+        asprintf(&result,"NOK\n");
+        printf("ICI");
         return result;
     }
 
@@ -140,8 +146,10 @@ char *send__logout(struct thread_p *thread) {
 
 char *send__delete_fish() {
     char *result;
-    char *id = strtok(NULL, delim);
-    if (id != NULL && strtok(NULL, delim) == NULL) {
+    char *tmp_id= strtok(NULL, end_delim);
+    char * id = strtok(tmp_id,delim);
+    char *suparg = strtok(NULL, delim);
+    if (id != NULL && strtok(NULL, delim) == NULL && suparg == NULL) {
         asw__del_fish(id, &result);
     } else {
         asprintf(&result, "NOK\n");
