@@ -2,8 +2,6 @@ package sample;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -17,11 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -90,7 +84,7 @@ public class Console extends Stage {
     }
 
     public void addFishToHandle(String n, int x, int y, int w, int h) {
-        System.out.println("DEBUG : on ajoute le poisson " + n + " avec pos=" + x + "/" + y + " et w=" + w + " et h=" +h);
+        aquarium.writeLogs("Nouveau poisson dans la file d'attente : " + n + " avec pos=" + x + "/" + y + " et w=" + w + " et h=" +h +"/n");
         toHandle.add(new Fish(x*aquarium.width/100, y*aquarium.height/100, w*aquarium.width/100, h*aquarium.height/100, n));
     }
 
@@ -101,9 +95,8 @@ public class Console extends Stage {
     public void popFishToHandle(String n) {
         Fish res = null;
         for (Fish f : toHandle) {
-            System.out.println("DEBUG : ON PASSE PAR " + f.toString());
+            aquarium.writeLogs("Le poisson " + n +" est maintenant ajoute/n");
             if (f.getName().contentEquals(n)) {
-                System.out.println("DEBUG : ON POP " + f.toString());
                 aquarium.addFish(f);
                 res = f;
             }
@@ -113,7 +106,7 @@ public class Console extends Stage {
     }
 
     public boolean threadIsOver() {
-        return (parser.communicator.reicever != null && parser.communicator.reicever.getState() == Thread.State.TERMINATED);
+        return (parser.communicator.receiver != null && parser.communicator.receiver.getState() == Thread.State.TERMINATED);
     }
 
     public void setId(String id) {
@@ -136,7 +129,7 @@ public class Console extends Stage {
                     display.appendText("> " + action + System.lineSeparator());
                     input.clear();
 
-                    System.out.println("DEBUG : On a rentree : " + action);
+                    aquarium.writeLogs("Nouvelle entree : "+ action+ "/n");
                     parser.parser(action);
                     break;
                 case UP:
@@ -194,7 +187,7 @@ public class Console extends Stage {
                     display.appendText("> " + action + System.lineSeparator());
                     input.clear();
 
-                    System.out.println("DEBUG : On a rentree : " + action);
+                    aquarium.writeLogs("Nouvelle entree : "+ action+ "/n");
                     parser.parser(action);
                     break;
             }});
@@ -285,14 +278,14 @@ public class Console extends Stage {
             for (String s : lines) {
                 res += "- " + s + System.lineSeparator();
             }
-        } catch (IOException e) {System.out.println("Exception : " + e.toString());}
+        } catch (IOException e) {System.out.println("Exception : " + e.toString());
+            aquarium.writeLogs("Exception lors de la lecture du fichier de modeles de mobilite/n");}
 
         return res;
     }
 
     private String getFishesAvailable() {
             File directory = new File(  System.getProperty("user.dir") + "/src/sample/Images/");
-            System.out.println("DEBUG : Directory " + directory.toString() + " exists : " + directory.exists());
             String[] listFiles = directory.list();
             String res = new String("");
             for(int i=0;i<listFiles.length;i++) {

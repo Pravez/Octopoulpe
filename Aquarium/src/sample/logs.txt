@@ -1,0 +1,35 @@
+> Demarrage de l'application...
+..
+.
+
+> On configure :
+ ID=N1
+ Adresse du serveur=10.1.18.255
+ Port=2009
+ Timeout par défaut=50000 millisecondes
+ Repertoire des images=./Images
+
+> Tentative de connexion sur /10.1.18.255sur le port = 2009
+
+> Connexion etablie.
+
+> Nouvelle entree : hello in as N1/n
+> On envoie au serveur : hello in as N1
+
+> On recoit : greeting N1
+> Nouvelle entree : addFish PoissonNain at 50x50, 10x10, HorizontalWayPoint/n
+> Nouveau poisson dans la file d'attente : PoissonNain avec pos=50/50 et w=10 et h=10/n
+> On envoie au serveur : addFish PoissonNain at 50x50, 10x10, HorizontalWayPoint
+
+> On recoit : OK : Fish m successfully added
+> Le poisson m est maintenant ajoute/n
+> Le poisson m est maintenant ajoute/n
+> Le poisson m est maintenant ajoute/n
+> Le poisson m est maintenant ajoute/n
+> Le poisson m est maintenant ajoute/n
+> Le poisson m est maintenant ajoute/n
+> Nouvelle entree : log out/n
+> On envoie au serveur : log out
+
+> On recoit : bye
+> Arret du programme.

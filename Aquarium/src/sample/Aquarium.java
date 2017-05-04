@@ -12,12 +12,14 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class Aquarium extends Application {
@@ -44,10 +46,17 @@ public class Aquarium extends Application {
     private boolean hasNew=false;
 
     //others
+    protected Path logsPath;
     private int konamiCode = 0;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+
+        fishes = new ArrayList<Fish>();
+        logsPath = Paths.get(System.getProperty("user.dir") + "/src/sample/logs.txt");
+        try {
+            Files.write(logsPath, Arrays.asList("> Demarrage de l'application...\n..\n.\n"), Charset.forName("UTF-8"));
+        } catch (IOException e) {System.out.println("Probleme lors de l'ecriture des logs : " + e.toString());}
 
         //Creation of the console window
         console = new Console(this, 400, 400);
@@ -55,19 +64,9 @@ public class Aquarium extends Application {
         config();
         console.suggestInput("hello in as " + id);
 
-        fishes = new ArrayList<Fish>();
-
         //initialisation of the aquarium
-        final URL url = getClass().getResource("Images/bg.png");
-        final Image bg = new Image(url.toExternalForm());
-        background =  new ImageView(bg);
-        background.setFitHeight(height);
-        background.setFitWidth(width);
-        aquarium.getChildren().setAll(background);
-
+        initView();
         primaryStage.setResizable(false);
-
-        aquarium.getChildren().addAll(getAllViews(0));
         primaryStage.setTitle("Aquarium");
         primaryStage.setMaxHeight(height);
         primaryStage.setMaxWidth(width);
@@ -79,13 +78,30 @@ public class Aquarium extends Application {
         handler();
     }
 
+    private void initView () {
+        final URL url = getClass().getResource("Images/bg.png");
+        final Image bg = new Image(url.toExternalForm());
+        background =  new ImageView(bg);
+        background.setFitHeight(height);
+        background.setFitWidth(width);
+        aquarium.getChildren().setAll(background);
+        aquarium.getChildren().addAll(getAllViews(0));
+    }
+
+    protected void writeLogs(String s) {
+        try {
+            Files.write(logsPath, Arrays.asList("> " + s), Charset.forName("UTF-8"), StandardOpenOption.APPEND);
+        } catch (IOException e) {System.out.println("Probleme lors de l'ecriture des logs : " + e.toString());}
+    }
+
     private void handler() {
         new AnimationTimer() {
             @Override
             public void handle(long now) {
                 timer++;
 
-                if (console.threadIsOver() ) {//|| !console.parser.communicator.isConnected()) {
+                if (console.threadIsOver() || !console.parser.communicator.isConnected()) {
+                    writeLogs("Arret du programme.");
                     console.logOut();
                     System.exit(1);
                 }
@@ -98,6 +114,7 @@ public class Aquarium extends Application {
 
                 if (timeElpased >= pingTimeslice*1000000) {
                     timeElpased = 0;
+                    writeLogs("Timeout bientot atteint : on ping.\n");
                     console.parser.communicator.send("ping 12345");
                 }
 
@@ -131,27 +148,20 @@ public class Aquarium extends Application {
                 for (String s : lines) {
                     if (!s.isEmpty() && s.charAt(0) != '#') {
                         String[] words = s.split(" ");
-                        System.out.println("DEBUG : FIRST WORD " + words[0]);
                         switch (words[0]) {
                             case "controller-address":
-                                System.out.println("DEBUG : ADDRESS " + words[2]);
                                 address = words[2];
                                 break;
                             case "id":
-                                System.out.println("DEBUG : ID " + words[2]);
                                 id = words[2];
                                 break;
                             case "controller-port":
-                                System.out.println("DEBUG : PORT " + words[2]);
                                 port = Integer.parseInt(words[2]);
                                 break;
                             case "display-timeout-value":
-                                System.out.println("DEBUG : TIMESLICE " + words[2]);
                                 pingTimeslice = Integer.parseInt(words[2])*1000;
-                                System.out.println("DEBUG : the timeslice for ping is of " + pingTimeslice + " millisecondes");
                                 break;
                             case "resources":
-                                System.out.println("DEBUG : RESSOURCE " + words[2]);
                                 imagesURL = words[2];
                                 break;
                             default:
@@ -159,9 +169,11 @@ public class Aquarium extends Application {
                         }
                     }
                 }
-                //console.parser.communicator.config(address, port);
+                writeLogs("On configure :\n ID="+id+"\n Adresse du serveur="+address+"\n Port="+port+"\n Timeout par défaut="+pingTimeslice+" millisecondes\n Repertoire des images="+imagesURL+"\n");
+                console.parser.communicator.config(address, port);
             } catch (IOException e) {
-                System.out.println("DEBUG : DIDN'T FOUND FILE ! Exception : " + e.toString());
+                System.out.println("Exception lors de la lecture de affichage.cfg : " + e.toString());
+                writeLogs("Probleme lors de la lecture du fichier de configuration.\n");
             }
         }
 
@@ -259,7 +271,6 @@ public class Aquarium extends Application {
         Fish toRemove = null;
         for (Fish f : fishes) {
             if (f.getName().equalsIgnoreCase(name)) {
-                System.out.println("DEBUG : On supprime " + name);
                 toRemove = f;
             }
         }
@@ -270,7 +281,7 @@ public class Aquarium extends Application {
     public void setGoal(String name, int x, int y, long d) {
         for (Fish f : fishes ) {
             if (f.getName().equalsIgnoreCase(name)) {
-                System.out.println("On met le goal " + x + "/" + y + " a " + name + " en le faisant en " + d + "millisecondes" );
+                writeLogs("Nouveau but pour le poisson "+ name+ " : aller en "+x+"x"+y+ " en " + d + " millisecondes/n");
                 f.setGoal(x*width/100, y*height/100, d);
             }
         }

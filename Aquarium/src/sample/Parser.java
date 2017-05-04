@@ -134,11 +134,10 @@ public class Parser {
             List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/src/sample/MobilityModels.txt"), Charset.defaultCharset());
 
             for (String s : lines) {
-                System.out.println("DEBUG : dans fichier, ligne :" + s);
                 if (m.contentEquals(s))
                     return true;
             }
-        } catch (IOException e) {System.out.println("DEBUG : DIDN'T FOUND FILE !");}
+        } catch (IOException e) {System.out.println("Exception in searching file : " + e.toString()); console.aquarium.writeLogs("Exception lors de l'ouverture du fichier de modeles de mobilite.\n");}
 
         return false;
     }

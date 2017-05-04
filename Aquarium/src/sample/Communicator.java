@@ -12,7 +12,7 @@ public class Communicator {
     private Console console;
     private Socket socket;
     protected BufferedReader in;
-    protected Thread reicever;
+    protected Thread receiver;
 
     public Communicator(Console c) {
         console = c;
@@ -26,7 +26,7 @@ public class Communicator {
         boolean connected = false;
         while (!connected) {
             try {
-                System.out.println("DEBUG : Try to connect at " + InetAddress.getByName(address) + ", with adress = " + address + " and with port = " + port);
+                console.aquarium.writeLogs("Tentative de connexion sur " + InetAddress.getByName(address) + "sur le port = " + port + "\n");
                 socket = new Socket(InetAddress.getByName(InetAddress.getLocalHost().toString().split("/")[1]), port);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 connected = true;
@@ -34,27 +34,27 @@ public class Communicator {
                 connected = false;
             }
         }
-        System.out.println("DEBUG : Connexion etablie");
-        reicever = new Thread(new ReceiveHandler(console, in));
-        reicever.start();
+        console.aquarium.writeLogs("Connexion etablie.\n");
+        receiver = new Thread(new ReceiveHandler(console, in));
+        receiver.start();
     }
 
     public void logOut() {
         try {
             if (socket != null)
                 socket.close();
-        }catch (IOException e) {System.out.println("Exception : " + e.toString());}
+        }catch (IOException e) {System.out.println("Exception : " + e.toString()); console.aquarium.writeLogs("Exception lors de la fermeture de socket\n");}
     }
 
     public void send(String s) {
-        System.out.println("DEBUG : On envoie " + s);
+        console.aquarium.writeLogs("On envoie au serveur : " +s+"\n");
         if (isConnected()) {
             try {
                 PrintWriter out =  new PrintWriter(socket.getOutputStream());
                 console.aquarium.timeElpased = 0;
                 out.println(s);
                 out.flush();
-            } catch (IOException e) {System.out.println("DEBUG : Exception in send !!");}
+            } catch (IOException e) {System.out.println("Exception in send !!");console.aquarium.writeLogs("Exception lors de l'envoi.");}
         }
     }
 

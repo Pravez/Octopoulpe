@@ -20,10 +20,9 @@ public class ReceiveHandler implements Runnable {
         while(running){
             try {
                 message = in.readLine();
-                System.out.println("DEBUG : ON ESSAI DE RECUPERER UN MESSAGE : " + message);
+                console.aquarium.writeLogs("On recoit : " + message);
                 String[] args = message.split(" |\\[|\\]|\\,");
                 for (String s : args)
-                    System.out.println("DEBUG : ON A DANS ARGS: " + s);
                 switch (args[0]) {
                     case "bye":
                         running = false;
@@ -74,14 +73,12 @@ public class ReceiveHandler implements Runnable {
             int time = Integer.parseInt(args[i + 4]) * 1000;
             int w = Integer.parseInt(args[i + 3].split("x")[0]);
             int h = Integer.parseInt(args[i + 3].split("x")[0]);
-            System.out.println("DEBUG : ON A W = : " + w + " ET H = " + h);
             if (!console.aquarium.hasFish(n))
                 console.aquarium.addFish(n, x, y, w, h);
             else {
                 console.aquarium.setFishSize(n, w, h);
                 console.aquarium.setGoal(n, x, y, time);
             }
-            System.out.println("DEBUG : FIN GOAL");
         }
     }
 

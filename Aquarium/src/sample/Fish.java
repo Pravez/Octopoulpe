@@ -9,18 +9,17 @@ import java.net.URL;
 
 public class Fish {
 
+    //View
     private ImageView view1;
     private ImageView view2;
 
+    //attributes
+    private String name;
     private int x;
     private int y;
-
-    private String name;
-    private boolean started;
-
     private Point goal;
     private long timeGoal; //in millisecond
-
+    private boolean started;
 
     public Fish(int x, int y, int w, int h, String s) {
 
@@ -33,12 +32,10 @@ public class Fish {
 
     private String[] listImage(){
         File directory = new File(  System.getProperty("user.dir") + "/src/sample/Images/");
-        System.out.println("DEBUG : Directory " + directory.toString() + " exists : " + directory.exists());
         String[] listFiles = directory.list();
 
         for(int i=0;i<listFiles.length;i++) {
             listFiles[i] = listFiles[i].substring(0, listFiles[i].indexOf("."));
-            System.out.println("DEBUG : fichier : " + listFiles[i]);
         }
         return listFiles;
     }
@@ -47,19 +44,14 @@ public class Fish {
         int index = s.indexOf('_');
         String pictureFile = (index == -1) ? new String(s) : new String(s.substring(0, index));
         Boolean exist = false;
-        System.out.println("DEBUG : FIIIILE : " + pictureFile);
         String [] listFiles = listImage();
         for (String f: listFiles) {
-            System.out.println("DEBUG : file in directory : " + f);
              if (f.equalsIgnoreCase(pictureFile) && !f.equalsIgnoreCase("bg") && !f.equalsIgnoreCase("bb")) { //to prevent bug with background
-              System.out.println("DEBUG : NO EQUAAAL");
               exist = true;
              }
         }
         if (! exist)
             pictureFile = new String("PoissonNain"); //Default image
-
-        System.out.println("DEBUG : Images/" + pictureFile + ".png");
 
         final URL url1 = getClass().getResource( "Images/" + pictureFile + ".png");
         final URL url2 = getClass().getResource("Images/" + pictureFile + "2.png");
@@ -82,7 +74,6 @@ public class Fish {
     }
 
     public void setSize(int w, int h) {
-        System.out.println("DEBUG : SET SIIIIIIIIIIIZE W=" + w + " AND H=" + h);
         view1.setFitHeight(h);
         view1.setFitWidth(w);
         view2.setFitHeight(h);
@@ -106,7 +97,7 @@ public class Fish {
     public void setGoal(int x, int y, long d) {
         goal.x = x;
         goal.y = y;
-        timeGoal = d; //TODO : changer, 5 secondes pour tester
+        timeGoal = d;
     }
 
     public ImageView get_View(int nb) {
@@ -118,12 +109,10 @@ public class Fish {
 
     public void update(long timeElapsed) {
 
-        //TODO : try to compute an average elapsed ?
-
         if (!goal.equals(new Point(-1, -1))) {
             timeGoal -= timeElapsed;
-            System.out.println("DEBUG : Il s'est ecoule " + timeElapsed + " millisecondes");
-            System.out.println("DEBUG : Il nous reste " + timeGoal + " millisecondes");
+            //System.out.println("DEBUG : Il s'est ecoule " + timeElapsed + " millisecondes");
+            //System.out.println("DEBUG : Il nous reste " + timeGoal + " millisecondes");
 
             if (timeGoal <= 0) {
                 x = goal.x;
@@ -138,10 +127,10 @@ public class Fish {
                 long distToDoX = timeElapsed * distToGoalX / timeGoal;
                 long distToDoY = timeElapsed * distToGoalY / timeGoal;
 
-                System.out.println("DEBUG : On doit faire " + distToDoX + " en X");
-                System.out.println("DEBUG : On doit faire " + distToDoY + " en Y");
+                //System.out.println("DEBUG : On doit faire " + distToDoX + " en X");
+                //System.out.println("DEBUG : On doit faire " + distToDoY + " en Y");
 
-                System.out.println("DEBUG : On etait en " + x + "/" + y);
+                //System.out.println("DEBUG : On etait en " + x + "/" + y);
 
                 if (goal.x > x)
                     x += distToDoX;
@@ -154,7 +143,7 @@ public class Fish {
                     y -= distToDoY;
 
                 setPosition(x, y);
-                System.out.println("DEBUG : On est maintenant en " + x + "/" + y);
+                //System.out.println("DEBUG : On est maintenant en " + x + "/" + y);
 
                 if (goal.equals(new Point(x, y))) {
                     goal.x = -1;
