@@ -206,6 +206,12 @@ public class Console extends Stage {
                                                                         + " Laurie-Anne Parant " + System.lineSeparator()
                                                                         + " Nicolas Vidal " + System.lineSeparator());
 
+        Label tab5 = new Label("Scenario");
+        tab5.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+                new ScenarioWindow(input).show();
+            }
+        });
 
         CheckBox cb = new CheckBox("Quick order");
         cb.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -225,7 +231,7 @@ public class Console extends Stage {
             }
         });
 
-        toolbar = new ToolBar(tab1, new Separator(), tab2, new Separator(), tab3, new Separator(), tab4, new Separator(), cb);
+        toolbar = new ToolBar(tab1, new Separator(), tab2, new Separator(), tab3, new Separator(), tab4, new Separator(), tab5, new Separator(), cb);
     }
 
     private void initInfoTab(Label l, String title, String header, String content) {
