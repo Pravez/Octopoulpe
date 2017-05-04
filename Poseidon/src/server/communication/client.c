@@ -100,17 +100,18 @@ char *client__parse_command(char buffer[BUFFER_SIZE], struct thread_p *thread) {
         return send__ping(thread->_client);
     } else if (thread->_client != NULL) {
         if (!strcmp(token, "getFishes")) {
+            if(thread->_client->_is_observer)
+                __stop_send_continuously(thread);
             return send__fishes(thread->_client);
         } else if (!strcmp(token, "getFishesContinuously")) {
-            return send__fishes_continuously(thread);
+            send__fishes_continuously(thread);
+            return NULL;
         } else if (!strcmp(token, "addFish")) {
             return send__add_fish(thread->_client);
         } else if (!strcmp(token, "delFish")) {
             return send__delete_fish();
         } else if (!strcmp(token, "startFish")) {
             return send__start_fish();
-        } else if(!strcmp(token, "stopSendContinuously")){
-            return send__stop_send_continuously(thread);
         }
     } else {
         return "Please authenticate yourself with a `hello` command first\n";
@@ -118,7 +119,6 @@ char *client__parse_command(char buffer[BUFFER_SIZE], struct thread_p *thread) {
 
     free(cmd);
     return "Unknown command\n";
-
 }
 
 void client__init(struct thread_p *client_thread) {

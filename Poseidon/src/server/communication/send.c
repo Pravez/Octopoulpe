@@ -13,6 +13,8 @@ static const char *end_delim = SERVER_END_CMD_DELIMITER;
 static const char *val_delim = SERVER_FISHVAL_DELIMITER;
 extern struct vector *observers;
 
+
+
 char *send__client_id(struct thread_p *thread) {
     char *result = NULL;
 
@@ -80,17 +82,13 @@ void *send__regular_sender(void *arg) {
     }
 }
 
-char *send__fishes_continuously(struct thread_p *thread) {
+void send__fishes_continuously(struct thread_p *thread) {
     if (!thread->_client->_is_observer) {
         CONSOLE_LOG_INFO("Starting to send continuously to %s", thread->_client->id);
         thread->_client->_is_observer = TRUE;
         v__add(observers, thread, THREAD);
         pthread_create(&thread->_client->_continuous_sender, NULL, send__regular_sender, thread);
-        return "OK\n";
-    } else {
-        return "NOK\n";
     }
-
 }
 
 char *send__add_fish(struct client *client) {
@@ -105,8 +103,7 @@ char *send__add_fish(struct client *client) {
 
     if (id == NULL || /*fish_type == NULL ||*/ at == NULL || rel_pos == NULL || size == NULL ||
         strategy == NULL || strtok(NULL, delim) != NULL) {
-        asprintf(&result, "NOK : Please check you gave the correct arguments :\n addFish [fish name] at "
-                "[posX]x[posY], [width]x[height], [moving strategy]\n");
+        asprintf(&result, "NOK\n");
         return result;
     }
 
@@ -171,12 +168,9 @@ char *send__start_fish() {
     return result;
 }
 
-char *send__stop_send_continuously(struct thread_p *thread) {
+void send__stop_send_continuously(struct thread_p *thread) {
     if (thread->_client->_is_observer) {
         __stop_send_continuously(thread);
-        return "OK\n";
-    } else {
-        return "NOK\n";
     }
 }
 
