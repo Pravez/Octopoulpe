@@ -49,7 +49,7 @@ public class Console extends Stage {
 
     Thread continuously;
 
-    ArrayList<Fish> toHandle;
+    //ArrayList<Fish> toHandle;
 
     public Console(Aquarium a, int w, int h) {
         aquarium = a;
@@ -58,7 +58,7 @@ public class Console extends Stage {
 
         initDisplay();
 
-        toHandle = new ArrayList<Fish>();
+        //toHandle = new ArrayList<Fish>();
         parser = new Parser(this, display);
     }
 
@@ -81,28 +81,6 @@ public class Console extends Stage {
         entry.getChildren().add(vb);
 
         this.setScene(new Scene(entry, width, height));
-    }
-
-    public void addFishToHandle(String n, int x, int y, int w, int h) {
-        aquarium.writeLogs("Nouveau poisson dans la file d'attente : " + n + " avec pos=" + x + "/" + y + " et w=" + w + " et h=" +h +"/n");
-        toHandle.add(new Fish(x*aquarium.width/100, y*aquarium.height/100, w*aquarium.width/100, h*aquarium.height/100, n));
-    }
-
-    public void removeFishToHandle(Fish f) {
-        toHandle.remove(f);
-    }
-
-    public void popFishToHandle(String n) {
-        Fish res = null;
-        for (Fish f : toHandle) {
-            aquarium.writeLogs("Le poisson " + n +" est maintenant ajoute/n");
-            if (f.getName().contentEquals(n)) {
-                aquarium.addFish(f);
-                res = f;
-            }
-        }
-        if (res != null)
-            toHandle.remove(res);
     }
 
     public boolean threadIsOver() {

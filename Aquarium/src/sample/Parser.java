@@ -54,8 +54,9 @@ public class Parser {
                         if (!checkMobilityModel(args[5]))
                             console.display.appendText("< NOK : modele de mobilite non supporte" + System.lineSeparator());
                         else {
-                            console.addFishToHandle(args[1], Integer.parseInt(args[3].split("x")[0]), Integer.parseInt(args[3].split("x")[1]), Integer.parseInt(args[4].split("x")[0]), Integer.parseInt(args[4].split("x")[1]));
+                            //console.addFishToHandle(args[1], Integer.parseInt(args[3].split("x")[0]), Integer.parseInt(args[3].split("x")[1]), Integer.parseInt(args[4].split("x")[0]), Integer.parseInt(args[4].split("x")[1]));
                             communicator.send(action);
+                            communicator.orderHistory.add(action);
                         }
                     } catch (NumberFormatException e) {
                         console.display.appendText("< NOK ! " + e.getMessage().split("\"")[1] + " is supposed to be an integer." + System.lineSeparator());
@@ -68,6 +69,7 @@ public class Parser {
                 if (args.length == 2) {
                     if (console.aquarium.hasFish(args[1])) {
                         communicator.send(action);
+                        communicator.orderHistory.add(action);
                     }
                     else
                         console.display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
@@ -79,6 +81,7 @@ public class Parser {
                 if (args.length == 2) {
                     if (console.aquarium.hasFish(args[1])) {
                         communicator.send(action);
+                        communicator.orderHistory.add(action);
                     }
                     else
                         console.display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
@@ -99,29 +102,6 @@ public class Parser {
                 }
                 else
                     console.display.appendText("< NOK. Usage : 'getFishesContinuously'" + System.lineSeparator());
-                break;
-            case "stopSendContinuously":
-                if (args.length == 1) {
-                    communicator.send(action);
-                }
-                else
-                    console.display.appendText("< NOK. Usage : 'stopSendContinuously'" + System.lineSeparator());
-                break;
-            case "setGoal" :
-                if (args.length == 5) {
-                    if (console.aquarium.hasFish(args[1])) {
-
-                        try {
-                            console.aquarium.setGoal(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
-                            console.display.appendText("< OK" + System.lineSeparator());
-                        }
-                        catch (NumberFormatException e) {console.display.appendText("< NOK ! " + e.getMessage().split("\"")[1] + " is supposed to be an integer." + System.lineSeparator());}
-                    }
-                    else
-                        console.display.appendText("< NOK : Poisson inexistant" + System.lineSeparator());
-                }
-                else
-                    console.display.appendText("< NOK. Usage : 'setGoal name x y delay'" + System.lineSeparator());
                 break;
             default:
                 console.display.appendText("< NOK. Commande introuvable. (Les commandes sont disponible dans l'onglet)." + System.lineSeparator());

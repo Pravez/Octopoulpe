@@ -6,6 +6,7 @@ import java.io.IOException;
 public class ReceiveHandler implements Runnable {
 
     Console console;
+    Communicator communicator;
 
     String message;
     BufferedReader in;
@@ -13,6 +14,7 @@ public class ReceiveHandler implements Runnable {
     public ReceiveHandler(Console c, BufferedReader in) {
         this.in = in;
         console = c;
+        communicator = console.parser.communicator;
     }
 
     public void run() {
@@ -40,16 +42,20 @@ public class ReceiveHandler implements Runnable {
                         console.display.appendText(message + System.lineSeparator());
                         break;
                     case "OK":
-                        if (args.length > 4) {
-                            if (args[5].contentEquals("added")) {
-                                console.popFishToHandle(args[3]);
-                            }
-                            if (args[5].contentEquals("started")) {
-                                console.aquarium.setStarted(args[3]);
-                            }
-                            if (args[5].contentEquals("removed")) {
-                                console.aquarium.removeFish(args[3]);
-                            }
+                        String order = communicator.orderHistory.pop();
+                        String[] argsOrder = order.split (" |\\, ");
+                        switch (argsOrder[0]) {
+                            case "addFish":
+                                console.aquarium.addFish(argsOrder[1], Integer.parseInt(argsOrder[3].split("x")[0]), Integer.parseInt(argsOrder[3].split("x")[1]), Integer.parseInt(argsOrder[4].split("x")[0]), Integer.parseInt(argsOrder[4].split("x")[1]));
+                                break;
+                            case "startFish":
+                                console.aquarium.setStarted(argsOrder[1]);
+                                break;
+                            case "delFish":
+                                console.aquarium.removeFish(argsOrder[1]);
+                                break;
+                            default:
+                                break;
                         }
                         break;
                     default:
@@ -59,7 +65,6 @@ public class ReceiveHandler implements Runnable {
                 if (args[0] != "pong") {
                     console.display.appendText("< " + message + System.lineSeparator());
                 }
-
             } catch (IOException e) {e.printStackTrace();}
         }
     }

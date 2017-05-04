@@ -13,23 +13,15 @@
 
 > Connexion etablie.
 
-> Nouvelle entree : hello in as N1/n
-> On envoie au serveur : hello in as N1
+> Nouvelle entree : addFish PoissonRouge at 50x50, 15x15, RandomWayPoint/n
+> On envoie au serveur : addFish PoissonRouge at 50x50, 15x15, RandomWayPoint
 
-> On recoit : greeting N1
-> Nouvelle entree : addFish PoissonNain at 50x50, 10x10, HorizontalWayPoint/n
-> Nouveau poisson dans la file d'attente : PoissonNain avec pos=50/50 et w=10 et h=10/n
-> On envoie au serveur : addFish PoissonNain at 50x50, 10x10, HorizontalWayPoint
+> On recoit : OK
+> Nouvelle entree : startFish PoissonRouge/n
+> On envoie au serveur : startFish PoissonRouge
 
-> On recoit : OK : Fish m successfully added
-> Le poisson m est maintenant ajoute/n
-> Le poisson m est maintenant ajoute/n
-> Le poisson m est maintenant ajoute/n
-> Le poisson m est maintenant ajoute/n
-> Le poisson m est maintenant ajoute/n
-> Le poisson m est maintenant ajoute/n
-> Nouvelle entree : log out/n
-> On envoie au serveur : log out
+> On recoit : OK
+> Nouvelle entree : delFish PoissonRouge/n
+> On envoie au serveur : delFish PoissonRouge
 
-> On recoit : bye
-> Arret du programme.
+> On recoit : OK

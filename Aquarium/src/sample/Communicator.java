@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Communicator {
 
@@ -14,8 +17,11 @@ public class Communicator {
     protected BufferedReader in;
     protected Thread receiver;
 
+    protected LinkedList<String> orderHistory;
+
     public Communicator(Console c) {
         console = c;
+        orderHistory = new LinkedList<String>();
     }
 
     public boolean isConnected() {
