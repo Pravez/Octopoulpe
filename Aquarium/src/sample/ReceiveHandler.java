@@ -25,7 +25,25 @@ public class ReceiveHandler implements Runnable {
         running = false;
     }
 
-    synchronized public void run() {
+    synchronized private void handleOK() {
+        String order = communicator.orderHistory.pop();
+        String[] argsOrder = order.split (" |\\, ");
+        switch (argsOrder[0]) {
+            case "addFish":
+                console.aquarium.addFish(argsOrder[1], Integer.parseInt(argsOrder[3].split("x")[0]), Integer.parseInt(argsOrder[3].split("x")[1]), Integer.parseInt(argsOrder[4].split("x")[0]), Integer.parseInt(argsOrder[4].split("x")[1]));
+                break;
+            case "startFish":
+                console.aquarium.setStarted(argsOrder[1]);
+                break;
+            case "delFish":
+                console.aquarium.removeFish(argsOrder[1]);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void run() {
         while(running){
             try {
                 try {
@@ -42,7 +60,7 @@ public class ReceiveHandler implements Runnable {
                         handleGoal(args);
                         break;
                     case "no":
-                        //TODO : what we can do if no greeting ?
+                        running = false;
                         break;
                     case "greeting":
                         console.setId(args[1]);
@@ -51,21 +69,7 @@ public class ReceiveHandler implements Runnable {
                         console.display.appendText(message + System.lineSeparator());
                         break;
                     case "OK":
-                        String order = communicator.orderHistory.pop();
-                        String[] argsOrder = order.split (" |\\, ");
-                        switch (argsOrder[0]) {
-                            case "addFish":
-                                console.aquarium.addFish(argsOrder[1], Integer.parseInt(argsOrder[3].split("x")[0]), Integer.parseInt(argsOrder[3].split("x")[1]), Integer.parseInt(argsOrder[4].split("x")[0]), Integer.parseInt(argsOrder[4].split("x")[1]));
-                                break;
-                            case "startFish":
-                                console.aquarium.setStarted(argsOrder[1]);
-                                break;
-                            case "delFish":
-                                console.aquarium.removeFish(argsOrder[1]);
-                                break;
-                            default:
-                                break;
-                        }
+                        handleOK();
                         break;
                     default:
                         break;

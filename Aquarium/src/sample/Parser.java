@@ -20,7 +20,7 @@ public class Parser {
         communicator = new Communicator(console);
     }
 
-    public void parser(String action) {
+    synchronized public void parser(String action) {
         String[] args = action.split (" |\\, ");
         switch (args[0]) {
             case "hello" :

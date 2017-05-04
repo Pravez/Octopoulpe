@@ -13,3 +13,15 @@
 
 > Connexion etablie.
 
+> Nouvelle entree : addFish PoissonRouge at 50x50, 15x15, RandomWayPoint/n
+> On envoie au serveur : addFish PoissonRouge at 50x50, 15x15, RandomWayPoint
+
+> On recoit : OK
+> Timeout bientot atteint : on ping.
+
+> On envoie au serveur : ping 12345
+
+> Nouvelle entree : addFish PoissonClown at 50x50, 10x10, VerticalWayPoint/n
+> On envoie au serveur : addFish PoissonClown at 50x50, 10x10, VerticalWayPoint
+
+> On recoit : OK
