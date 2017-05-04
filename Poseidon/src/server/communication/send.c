@@ -131,8 +131,14 @@ char *send__add_fish(struct client *client) {
 }
 
 char *send__logout(struct thread_p *thread) {
-    char *out = strtok(NULL, delim);
-    return asw__log(out, thread);
+    char *end_line = strtok(NULL, end_delim);
+    char *out = strtok(end_line,delim);
+    char *arg = strtok(NULL,delim);
+    if(arg == NULL)
+        return asw__log(out, thread);
+    else{
+        return "NOK : no arguments allowed after 'log out' command\n";
+    }
 }
 
 char *send__delete_fish() {

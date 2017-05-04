@@ -150,6 +150,8 @@ void asw__get_fishes(char **res, struct client *cli) {
 char *asw__log(char *arg, struct thread_p *thread) {
     if (arg == NULL || strcmp(arg, "out")) {
         return "NOK : Maybe you wanted to say `log out`\n";
+    } else if(thread == NULL) {
+        return "NOK : invalid client (thread argument could not be NULL)\n";
     } else {
         if(thread->_authenticated == TRUE && thread->_client != NULL)
             thread->_client->is_free = TRUE;

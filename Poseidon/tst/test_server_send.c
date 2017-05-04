@@ -17,7 +17,6 @@ static const char *delim = " ";
 
 // TESTS TO DO
 /*
-char* send__fishes(struct client* client);
 void send__signal_callback_handler(int signum);
 void* send__regular_sender(void* arg);
 void send__fishes_continuously(struct thread_p* thread);
@@ -252,7 +251,37 @@ void tst__send_fishes()
     res= send__fishes(henry._client);
     assert(strcmp(res,"NOK : no arguments allowed in getFishes\n")==0);
     free(res);
-    CONSOLE_LOG_TEST("\"getFishes\" after deleting some fishes");
+    CONSOLE_LOG_TEST("\"getFishes some arguments\" (invalid syntax)");
+}
+
+void tst__send_logout(){
+
+    char * res;
+    char * cmd = strdup("log out\n");
+    strtok(cmd,delim);
+    res = send__logout(NULL);
+    assert(strcmp(res,"NOK : invalid client (thread argument could not be NULL)\n")==0);
+    CONSOLE_LOG_TEST("\"log out\" (with NULL thread argument)");
+
+    struct thread_p henry;
+    henry._client = malloc(sizeof(struct client *));
+
+    cmd = strdup("log out      \n");
+    strtok(cmd,delim);
+    res = send__logout(&henry);
+    assert(strcmp(res,"bye\n")==0);
+    CONSOLE_LOG_TEST("\"log out\"");
+
+    cmd = strdup("log out arg arg \n");
+    strtok(cmd,delim);
+    res = send__logout(&henry);
+    assert(strcmp(res,"NOK : no arguments allowed after 'log out' command\n")==0);
+
+    cmd = strdup("log out arg\n");
+    strtok(cmd,delim);
+    res = send__logout(&henry);
+    assert(strcmp(res,"NOK : no arguments allowed after 'log out' command\n")==0);
+    CONSOLE_LOG_TEST("\"log out some arguments\"");
 }
 
 int main()
@@ -263,6 +292,7 @@ int main()
   // Intern communication
   tst__send_client_id();
   tst__send_fishes();
+  tst__send_logout();
 
   return 0;
 }
