@@ -22,13 +22,11 @@ char *send__client_id(struct thread_p *thread) {
     char *as = strtok(NULL, delim);
     char *id = strtok(NULL, end_delim);
     char *str = NULL;
-    if (in != NULL && strcmp(in, "\n") != 0 && as != NULL) {
-        if (strcmp(in, "in") == 0 && strcmp(as, "as") == 0 && id != NULL && strtok(NULL, delim) == NULL) {
-            asprintf(&str, "%s", id);
-        } else {
-            asprintf(&result, "NOK\n");
-            return result;
-        }
+    if (in != NULL && strcmp(in, "in") == 0 && as != NULL && strcmp(as, "as") == 0 && id != NULL) {
+        asprintf(&str, "%s", id);
+    } else if (in !=NULL && strcmp(in,"\n")!= 0) {
+        asprintf(&result, "no greeting\n");
+        return result;
     }
 
     if (asw__hello(str, &result, thread) == HELLO_FAILURE) {
@@ -92,18 +90,24 @@ void send__fishes_continuously(struct thread_p *thread) {
 }
 
 char *send__add_fish(struct client *client) {
+
+    const char *coma = ",";
+
     char *result = NULL;
 
-    char *id = strtok(NULL, delim);
-    //char *fish_type = strtok(NULL, delim);
-    char *at = strtok(NULL, delim);
-    char *rel_pos = strtok(NULL, delim);
-    char *size = strtok(NULL, delim);
-    char *strategy = strtok(NULL, delim);
+    char *id = strtok(NULL, delim); printf("id : \t'%s'\n",id);
+    char *at = strtok(NULL, delim); printf("at : \t'%s'\n",at);
+    char *tmp_rel_pos = strtok(NULL, coma);
+    char *tmp_size = strtok(NULL, coma);
+    char *tmp_strategy = strtok(NULL, end_delim);
 
-    if (id == NULL || /*fish_type == NULL ||*/ at == NULL || rel_pos == NULL || size == NULL ||
-        strategy == NULL || strtok(NULL, delim) != NULL) {
-        asprintf(&result, "NOK\n");
+    char * rel_pos = strtok(tmp_rel_pos, delim); printf("rel_pos : \t'%s'\n",rel_pos);
+    char *size = strtok(tmp_size, delim); printf("size : \t'%s'\n",size);
+    char *strategy = strtok(tmp_strategy, delim); printf("strategy : '%s'\n",strategy);
+    char *suparg = strtok(NULL, delim); printf("suparg : \t'%s'\n",suparg);
+
+    if(client == NULL || suparg != NULL || id == NULL || at == NULL || rel_pos == NULL || size == NULL || strategy == NULL){
+        asprintf(&result,"NOK\n");
         return result;
     }
 
@@ -139,8 +143,10 @@ char *send__logout(struct thread_p *thread) {
 
 char *send__delete_fish() {
     char *result;
-    char *id = strtok(NULL, delim);
-    if (id != NULL && strtok(NULL, delim) == NULL) {
+    char *tmp_id= strtok(NULL, end_delim);
+    char * id = strtok(tmp_id,delim);
+    char *suparg = strtok(NULL, delim);
+    if (id != NULL && strtok(NULL, delim) == NULL && suparg == NULL) {
         asw__del_fish(id, &result);
     } else {
         asprintf(&result, "NOK\n");
@@ -149,7 +155,7 @@ char *send__delete_fish() {
 }
 
 char *send__ping(struct client *client) {
-    char *value = strtok(NULL, delim);
+    char *value = strtok(NULL, end_delim);
     char *result = NULL;
     asw__ping(value, &result, client);
     return result;

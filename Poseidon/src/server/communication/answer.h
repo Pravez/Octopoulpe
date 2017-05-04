@@ -8,6 +8,7 @@
 #include "client.h"
 #include "../../utility/hashmap.h"
 #include "../../utility/tools.h"
+#include "../../utility/data.h"
 
 #define HELLO_SUCCESS 0
 #define HELLO_FAILURE 1

@@ -20,11 +20,6 @@ static const char *delim = " ";
 void send__signal_callback_handler(int signum);
 void* send__regular_sender(void* arg);
 void send__fishes_continuously(struct thread_p* thread);
-char* send__add_fish(struct client* client);
-char* send__delete_fish();
-char* send__logout(struct thread_p* thread);
-char* send__ping(struct client* client);
-char* send__start_fish();
 */
 
 extern struct _tvector* config_vector;
@@ -156,14 +151,14 @@ void tst__send_client_id()
     cmd = strdup("hello in\n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
-    assert(strcmp(res,"NOK : Please use : hello in as [view id]\n")==0);
+    assert(strcmp(res,"no greeting\n")==0);
     free(res);
 
     /* hello in \n */
     cmd = strdup("hello in   \n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
-    assert(strcmp(res,"NOK : Please use : hello in as [view id]\n")==0);
+    assert(strcmp(res,"no greeting\n")==0);
     free(res);
     CONSOLE_LOG_TEST("\"hello in\"");
 
@@ -171,14 +166,14 @@ void tst__send_client_id()
     cmd = strdup("hello in as\n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
-    assert(strcmp(res,"NOK : Please use : hello in as [view id]\n")==0);
+    assert(strcmp(res,"no greeting\n")==0);
     free(res);
 
     /* hello in as \n */
     cmd = strdup("hello in as   \n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
-    assert(strcmp(res,"NOK : no spaces allowed in the view id\n")==0);
+    assert(strcmp(res,"no greeting\n")==0);
     free(res);
     CONSOLE_LOG_TEST("\"hello in as\"");
 
@@ -186,7 +181,7 @@ void tst__send_client_id()
     cmd = strdup("hello in nawak id\n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
-    assert(strcmp(res,"NOK : Please use : hello in as [view id]\n")==0);
+    assert(strcmp(res,"no greeting\n")==0);
     free(res);
     CONSOLE_LOG_TEST("\"hello word word id\" (not valid keywords)");
 
@@ -249,7 +244,7 @@ void tst__send_fishes()
     cmd=strdup("getFishes   something   arg1    arg2         arg3    \n");
     strtok(cmd,delim);
     res= send__fishes(henry._client);
-    assert(strcmp(res,"NOK : no arguments allowed in getFishes\n")==0);
+    assert(strcmp(res,"NOK\n")==0);
     free(res);
     CONSOLE_LOG_TEST("\"getFishes some arguments\" (invalid syntax)");
 }
@@ -260,7 +255,7 @@ void tst__send_logout(){
     char * cmd = strdup("log out\n");
     strtok(cmd,delim);
     res = send__logout(NULL);
-    assert(strcmp(res,"NOK : invalid client (thread argument could not be NULL)\n")==0);
+    assert(strcmp(res,"NOK\n")==0);
     CONSOLE_LOG_TEST("\"log out\" (with NULL thread argument)");
 
     struct thread_p henry;
@@ -275,13 +270,187 @@ void tst__send_logout(){
     cmd = strdup("log out arg arg \n");
     strtok(cmd,delim);
     res = send__logout(&henry);
-    assert(strcmp(res,"NOK : no arguments allowed after 'log out' command\n")==0);
+    assert(strcmp(res,"NOK\n")==0);
 
     cmd = strdup("log out arg\n");
     strtok(cmd,delim);
     res = send__logout(&henry);
-    assert(strcmp(res,"NOK : no arguments allowed after 'log out' command\n")==0);
+    assert(strcmp(res,"NOK\n")==0);
     CONSOLE_LOG_TEST("\"log out some arguments\"");
+}
+
+void tst__send_ping(){
+    char * res;
+    char * cmd = strdup("ping 666    \n");
+    strtok(cmd,delim);
+    res = send__ping(NULL);
+    assert(strcmp(res,"NOK\n")==0);
+    CONSOLE_LOG_TEST("\"ping number\" (with NULL thread argument)");
+
+    struct thread_p henry;
+    henry._client = malloc(sizeof(struct client *));
+
+    cmd = strdup("ping    666      \n");
+    strtok(cmd,delim);
+    res = send__ping(henry._client);
+    assert(strcmp(res,"pong 666\n")==0);
+
+    cmd = strdup("ping    abc   \n");
+    strtok(cmd,delim);
+    res = send__ping(henry._client);
+    assert(strcmp(res,"pong abc\n")==0);
+    CONSOLE_LOG_TEST("\"ping something(number or string)\"");
+
+    cmd = strdup("ping   666   suparg   \n");
+    strtok(cmd,delim);
+    res = send__ping(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+    CONSOLE_LOG_TEST("\"ping number more arguments\"");
+}
+
+void tst__send_add_fish(){
+
+    aquarium = malloc(sizeof(struct aquarium));
+    aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
+    aq__add_view(aquarium, (struct position) {250, 250}, (struct dimension) {500, 500}, "Cookie");
+
+    struct thread_p henry;
+    henry._client = malloc(sizeof(struct client *));
+
+    char * res;
+    char * cmd = strdup("hello\n");
+    res = send__client_id(&henry);
+    free(res);
+
+    cmd = strdup("addFish PoissonRouge at 90x40,10x4, RandomWayPoint\n");
+    strtok(cmd,delim);
+    res = send__add_fish(NULL);
+    assert(strcmp(res,"NOK\n")==0);
+    CONSOLE_LOG_TEST("\"addFish\" (with NULL thread argument)");
+
+    cmd = strdup("addFish PoissonRouge        at         90x40      ,      10x4     ,      RandomWayPoint   qqch    \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client); printf("%s",res);
+    assert(strcmp(res,"NOK\n")==0);
+    CONSOLE_LOG_TEST("\"addFish\" with extra arguments");
+}
+
+void tst__send_delete_fish(){
+    char * res;
+
+    aquarium = malloc(sizeof(struct aquarium));
+    aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
+    aq__add_view(aquarium, (struct position) {0, 0}, (struct dimension) {500, 500}, "N1");
+    aq__add_view(aquarium, (struct position) {0, 500}, (struct dimension) {500, 500}, "N2");
+    aq__add_view(aquarium, (struct position) {500, 0}, (struct dimension) {500, 500}, "N3");
+    aq__add_view(aquarium, (struct position) {500, 500}, (struct dimension) {500, 500}, "N4");
+
+    struct thread_p henry;
+    henry._client = malloc(sizeof(struct client *));
+
+    char * cmd = strdup("hello in as N1\n");
+    strtok(cmd,delim);
+    res= send__client_id(&henry);
+    assert(strcmp(res,"greeting N1\n")==0);
+    free(res);
+
+    /* Adding some fishes */
+    struct fish *poulpi = fish__create(OCTOPUS,10,10,"Poulpi",HORIZONTAL,(struct dimension) {10,10}, 5.0);
+    struct fish *superpoulpi = fish__create(OCTOPUS,100,80,"Super-poulpi",VERTICAL,(struct dimension) {10,10}, 10.0);
+    struct fish *reddy = fish__create(REDFISH,800,900,"Reddy",RANDOM,(struct dimension) {10,10}, 1.0);
+    aq__add_fish_to_aqv(aquarium,"N1",poulpi);
+    aq__add_fish_to_aqv(aquarium,"N1",superpoulpi);
+    aq__add_fish_to_aqv(aquarium,"N4",reddy);
+
+    cmd=strdup("delFish   Poulpi  \n");
+    strtok(cmd,delim);
+    res= send__delete_fish();
+    assert(strcmp(res,"OK\n")==0);
+    free(res);
+    CONSOLE_LOG_TEST("\"delFish existing_fish\"");
+
+    /* Missing argument */
+    cmd=strdup("delFish   \n");
+    strtok(cmd,delim);
+    res= send__delete_fish();
+    assert(strcmp(res,"NOK\n")==0);
+    free(res);
+    CONSOLE_LOG_TEST("\"delFish\" without argument");
+
+    /* Too many arguments */
+    cmd=strdup("delFish   Mandarine     suparg\n");
+    strtok(cmd,delim);
+    res= send__delete_fish();
+    assert(strcmp(res,"NOK\n")==0);
+    free(res);
+    CONSOLE_LOG_TEST("\"delFish\" without too many arguments");
+
+    /* With an not existing fish */
+    cmd=strdup("delFish   not_existing_fish  \n");
+    strtok(cmd,delim);
+    res= send__delete_fish();
+    assert(strcmp(res,"NOK\n")==0);
+    free(res);
+    CONSOLE_LOG_TEST("\"delFish not_existing_fish\"");
+}
+
+void tst__send_start_fish(){
+    char * res;
+
+    aquarium = malloc(sizeof(struct aquarium));
+    aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
+    aq__add_view(aquarium, (struct position) {0, 0}, (struct dimension) {500, 500}, "N1");
+    aq__add_view(aquarium, (struct position) {0, 500}, (struct dimension) {500, 500}, "N2");
+    aq__add_view(aquarium, (struct position) {500, 0}, (struct dimension) {500, 500}, "N3");
+    aq__add_view(aquarium, (struct position) {500, 500}, (struct dimension) {500, 500}, "N4");
+
+    struct thread_p henry;
+    henry._client = malloc(sizeof(struct client *));
+
+    char * cmd = strdup("hello in as N1\n");
+    strtok(cmd,delim);
+    res= send__client_id(&henry);
+    assert(strcmp(res,"greeting N1\n")==0);
+    free(res);
+
+    /* Adding some fishes */
+    struct fish *poulpi = fish__create(OCTOPUS,10,10,"Poulpi",HORIZONTAL,(struct dimension) {10,10}, 5.0);
+    struct fish *superpoulpi = fish__create(OCTOPUS,100,80,"Super-poulpi",VERTICAL,(struct dimension) {10,10}, 10.0);
+    struct fish *reddy = fish__create(REDFISH,800,900,"Reddy",RANDOM,(struct dimension) {10,10}, 1.0);
+    aq__add_fish_to_aqv(aquarium,"N1",poulpi);
+    aq__add_fish_to_aqv(aquarium,"N1",superpoulpi);
+    aq__add_fish_to_aqv(aquarium,"N4",reddy);
+
+    cmd=strdup("startFish   Poulpi  \n");
+    strtok(cmd,delim);
+    res= send__start_fish();
+    assert(strcmp(res,"OK\n")==0);
+    free(res);
+    CONSOLE_LOG_TEST("\"startFish existing_fish\"");
+
+    /* Missing argument */
+    cmd=strdup("startFish   \n");
+    strtok(cmd,delim);
+    res= send__start_fish();
+    assert(strcmp(res,"NOK\n")==0);
+    free(res);
+    CONSOLE_LOG_TEST("\"startFish\" without argument");
+
+    /* Too many arguments */
+    cmd=strdup("delFish   Mandarine     suparg\n");
+    strtok(cmd,delim);
+    res= send__start_fish();
+    assert(strcmp(res,"NOK\n")==0);
+    free(res);
+    CONSOLE_LOG_TEST("\"startFish\" without too many arguments");
+
+    /* With an not existing fish */
+    cmd=strdup("startFish   not_existing_fish  \n");
+    strtok(cmd,delim);
+    res= send__start_fish();
+    assert(strcmp(res,"NOK\n")==0);
+    free(res);
+    CONSOLE_LOG_TEST("\"startFish not_existing_fish\"");
 }
 
 int main()
@@ -293,6 +462,10 @@ int main()
   tst__send_client_id();
   tst__send_fishes();
   tst__send_logout();
+  tst__send_ping();
+  tst__send_add_fish();
+  tst__send_delete_fish(); // beug
+  tst__send_start_fish(); // beug
 
   return 0;
 }
