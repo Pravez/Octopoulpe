@@ -72,6 +72,7 @@ public class Fish {
 
     public void setStarted(boolean s) {
         started=s;
+        System.out.println("SET STARTED DONE");
     }
     public String toString(int width, int height) {
         return (name + " at " + x + "x" + y+ ", " + (view1.getFitWidth()*100/width) + "x" + (view1.getFitHeight()*100/height) + (started ? " started": " not started"));
