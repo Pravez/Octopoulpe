@@ -53,6 +53,10 @@ public class Fish {
         if (! exist)
             pictureFile = new String("PoissonNain"); //Default image
 
+        if (pictureFile.charAt(pictureFile.length()-1) == '2') {
+            pictureFile = pictureFile.substring(0, pictureFile.length() - 1);
+        }
+
         final URL url1 = getClass().getResource( "Images/" + pictureFile + ".png");
         final URL url2 = getClass().getResource("Images/" + pictureFile + "2.png");
         final Image img1 = new Image(url1.toExternalForm());
