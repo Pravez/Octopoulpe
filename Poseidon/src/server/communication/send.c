@@ -163,9 +163,10 @@ char *send__ping(struct client *client) {
 
 char *send__start_fish() {
     char *result;
-
-    char *id = strtok(NULL, delim);
-    if (id != NULL && strtok(NULL, delim) == NULL) {
+    char *tmp_id= strtok(NULL, end_delim);
+    char * id = strtok(tmp_id,delim);
+    char *suparg = strtok(NULL, delim);
+    if (id != NULL && strtok(NULL, delim) == NULL && suparg == NULL) {
         asw__start_fish(id, &result);
     } else {
         asprintf(&result, "NOK\n");

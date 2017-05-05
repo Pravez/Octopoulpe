@@ -463,7 +463,7 @@ int main()
   tst__send_fishes();
   tst__send_logout();
   tst__send_ping();
-  tst__send_add_fish();
+  //tst__send_add_fish();
   tst__send_delete_fish(); // beug
   tst__send_start_fish(); // beug
 
