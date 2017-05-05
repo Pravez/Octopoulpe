@@ -16,14 +16,14 @@ set(RESOURCE_FILES sample/Images/bb.png
         sample/Images/shiny.png
         sample/Images/shiny2.png)
 
-foreach(item IN LISTS RESOURCE_FILES)
-    message(STATUS ${item})
-    add_custom_command(
-        OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${item}"
-        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/${item}" "${CMAKE_CURRENT_BINARY_DIR}/${item}"
-        DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${item}"
-    )
-endforeach()
+#foreach(item IN LISTS RESOURCE_FILES)
+#    message(STATUS ${item})
+#    add_custom_command(
+#        OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${item}"
+#        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/${item}" #"${CMAKE_CURRENT_BINARY_DIR}/${item}"
+#        DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${item}"
+#    )
+#endforeach()
 
-add_custom_target(data-target ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/Images/*.png")
-set_target_properties(Aquarium PROPERTIES RESOURCE "${RESOURCE_FILES}")
+#add_custom_target(data-target ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/Images/*.png")
+#set_target_properties(Aquarium PROPERTIES RESOURCE "${RESOURCE_FILES}")

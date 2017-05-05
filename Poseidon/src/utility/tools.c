@@ -124,17 +124,6 @@ int in_bounds(struct position starting_point, struct dimension dim, struct posit
             && (pos.y >= starting_point.y && pos.y <= starting_point.y + dim.height);
 }
 
-int in_outer_bounds(struct outer_bounds bounds, struct position pos){
-    int in = FALSE;
-    for(int i = 0; i < bounds._bounds_number && !in;i++){
-        if(in_bounds(bounds.bounds[i]._starting_position, bounds.bounds[i]._dimensions, pos)){
-            in = TRUE;
-        }
-    }
-
-    return in;
-}
-
 int msleep(unsigned long milisec) {
     struct timespec req={0};
     time_t sec=(int)(milisec/1000);
