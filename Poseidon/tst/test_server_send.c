@@ -54,7 +54,7 @@ void tst__send_client_id()
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting Donald\n")==0);
-    free(res);
+    free(res); free(cmd);
 
     /* hello \n */
     cmd = strdup("hello    \n");
@@ -62,7 +62,7 @@ void tst__send_client_id()
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting Cookie\n")==0);
     CONSOLE_LOG_TEST("\"hello\" with free identifiers");
-    free(res);
+    free(res); free(cmd);
 
     /* hello in as available_id\n */
     aq__add_view(aquarium, (struct position) {2, 5}, (struct dimension) {900, 900}, "Mandarine99");
@@ -70,7 +70,7 @@ void tst__send_client_id()
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting Mandarine99\n")==0);
-    free(res);
+    free(res); free(cmd);
 
     /* hello in as available_id \n */
     aq__add_view(aquarium, (struct position) {10, 20}, (struct dimension) {900, 900}, "Post-it");
@@ -79,7 +79,7 @@ void tst__send_client_id()
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting Post-it\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"hello in as available_id\"");
 
     /* hello in as already_taken_id\n */
@@ -87,7 +87,7 @@ void tst__send_client_id()
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting Nemo\n")==0);
-    free(res);
+    free(res); free(cmd);
 
     /* hello in as already_taken_id \n */
 
@@ -96,7 +96,7 @@ void tst__send_client_id()
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting Bilboquet\n")==0);
-    free(res);
+    free(res); free(cmd);
 
     CONSOLE_LOG_TEST("\"hello in as already_taken_id\" with free identifiers");
 
@@ -107,7 +107,7 @@ void tst__send_client_id()
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting Atos\n")==0);
-    free(res);
+    free(res); free(cmd);
 
 
     /* hello in as nawak_id \n */
@@ -115,7 +115,9 @@ void tst__send_client_id()
     aq__add_view(aquarium, (struct position) {40, 50}, (struct dimension) {900, 900}, "Blanco");
     cmd = strdup("hello in as Nawak412            \n");
     strtok(cmd,delim);
-    assert(strcmp(send__client_id(&henry),"greeting Blanco\n")==0);
+    res = send__client_id(&henry);
+    assert(strcmp(res,"greeting Blanco\n")==0);
+    free(res); free(cmd);
 
     CONSOLE_LOG_TEST("\"hello in as not_existing_id\" with free identifiers");
 
@@ -124,25 +126,25 @@ void tst__send_client_id()
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"no greeting\n")==0);
-    free(res);
+    free(res); free(cmd);
 
     cmd = strdup("hello in as Nawak412            \n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"no greeting\n")==0);
-    free(res);
+    free(res); free(cmd);
 
     cmd = strdup("hello\n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"no greeting\n")==0);
-    free(res);
+    free(res); free(cmd);
 
     cmd = strdup("hello \n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"no greeting\n")==0);
-    free(res);
+    free(res); free(cmd);
 
     CONSOLE_LOG_TEST("\"hello...\" without free identifiers");
 
@@ -152,14 +154,14 @@ void tst__send_client_id()
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"no greeting\n")==0);
-    free(res);
+    free(res); free(cmd);
 
     /* hello in \n */
     cmd = strdup("hello in   \n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"no greeting\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"hello in\"");
 
     /* hello in as\n */
@@ -167,14 +169,14 @@ void tst__send_client_id()
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"no greeting\n")==0);
-    free(res);
+    free(res); free(cmd);
 
     /* hello in as \n */
     cmd = strdup("hello in as   \n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"no greeting\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"hello in as\"");
 
     /* hello not_in not_as login \n */
@@ -182,16 +184,20 @@ void tst__send_client_id()
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"no greeting\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"hello word word id\" (not valid keywords)");
 
     /* without \n at the end */
     // Done in client.c while parsing the command
+
+    /* Free */
+    aq__remove_aquarium(aquarium);
+    free(aquarium);
 }
 
 void tst__send_fishes()
 {
-    char * res;
+    char * res = NULL;
 
     aquarium = malloc(sizeof(struct aquarium));
     aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
@@ -201,7 +207,7 @@ void tst__send_fishes()
     aq__add_view(aquarium, (struct position) {500, 500}, (struct dimension) {500, 500}, "N4");
 
     struct thread_p henry;
-    henry._client = malloc(sizeof(struct client *));
+    henry._client = malloc(sizeof(struct client *));printf("#### res : %s",res);
 
     char * cmd = strdup("hello in as N1\n");
     strtok(cmd,delim);
@@ -575,12 +581,12 @@ int main()
 
   // Intern communication
   tst__send_client_id();
-  tst__send_fishes();
-  tst__send_logout();
-  tst__send_ping();
-  tst__send_add_fish();
-  tst__send_delete_fish();
-  tst__send_start_fish();
+  //tst__send_fishes();
+  //tst__send_logout();
+  //tst__send_ping();
+  //tst__send_add_fish();
+  //tst__send_delete_fish();
+  //tst__send_start_fish();
 
   return 0;
 }

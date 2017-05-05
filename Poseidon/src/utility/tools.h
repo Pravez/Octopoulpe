@@ -22,6 +22,8 @@
 #define GREENBOLD "\e[32;1m"
 #define RESET "\e[0m"
 
+ #define MAX_ITER 7
+
 boolean verbosity;
 boolean test_verbosity;
 boolean readline_started;

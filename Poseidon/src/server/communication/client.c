@@ -144,6 +144,7 @@ void client__destroy(struct thread_entry *client_thread) {
     client_thread->_thread._client = NULL;
     close(client_thread->_thread._socket_fd);
     pthread_mutex_destroy(&client_thread->_thread._time_mutex);
+    free(client_thread->_thread._client_name);
     free(client_thread);
 
     CONSOLE_LOG_INFO("Disconnected client from IP %s", inet_ntoa(client_thread->_thread._client_socket.sin_addr))
