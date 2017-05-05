@@ -335,7 +335,7 @@ void tst__send_ping(){
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting N1\n")==0);
-    free(res); free(cmd); free_client(&henry);
+    free(res); free(cmd);
 
     cmd = strdup("ping    666      \n");
     strtok(cmd,delim);
@@ -350,14 +350,15 @@ void tst__send_ping(){
     free(cmd); free(res);
     CONSOLE_LOG_TEST("\"ping something(number or string)\"");
 
-    cmd = strdup("ping   666   suparg   \n");
+    cmd = strdup("ping  666   suparg  \n");
     strtok(cmd,delim);
     res = send__ping(henry._client);
     assert(strcmp(res,"NOK\n")==0);
-    free(cmd); free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"ping number more arguments\"");
 
     /* Free */
+    free_client(&henry);
     aq__remove_aquarium_view(aquarium,n1);
     aq__remove_aquarium(aquarium);
     free(aquarium);
@@ -372,7 +373,9 @@ void tst__send_add_fish(){
     struct thread_p henry;
 
     char * res;
-    char * cmd = strdup("hello\n");
+    char * cmd;
+
+    cmd = strdup("hello in as Cookie\n");
     res = send__client_id(&henry);
     free(res); free(cmd);
 
@@ -674,7 +677,6 @@ void tst__send_start_fish(){
     aq__remove_aquarium_view(aquarium,n4);
     aq__remove_aquarium(aquarium);
     free(aquarium);
-
 }
 
 int main()
@@ -683,12 +685,12 @@ int main()
   _set_test_verbosity(TRUE);
 
   // Intern communication
-  //tst__send_client_id();
-  //tst__send_fishes();
-  //tst__send_logout();
-  //tst__send_ping();
-  //tst__send_add_fish();
-  tst__send_delete_fish();
+  tst__send_add_fish();
+  tst__send_client_id();
+  tst__send_fishes();
+  tst__send_logout();
+  tst__send_ping();
+  //tst__send_delete_fish();
   //tst__send_start_fish();
 
   return 0;
