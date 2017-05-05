@@ -1,4 +1,9 @@
-add_executable(test_server_send test_server_send.c)
-target_link_libraries(test_server_send SERVER_LIB)
-target_link_libraries(test_server_send ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries(test_server_send readline)
+add_executable(Test_intern_protocol test_intern_protocol.c)
+target_link_libraries(Test_intern_protocol SERVER_LIB)
+target_link_libraries(Test_intern_protocol ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(Test_intern_protocol readline)
+
+add_executable(Test_parser test_parser.c)
+target_link_libraries(Test_parser SERVER_LIB)
+target_link_libraries(Test_parser ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(Test_parser readline)
