@@ -690,8 +690,8 @@ int main()
   tst__send_fishes();
   tst__send_logout();
   tst__send_ping();
-  //tst__send_delete_fish();
-  //tst__send_start_fish();
+  tst__send_delete_fish();
+  tst__send_start_fish();
 
   return 0;
 }
