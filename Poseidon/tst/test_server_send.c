@@ -15,13 +15,6 @@
 
 static const char *delim = " ";
 
-// TESTS TO DO
-/*
-void send__signal_callback_handler(int signum);
-void* send__regular_sender(void* arg);
-void send__fishes_continuously(struct thread_p* thread);
-*/
-
 extern struct _tvector* config_vector;
 
 struct aquarium* aquarium;
@@ -35,6 +28,11 @@ pthread_t thread_world;
 int WORLD_READY;
 int SERVER_READY;
 
+/* Auxiliar function to free the client */
+void free_client(struct thread_p *cli){
+    free(cli->_client_name);
+}
+
 void tst__send_client_id()
 {
     char * res;
@@ -43,10 +41,10 @@ void tst__send_client_id()
     aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
     aq__add_view(aquarium, (struct position) {250, 250}, (struct dimension) {500, 500}, "Cookie");
 
-    aq__add_view(aquarium, (struct position) {100, 100}, (struct dimension) {900, 900}, "Donald");
+    char * donald = aq__add_view(aquarium, (struct position) {100, 100}, (struct dimension) {900, 900}, "Donald");
 
     struct thread_p henry;
-    henry._client = malloc(sizeof(struct client *));
+    //henry._client = malloc(sizeof(struct client *));
 
     /* Valid syntaxes with free identifiers */
     /* hello\n */
@@ -54,7 +52,7 @@ void tst__send_client_id()
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting Donald\n")==0);
-    free(res); free(cmd);
+    free(res); free(cmd); free_client(&henry);
 
     /* hello \n */
     cmd = strdup("hello    \n");
@@ -62,24 +60,24 @@ void tst__send_client_id()
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting Cookie\n")==0);
     CONSOLE_LOG_TEST("\"hello\" with free identifiers");
-    free(res); free(cmd);
+    free(res); free(cmd); free_client(&henry);
 
     /* hello in as available_id\n */
-    aq__add_view(aquarium, (struct position) {2, 5}, (struct dimension) {900, 900}, "Mandarine99");
+    char *mandarine = aq__add_view(aquarium, (struct position) {2, 5}, (struct dimension) {900, 900}, "Mandarine99");
     cmd = strdup("hello in as Mandarine99\n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting Mandarine99\n")==0);
-    free(res); free(cmd);
+    free(res); free(cmd); free_client(&henry);
 
     /* hello in as available_id \n */
-    aq__add_view(aquarium, (struct position) {10, 20}, (struct dimension) {900, 900}, "Post-it");
-    aq__add_view(aquarium, (struct position) {20, 30}, (struct dimension) {900, 900}, "Nemo");
+    char *postit = aq__add_view(aquarium, (struct position) {10, 20}, (struct dimension) {900, 900}, "Post-it");
+    char *nemo = aq__add_view(aquarium, (struct position) {20, 30}, (struct dimension) {900, 900}, "Nemo");
     cmd = strdup("hello in as Post-it  \n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting Post-it\n")==0);
-    free(res); free(cmd);
+    free(res); free(cmd); free_client(&henry);
     CONSOLE_LOG_TEST("\"hello in as available_id\"");
 
     /* hello in as already_taken_id\n */
@@ -87,37 +85,37 @@ void tst__send_client_id()
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting Nemo\n")==0);
-    free(res); free(cmd);
+    free(res); free(cmd); free_client(&henry);
 
     /* hello in as already_taken_id \n */
 
-    aq__add_view(aquarium, (struct position) {30, 40}, (struct dimension) {900, 900}, "Bilboquet");
+    char *bilboquet = aq__add_view(aquarium, (struct position) {30, 40}, (struct dimension) {900, 900}, "Bilboquet");
     cmd = strdup("hello in as Mandarine \n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting Bilboquet\n")==0);
-    free(res); free(cmd);
+    free(res); free(cmd); free_client(&henry);
 
     CONSOLE_LOG_TEST("\"hello in as already_taken_id\" with free identifiers");
 
     /* hello in as nawak_id\n */
 
-    aq__add_view(aquarium, (struct position) {40, 50}, (struct dimension) {900, 900}, "Atos");
+    char *atos = aq__add_view(aquarium, (struct position) {40, 50}, (struct dimension) {900, 900}, "Atos");
     cmd = strdup("hello in as Nawak118\n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting Atos\n")==0);
-    free(res); free(cmd);
+    free(res); free(cmd); free_client(&henry);
 
 
     /* hello in as nawak_id \n */
 
-    aq__add_view(aquarium, (struct position) {40, 50}, (struct dimension) {900, 900}, "Blanco");
+    char *blanco = aq__add_view(aquarium, (struct position) {40, 50}, (struct dimension) {900, 900}, "Blanco");
     cmd = strdup("hello in as Nawak412            \n");
     strtok(cmd,delim);
     res = send__client_id(&henry);
     assert(strcmp(res,"greeting Blanco\n")==0);
-    free(res); free(cmd);
+    free(res); free(cmd); free_client(&henry);
 
     CONSOLE_LOG_TEST("\"hello in as not_existing_id\" with free identifiers");
 
@@ -176,7 +174,7 @@ void tst__send_client_id()
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"no greeting\n")==0);
-    free(res); free(cmd);
+    free(res); free(cmd); free_client(&henry);
     CONSOLE_LOG_TEST("\"hello in as\"");
 
     /* hello not_in not_as login \n */
@@ -191,6 +189,13 @@ void tst__send_client_id()
     // Done in client.c while parsing the command
 
     /* Free */
+    aq__remove_aquarium_view(aquarium,donald);
+    aq__remove_aquarium_view(aquarium,blanco);
+    aq__remove_aquarium_view(aquarium,postit);
+    aq__remove_aquarium_view(aquarium,bilboquet);
+    aq__remove_aquarium_view(aquarium,mandarine);
+    aq__remove_aquarium_view(aquarium,atos);
+    aq__remove_aquarium_view(aquarium,nemo);
     aq__remove_aquarium(aquarium);
     free(aquarium);
 }
@@ -207,19 +212,19 @@ void tst__send_fishes()
     aq__add_view(aquarium, (struct position) {500, 500}, (struct dimension) {500, 500}, "N4");
 
     struct thread_p henry;
-    henry._client = malloc(sizeof(struct client *));printf("#### res : %s",res);
+    henry._client = malloc(sizeof(struct client *));
 
     char * cmd = strdup("hello in as N1\n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting N1\n")==0);
-    free(res);
+    free(res); free(cmd);
 
     cmd=strdup("getFishes\n");
     strtok(cmd,delim);
     res= send__fishes(henry._client);
     assert(strcmp(res,"list\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"getFishes\" without fishes");
 
     /* Adding some fishes */
@@ -234,7 +239,7 @@ void tst__send_fishes()
     strtok(cmd,delim);
     res= send__fishes(henry._client);
     assert(strcmp(res,"list [Poulpi at 2x2,10x10,0] [Super-poulpi at 20x16,10x10,0]\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"getFishes\" with fishes in the view and others elsewhere");
 
     /* Deleting one fish */
@@ -243,7 +248,7 @@ void tst__send_fishes()
     strtok(cmd,delim);
     res= send__fishes(henry._client);
     assert(strcmp(res,"list [Super-poulpi at 20x16,10x10,0]\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"getFishes\" after deleting some fishes");
 
     /* Invalid syntax : putting arguments */
@@ -251,7 +256,7 @@ void tst__send_fishes()
     strtok(cmd,delim);
     res= send__fishes(henry._client);
     assert(strcmp(res,"NOK\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"getFishes some arguments\" (invalid syntax)");
 }
 
@@ -326,7 +331,7 @@ void tst__send_add_fish(){
     char * res;
     char * cmd = strdup("hello\n");
     res = send__client_id(&henry);
-    free(res);
+    free(res); free(cmd);
 
     cmd = strdup("addFish PoissonRouge at 90x40,10x4, RandomWayPoint\n");
     strtok(cmd,delim);
@@ -473,7 +478,7 @@ void tst__send_delete_fish(){
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting N1\n")==0);
-    free(res);
+    free(res); free(cmd);
 
     /* Adding some fishes */
     struct fish *poulpi = fish__create(OCTOPUS,10,10,"Poulpi",HORIZONTAL,(struct dimension) {10,10}, 5.0);
@@ -487,7 +492,7 @@ void tst__send_delete_fish(){
     strtok(cmd,delim);
     res= send__delete_fish();
     assert(strcmp(res,"OK\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"delFish existing_fish\"");
 
     /* Missing argument */
@@ -495,7 +500,7 @@ void tst__send_delete_fish(){
     strtok(cmd,delim);
     res= send__delete_fish();
     assert(strcmp(res,"NOK\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"delFish\" without argument");
 
     /* Too many arguments */
@@ -503,7 +508,7 @@ void tst__send_delete_fish(){
     strtok(cmd,delim);
     res= send__delete_fish();
     assert(strcmp(res,"NOK\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"delFish\" without too many arguments");
 
     /* With an not existing fish */
@@ -511,7 +516,7 @@ void tst__send_delete_fish(){
     strtok(cmd,delim);
     res= send__delete_fish();
     assert(strcmp(res,"NOK\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"delFish not_existing_fish\"");
 }
 
@@ -532,7 +537,7 @@ void tst__send_start_fish(){
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting N1\n")==0);
-    free(res);
+    free(res); free(cmd);
 
     /* Adding some fishes */
     struct fish *poulpi = fish__create(OCTOPUS,10,10,"Poulpi",HORIZONTAL,(struct dimension) {10,10}, 5.0);
@@ -546,7 +551,7 @@ void tst__send_start_fish(){
     strtok(cmd,delim);
     res= send__start_fish();
     assert(strcmp(res,"OK\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"startFish existing_fish\"");
 
     /* Missing argument */
@@ -554,7 +559,7 @@ void tst__send_start_fish(){
     strtok(cmd,delim);
     res= send__start_fish();
     assert(strcmp(res,"NOK\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"startFish\" without argument");
 
     /* Too many arguments */
@@ -562,7 +567,7 @@ void tst__send_start_fish(){
     strtok(cmd,delim);
     res= send__start_fish();
     assert(strcmp(res,"NOK\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"startFish\" without too many arguments");
 
     /* With an not existing fish */
@@ -570,7 +575,7 @@ void tst__send_start_fish(){
     strtok(cmd,delim);
     res= send__start_fish();
     assert(strcmp(res,"NOK\n")==0);
-    free(res);
+    free(res); free(cmd);
     CONSOLE_LOG_TEST("\"startFish not_existing_fish\"");
 }
 
