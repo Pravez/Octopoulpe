@@ -323,27 +323,44 @@ void tst__send_ping(){
     strtok(cmd,delim);
     res = send__ping(NULL);
     assert(strcmp(res,"NOK\n")==0);
+    free(cmd); free(res);
     CONSOLE_LOG_TEST("\"ping number\" (with NULL thread argument)");
 
     struct thread_p henry;
-    henry._client = malloc(sizeof(struct client *));
+
+    aquarium = malloc(sizeof(struct aquarium));
+    aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
+    char *n1 = aq__add_view(aquarium, (struct position) {0, 0}, (struct dimension) {500, 500}, "N1");
+    cmd = strdup("hello in as N1\n");
+    strtok(cmd,delim);
+    res= send__client_id(&henry);
+    assert(strcmp(res,"greeting N1\n")==0);
+    free(res); free(cmd); free_client(&henry);
 
     cmd = strdup("ping    666      \n");
     strtok(cmd,delim);
     res = send__ping(henry._client);
     assert(strcmp(res,"pong 666\n")==0);
+    free(cmd); free(res);
 
     cmd = strdup("ping    abc   \n");
     strtok(cmd,delim);
     res = send__ping(henry._client);
     assert(strcmp(res,"pong abc\n")==0);
+    free(cmd); free(res);
     CONSOLE_LOG_TEST("\"ping something(number or string)\"");
 
     cmd = strdup("ping   666   suparg   \n");
     strtok(cmd,delim);
     res = send__ping(henry._client);
     assert(strcmp(res,"NOK\n")==0);
+    free(cmd); free(res);
     CONSOLE_LOG_TEST("\"ping number more arguments\"");
+
+    /* Free */
+    aq__remove_aquarium_view(aquarium,n1);
+    aq__remove_aquarium(aquarium);
+    free(aquarium);
 }
 
 void tst__send_add_fish(){
@@ -614,8 +631,8 @@ int main()
   // Intern communication
   //tst__send_client_id();
   //tst__send_fishes();
-  tst__send_logout();
-  //tst__send_ping();
+  //tst__send_logout();
+  tst__send_ping();
   //tst__send_add_fish();
   //tst__send_delete_fish();
   //tst__send_start_fish();
