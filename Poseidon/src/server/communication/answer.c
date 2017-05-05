@@ -68,6 +68,7 @@ int asw__hello(char *arg, char **res, struct thread_p *thread) {
         }
         else {
             asprintf(res, "no greeting\n");
+            free(cpy);
             return HELLO_INVALID;
         }
 

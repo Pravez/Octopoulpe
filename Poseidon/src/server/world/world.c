@@ -36,22 +36,22 @@ int world_init() {
 struct position determine_new_position(struct position previous, struct fish *fish) {
     struct position newpos;
     struct movement movement;
-
+    int iteration_nb = RAND_IN_RANGE(1, MAX_ITER);
     switch (fish->_strategy) {
         case HORIZONTAL:
             movement = (struct movement){1, 0};
-            newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate) * update_rate,
-                                     (movement.y * fish->_speed_rate) * update_rate);
+            newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate) * update_rate * MAX_ITER,
+                                     (movement.y * fish->_speed_rate) * update_rate / MAX_ITER);
             return newpos;
         case VERTICAL:
             movement = (struct movement){0, 1};
-            newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate*2) * update_rate,
-                                     (movement.y * fish->_speed_rate) * update_rate);
+            newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate*2) * update_rate * MAX_ITER,
+                                     (movement.y * fish->_speed_rate) * update_rate * MAX_ITER);
             return newpos;
         case RANDOM:
             movement = (struct movement){RAND_IN_RANGE(2, -1), RAND_IN_RANGE(2, -1)};
-            newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate*2) * update_rate,
-                                     (movement.y * fish->_speed_rate) * update_rate);
+            newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate*2) * update_rate * MAX_ITER,
+                                     (movement.y * fish->_speed_rate) * update_rate * MAX_ITER);
             return newpos;
         case UNREGISTERED:break;
     }
@@ -159,5 +159,3 @@ int world_loop() {
 
     return 1;
 }
-
-
