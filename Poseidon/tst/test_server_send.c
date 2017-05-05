@@ -330,9 +330,124 @@ void tst__send_add_fish(){
 
     cmd = strdup("addFish PoissonRouge        at         90x40      ,      10x4     ,      RandomWayPoint   qqch    \n");
     strtok(cmd,delim);
-    res = send__add_fish(henry._client); printf("%s",res);
+    res = send__add_fish(henry._client);
     assert(strcmp(res,"NOK\n")==0);
     CONSOLE_LOG_TEST("\"addFish\" with extra arguments");
+
+    cmd = strdup("addFish PoissonRouge        at         90x40      ,      10x4     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"OK\n")==0);
+    CONSOLE_LOG_TEST("\"addFish\" correct syntax");
+
+    cmd = strdup("addFish PoissonRouge        at         90x40      ,      10x4     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+    CONSOLE_LOG_TEST("\"addFish\" adding an existing fish");
+
+    /* Invalid syntaxes */
+    cmd = strdup("addFish PoissonRouge1     90x40      ,      10x4     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+
+    cmd = strdup("addFish PoissonRouge2   at      ,      10x4     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+
+    cmd = strdup("addFish PoissonRouge3   at    90x50  ,        ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+
+    cmd = strdup("addFish PoissonRouge4   at    90x50  ,    10x4    ,        \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+    CONSOLE_LOG_TEST("\"addFish\" missing arguments");
+
+    cmd = strdup("addFish PoissonRouge5     at       90x40      ,      10x4           RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+
+    cmd = strdup("addFish PoissonRouge6     at       90x40            10x4           RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+
+    cmd = strdup("addFish PoissonRouge7     at       90x40            10x4     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+    CONSOLE_LOG_TEST("\"addFish\" without comas separators");
+
+    cmd = strdup("addFish PoissonRouge8     at       9040      ,      10x4     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+
+    cmd = strdup("addFish PoissonRouge9     at       90x40      ,      104     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+
+    cmd = strdup("addFish PoissonRouge10     at       abc      ,      10x4     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+
+    cmd = strdup("addFish PoissonRouge11     at       90x50      ,      def     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+
+    cmd = strdup("addFish PoissonRouge12     at       axb      ,      10x4     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+
+    cmd = strdup("addFish PoissonRouge13     at       10x10      ,      cxd     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+    CONSOLE_LOG_TEST("\"addFish\" with incorrect format for <x>x<y> arguments (string, without the separator 'x')");
+
+    cmd = strdup("addFish PoissonRouge14     at       90x40      ,      10x4     ,      Patate   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+    CONSOLE_LOG_TEST("\"addFish\" with unavailable mobility name");
+
+    cmd = strdup("addFish PoissonRouge15     atos       abc      ,      10x4     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+    CONSOLE_LOG_TEST("\"addFish\" incorrect 'at' argument");
+
+    cmd = strdup("addFish PoissonRouge16     at       0x10      ,      10x4     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"OK\n")==0);
+
+    cmd = strdup("addFish PoissonRouge17     at       10x0      ,      10x4     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"OK\n")==0);
+    CONSOLE_LOG_TEST("\"addFish\" with '0' in <x>x<y> position");
+
+    cmd = strdup("addFish PoissonRouge18     at       10x10      ,      0x4     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+
+    cmd = strdup("addFish PoissonRouge19     at       10x10      ,      10x0     ,      RandomWayPoint   \n");
+    strtok(cmd,delim);
+    res = send__add_fish(henry._client);
+    assert(strcmp(res,"NOK\n")==0);
+    CONSOLE_LOG_TEST("\"addFish\" with '0' for fish size");
 }
 
 void tst__send_delete_fish(){
@@ -463,9 +578,9 @@ int main()
   tst__send_fishes();
   tst__send_logout();
   tst__send_ping();
-  //tst__send_add_fish();
-  tst__send_delete_fish(); // beug
-  tst__send_start_fish(); // beug
+  tst__send_add_fish();
+  tst__send_delete_fish();
+  tst__send_start_fish();
 
   return 0;
 }

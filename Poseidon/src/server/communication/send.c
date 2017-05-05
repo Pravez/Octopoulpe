@@ -95,26 +95,35 @@ char *send__add_fish(struct client *client) {
 
     char *result = NULL;
 
-    char *id = strtok(NULL, delim); printf("id : \t'%s'\n",id);
-    char *at = strtok(NULL, delim); printf("at : \t'%s'\n",at);
+    char *id = strtok(NULL, delim);
+    char *at = strtok(NULL, delim);
     char *tmp_rel_pos = strtok(NULL, coma);
     char *tmp_size = strtok(NULL, coma);
     char *tmp_strategy = strtok(NULL, end_delim);
 
-    char * rel_pos = strtok(tmp_rel_pos, delim); printf("rel_pos : \t'%s'\n",rel_pos);
-    char *size = strtok(tmp_size, delim); printf("size : \t'%s'\n",size);
-    char *strategy = strtok(tmp_strategy, delim); printf("strategy : '%s'\n",strategy);
-    char *suparg = strtok(NULL, delim); printf("suparg : \t'%s'\n",suparg);
+    char *rel_pos = strtok(tmp_rel_pos, delim);
+    char *missing_fisrt_comma = strtok(NULL,delim);
+    char *size = strtok(tmp_size, delim);
+    char *strategy = strtok(tmp_strategy, delim);
+    char *suparg = strtok(NULL, delim);
 
-    if(client == NULL || suparg != NULL || id == NULL || at == NULL || rel_pos == NULL || size == NULL || strategy == NULL){
+    if(client == NULL || suparg != NULL || id == NULL || at == NULL || rel_pos == NULL || size == NULL || strategy == NULL || missing_fisrt_comma != NULL){
         asprintf(&result,"NOK\n");
         return result;
     }
 
-    if (rel_pos[strlen(rel_pos) - 1] == ',')
-        rel_pos[strlen(rel_pos) - 1] = '\0';
-    if (size[strlen(size) - 1] == ',')
-        size[strlen(size) - 1] = '\0';
+    /* Testing the format of <x>x<y> arguments */
+    char *arg1_rel_pos = strtok(strdup(rel_pos),"x");
+    char *arg2_rel_pos = strtok(NULL," ");
+
+    char *arg1_size = strtok(strdup(size),"x");
+    char *arg2_size = strtok(NULL," ");
+
+    if(arg2_rel_pos == NULL  || arg2_size == NULL || ((atoi(arg1_rel_pos) == 0) && (strcmp(arg1_rel_pos,"0") != 0))|| ((atoi(arg2_rel_pos) == 0) && (strcmp(arg2_rel_pos,"0") != 0))|| (atoi(arg1_size) == 0)|| (atoi(arg2_size) == 0))
+    {
+        asprintf(&result,"NOK\n");
+        return result;
+    }
 
     struct relative_position pos;
     struct dimension dimensions;
