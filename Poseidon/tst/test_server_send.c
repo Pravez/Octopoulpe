@@ -585,8 +585,8 @@ int main()
   _set_test_verbosity(TRUE);
 
   // Intern communication
-  tst__send_client_id();
-  //tst__send_fishes();
+  //tst__send_client_id();
+  tst__send_fishes();
   //tst__send_logout();
   //tst__send_ping();
   //tst__send_add_fish();
