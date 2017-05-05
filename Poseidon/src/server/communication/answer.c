@@ -97,7 +97,7 @@ int asw__iterate_fishes(any_t *res, any_t fish) {
     char *temp_str = NULL;
 
     if (fishes_str != NULL) {
-        temp_str = malloc(sizeof(char) * strlen(fishes_str));
+        temp_str = malloc(sizeof(char) * (strlen(fishes_str)+1));
         strcpy(temp_str, fishes_str);
     }
 

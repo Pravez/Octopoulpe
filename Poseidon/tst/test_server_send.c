@@ -206,19 +206,18 @@ void tst__send_fishes()
 
     aquarium = malloc(sizeof(struct aquarium));
     aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
-    aq__add_view(aquarium, (struct position) {0, 0}, (struct dimension) {500, 500}, "N1");
-    aq__add_view(aquarium, (struct position) {0, 500}, (struct dimension) {500, 500}, "N2");
-    aq__add_view(aquarium, (struct position) {500, 0}, (struct dimension) {500, 500}, "N3");
-    aq__add_view(aquarium, (struct position) {500, 500}, (struct dimension) {500, 500}, "N4");
+    char *n1 = aq__add_view(aquarium, (struct position) {0, 0}, (struct dimension) {500, 500}, "N1");
+    char *n2 = aq__add_view(aquarium, (struct position) {0, 500}, (struct dimension) {500, 500}, "N2");
+    char *n3 = aq__add_view(aquarium, (struct position) {500, 0}, (struct dimension) {500, 500}, "N3");
+    char *n4 = aq__add_view(aquarium, (struct position) {500, 500}, (struct dimension) {500, 500}, "N4");
 
     struct thread_p henry;
-    henry._client = malloc(sizeof(struct client *));
 
     char * cmd = strdup("hello in as N1\n");
     strtok(cmd,delim);
     res= send__client_id(&henry);
     assert(strcmp(res,"greeting N1\n")==0);
-    free(res); free(cmd);
+    free(res); free(cmd); free_client(&henry);
 
     cmd=strdup("getFishes\n");
     strtok(cmd,delim);
@@ -258,6 +257,17 @@ void tst__send_fishes()
     assert(strcmp(res,"NOK\n")==0);
     free(res); free(cmd);
     CONSOLE_LOG_TEST("\"getFishes some arguments\" (invalid syntax)");
+
+    /* Free */
+    aq__remove_fish(aquarium,"Poulpi");
+    aq__remove_fish(aquarium,"Super-poulpi");
+    aq__remove_fish(aquarium,"Reddy");
+    aq__remove_aquarium_view(aquarium,n1);
+    aq__remove_aquarium_view(aquarium,n2);
+    aq__remove_aquarium_view(aquarium,n3);
+    aq__remove_aquarium_view(aquarium,n4);
+    aq__remove_aquarium(aquarium);
+    free(aquarium);
 }
 
 void tst__send_logout(){
