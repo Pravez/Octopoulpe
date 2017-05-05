@@ -8,11 +8,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -26,12 +28,10 @@ import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
 public class Console extends Stage {
 
+    //Window Structure
     public Aquarium aquarium;
-
     private ToolBar toolbar;
     private String id;
-
-    protected Parser parser;
 
     //Display
     Pane entry;
@@ -39,26 +39,26 @@ public class Console extends Stage {
     protected TextArea display;
     private TextField input;
     private ComboBox comboBox;
-
-
-    protected List<String> history;
-    protected int historyCount = 0;
-
     private int width;
     private int height;
 
-    Thread continuously;
+    //History
+    protected List<String> history;
+    protected int historyCount = 0;
 
-    //ArrayList<Fish> toHandle;
+    //Others
+    Thread continuously;
+    protected Parser parser;
 
     public Console(Aquarium a, int w, int h) {
         aquarium = a;
         width = w;
         height = h;
+        this.setX(Screen.getPrimary().getVisualBounds().getWidth()-width-100);
+        this.setY(100);
 
         initDisplay();
 
-        //toHandle = new ArrayList<Fish>();
         parser = new Parser(this, display);
     }
 
@@ -68,6 +68,13 @@ public class Console extends Stage {
 
         display = new TextArea();
         display.setEditable(false);
+        display.setOnInputMethodTextChanged(new EventHandler<InputMethodEvent>() {
+
+            public void handle(InputMethodEvent e) {
+                System.out.println("DEBUG : INPUT ENTRE : " + display.getText());
+            }
+        });
+
         history = new ArrayList<>();
 
         initTab();
@@ -81,6 +88,10 @@ public class Console extends Stage {
         entry.getChildren().add(vb);
 
         this.setScene(new Scene(entry, width, height));
+    }
+
+    public void writeDisplay(String s) {
+        display.appendText("< " + s + System.lineSeparator());
     }
 
     public boolean threadIsOver() {

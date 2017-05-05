@@ -74,7 +74,8 @@ public class Aquarium extends Application {
         primaryStage.setMaxHeight(height);
         primaryStage.setMaxWidth(width);
         primaryStage.setScene(new Scene(aquarium, width, height));
-
+        primaryStage.setX(100);
+        primaryStage.setY(100);
         Platform.setImplicitExit(false);
         primaryStage.setOnCloseRequest(event -> {
             console.parser.communicator.handler.stop();

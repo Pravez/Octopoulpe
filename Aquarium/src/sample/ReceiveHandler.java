@@ -75,7 +75,7 @@ public class ReceiveHandler implements Runnable {
                         console.setId(args[1]);
                         break;
                     case "NOK":
-                        console.display.appendText(message + System.lineSeparator());
+                        console.writeDisplay(message);
                         break;
                     case "OK":
                         handleOK();
@@ -85,7 +85,7 @@ public class ReceiveHandler implements Runnable {
                 }
 
                 if (args[0] != "pong") {
-                    console.display.appendText("< " + message + System.lineSeparator());
+                    console.writeDisplay(message);
                 }
                 } catch (SocketException e) {running = false;}
             } catch (IOException e) {e.printStackTrace();}

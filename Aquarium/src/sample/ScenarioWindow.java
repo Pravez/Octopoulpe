@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.SwipeEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -21,6 +22,7 @@ public class ScenarioWindow extends Stage {
 
     private Accordion accordion;
     private TextField input;
+    private int height;
 
     public ScenarioWindow(TextField tf) {
         input = tf;
@@ -30,7 +32,8 @@ public class ScenarioWindow extends Stage {
 
         final StackPane root = new StackPane();
         root.getChildren().add(accordion);
-        final Scene scene = new Scene(root, 300, 250);
+        height = accordion.getPanes().size()*40>300?accordion.getPanes().size()*40:300;
+        final Scene scene = new Scene(root, 300, height);
         this.setScene(scene);
         this.setTitle("Scenario");
     }
@@ -58,12 +61,24 @@ public class ScenarioWindow extends Stage {
     }
 
     private void createPane(String title, String steps) {
+        ScenarioWindow w = this;
         VBox vb = new VBox();
         Button b = createButton(steps);
         Label l = new Label(steps);
         vb.getChildren().addAll(l, b);
 
         TitledPane tp = new TitledPane(title, vb);
+        tp.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+            public void handle(MouseEvent e) {
+                if (tp.isExpanded()) {
+                    int nbLine = steps.split("\n").length;
+                    w.setHeight(300 + nbLine * 10);
+                }
+                else
+                    w.setHeight(height);
+            }
+        });
         accordion.getPanes().add(tp);
     }
 
