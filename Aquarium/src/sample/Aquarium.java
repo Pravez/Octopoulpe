@@ -181,7 +181,7 @@ public class Aquarium extends Application {
                         }
                     }
                 }
-                writeLogs("On configure :\n ID="+id+"\n Adresse du serveur="+address+"\n Port="+port+"\n Timeout par défaut="+pingTimeslice+" millisecondes\n Repertoire des images="+imagesURL+"\n");
+                writeLogs("On configure :\n ID="+id+"\n Adresse du serveur="+address+"\n Port="+port+"\n Timeout par defaut="+pingTimeslice+" millisecondes\n Repertoire des images="+imagesURL+"\n");
                 console.parser.communicator.config(address, port);
             } catch (IOException e) {
                 System.out.println("Exception lors de la lecture de affichage.cfg : " + e.toString());
