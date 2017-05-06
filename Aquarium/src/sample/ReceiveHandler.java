@@ -78,7 +78,6 @@ public class ReceiveHandler implements Runnable {
                         	console.setId(args[1]);
                         	break;
                     	case "NOK":
-                        	console.writeDisplay(message);
                         	break;
                     	case "OK":
                         	handleOK();
