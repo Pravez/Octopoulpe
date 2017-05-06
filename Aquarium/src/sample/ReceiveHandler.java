@@ -3,6 +3,7 @@ package sample;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class ReceiveHandler implements Runnable {
@@ -38,7 +39,7 @@ public class ReceiveHandler implements Runnable {
         String[] argsOrder = order.split (" |\\, ");
         switch (argsOrder[0]) {
             case "addFish":
-                console.aquarium.addFish(argsOrder[1], Integer.parseInt(argsOrder[3].split("x")[0]), Integer.parseInt(argsOrder[3].split("x")[1]), Integer.parseInt(argsOrder[4].split("x")[0]), Integer.parseInt(argsOrder[4].split("x")[1]));
+                console.aquarium.addFish(argsOrder[1], Integer.parseInt(argsOrder[3].split("x")[0]), Integer.parseInt(argsOrder[3].split("x")[1]), Integer.parseInt(argsOrder[4].split("x")[0]), Integer.parseInt(argsOrder[4].split("x")[1]), false);
                 break;
             case "startFish":
                 System.out.println("DEBUG : DETECT START FISH");
@@ -94,20 +95,24 @@ public class ReceiveHandler implements Runnable {
 
     public void handleGoal(String[] args) {
 
+        ArrayList<String> fishesUpdated = new ArrayList<String>();
+
         for (int i = 2; i < args.length; i = i + 7) {
             String n = args[i];
+            fishesUpdated.add(n);
             int x = Integer.parseInt(args[i + 2].split("x")[0]);
             int y = Integer.parseInt(args[i + 2].split("x")[1]);
             int time = Integer.parseInt(args[i + 4]) * 1000;
             int w = Integer.parseInt(args[i + 3].split("x")[0]);
             int h = Integer.parseInt(args[i + 3].split("x")[0]);
             if (!console.aquarium.hasFish(n))
-                console.aquarium.addFish(n, x, y, w, h);
+                console.aquarium.addFish(n, x, y, w, h, true);
             else {
                 console.aquarium.setFishSize(n, w, h);
                 console.aquarium.setGoal(n, x, y, time);
             }
         }
+        console.aquarium.removeNonUpdated(fishesUpdated);
     }
 
 

@@ -2,11 +2,15 @@ package sample;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.scene.layout.VBox;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,19 +33,27 @@ public class Main extends Application {
     public static Thread t;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) {
+        //connexion
 
-        Pane entry = new Pane();
-        System.out.println("ADDRESS : " + InetAddress.getLocalHost());
-        //connexion();
 
-        display = new TextArea();
-        display.setEditable(false);
-        entry.getChildren().add(display);
+        VBox vb = new VBox();
+        Button b = new Button("Lancer scenario");
+        Label l = new Label("Explication du second scenario\n blablablabla\nblablabla\n");
+        vb.getChildren().addAll(l, b);
 
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Fake controler");
-        primaryStage.setScene(new Scene(entry, 300, 275));
+        final TitledPane titledPane1 = new TitledPane("Scenario 1", vb);
+        final TitledPane titledPane2 = new TitledPane("Scenario 2", vb);
+        final TitledPane titledPane3 = new TitledPane("Scenario 3", new Button("Bouton 3"));
+        final TitledPane titledPane4 = new TitledPane("Scenario 4", new Button("Bouton 4"));
+        final Accordion accordion = new Accordion();
+        accordion.getPanes().setAll(titledPane1, titledPane2, titledPane3, titledPane4);
+        accordion.setExpandedPane(titledPane1);
+        final StackPane root = new StackPane();
+        root.getChildren().add(accordion);
+        final Scene scene = new Scene(root, 300, 250);
+        primaryStage.setTitle("Test de l'accordéon");
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
@@ -57,7 +69,7 @@ public class Main extends Application {
                 System.out.println("Connected at " + socket.getInetAddress());
             } catch (IOException e) {
                 connected = false;
-                System.out.println("Problème de connexion");
+                //System.out.println("Problème de connexion");
             }
         }
         System.out.println("CONNECTE !!!!!!!!!");

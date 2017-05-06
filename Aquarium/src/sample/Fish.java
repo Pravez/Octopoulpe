@@ -164,34 +164,42 @@ public class Fish {
             timeGoal -= timeElapsed;
             cpt++;
 
-            if (cpt % doEachX == 0) {
-                if (goal.x != x) {
-                    if (goal.x < x && x + toDoX < goal.x)
-                        x = goal.x;
-                    else if (goal.x > x && x + toDoX > goal.x)
-                        x = goal.x;
-                    else
-                        x += toDoX;
-                }
-            }
-
-            if (cpt % doEachY == 0) {
-
-                if (goal.y != y) {
-                    if (goal.y < y && y + toDoY < goal.y)
-                        y = goal.y;
-                    else if (goal.y > y && y + toDoY > goal.y)
-                        y = goal.y;
-                    else
-                        y += toDoY;
-                }
-            }
-
-            setPosition(x, y);
-
-            if (goal.equals(new Point(x, y))) {
+            if (timeGoal <= 0) {
+                x=goal.x;
+                y=goal.y;
                 goal.x = -1;
                 goal.y = -1;
+            }
+            else {
+                if (cpt % doEachX == 0) {
+                    if (goal.x != x) {
+                        if (goal.x < x && x + toDoX < goal.x)
+                            x = goal.x;
+                        else if (goal.x > x && x + toDoX > goal.x)
+                            x = goal.x;
+                        else
+                            x += toDoX;
+                    }
+                }
+
+                if (cpt % doEachY == 0) {
+
+                    if (goal.y != y) {
+                        if (goal.y < y && y + toDoY < goal.y)
+                            y = goal.y;
+                        else if (goal.y > y && y + toDoY > goal.y)
+                            y = goal.y;
+                        else
+                            y += toDoY;
+                    }
+                }
+
+                setPosition(x, y);
+
+                if (goal.equals(new Point(x, y))) {
+                    goal.x = -1;
+                    goal.y = -1;
+                }
             }
         }
     }

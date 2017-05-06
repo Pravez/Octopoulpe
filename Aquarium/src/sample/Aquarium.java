@@ -266,8 +266,9 @@ public class Aquarium extends Application {
         fishes.add(f);
     }
 
-    public void addFish(String name, int x, int y, int w, int h) {
+    public void addFish(String name, int x, int y, int w, int h, boolean started) {
               Fish f = new Fish(x*width/100, y*height/100, w*width/100, h*height/100, name);
+              f.setStarted(started);
               fishes.add(f);
               hasNew = true;
     }
@@ -299,6 +300,19 @@ public class Aquarium extends Application {
                 f.setGoal(x*width/100, y*height/100, d, timeSinceStart/timer);
             }
         }
+    }
+
+    public void removeNonUpdated(ArrayList<String> fishesUpdated) {
+        ArrayList<Fish> toRemove = new ArrayList<Fish>();
+        for( Fish f : fishes) {
+            if (!fishesUpdated.contains(f.getName()))
+                toRemove.add(f);
+        }
+
+        for (Fish f: toRemove){
+            fishes.remove(f);
+        }
+
     }
 
     public static void main(String[] args) {

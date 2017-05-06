@@ -19,43 +19,59 @@ public class Reception implements Runnable {
     }
 
     public void run() {
+        int tour=0;
 
         while(true){
+            tour++;
             try {
                 message = in.readLine();
                 if (!message.contentEquals("ping 12345")) {
                     System.out.println("Message : "+ message);
                     String[] args = message.split(" |\\[|\\]|\\,");
                     switch(args[0]){
+                        case "log":
+                            out.println("bye");
+                            out.flush();
+                            break;
                         case "addFish":
-                            out.println("< Fish m successfully added");
+                            out.println("OK");
                             out.flush();
                             break;
                         case "delFish":
-                            out.println("< Fish "+ args[1] + " removed !");
+                            out.println("OK");
                             out.flush();
                             break;
                         case "startFish":
-                            out.println("< Fish " + args[1] + " started");
+                            out.println("OK");
                             out.flush();
                             break;
                         case "getFishes":
-                            out.println("list [m at 0x0,10x10,5] [tst at 90x90,10x10,5] ");
+                            if (tour%2 == 0)
+                                out.println("list [PoissonRouge at 80x80,15x15,2]");
+                            else
+                                out.println("list [PoissonRouge at 35x35,15x15,2]");
                             out.flush();
                             break;
                         case "getFishesContinuously":
-                            System.out.println("WE DETECT THE GETFISHESCONTINUOUSLY");
                             int i=0;
                             while(true){
                                 i++;
                                 try {
-                                    Thread.sleep(2000);
-                                    System.out.println("ON ENVOI");
-                                    /*if (i%2 == 0)
-                                        out.println("list [m at 0x0,10x10,5]");
-                                    else
-                                        out.println("list [m at 100x100,10x10,5]");
-                                    out.flush();*/
+                                    out.println("list [PoissonRouge at -10x-10,15x15,4]");
+                                    out.flush();
+                                    Thread.sleep(4010);
+
+                                    out.println("list [PoissonRouge at 110x110,15x15,3] [PoissonNain at -10x-10,10x10,2]");
+                                    out.flush();
+                                    Thread.sleep(4010);
+
+                                    out.println("list [PoissonRouge at 70x70,15x15,3] [PoissonNain at 40x40,10x10,3]");
+                                    out.flush();
+                                    Thread.sleep(4010);
+
+                                    out.println("list [PoissonNain at 60x60,10x10,3]");
+                                    out.flush();
+                                    Thread.sleep(4010);
 
                                     if (false)
                                         break;
@@ -63,9 +79,13 @@ public class Reception implements Runnable {
                                 } catch(InterruptedException e) {System.out.println("DEBUG : Exception --> " + e.toString());}
                             }
                             break;
+                        case "stopSendContinuously":
+                            out.println("OK : end of transaction");
+                            out.flush();
+                            break;
                         case "hello":
                             if (args.length == 4) {
-                                out.println("< greeting " + args[3]);
+                                out.println("greeting " + args[3]);
                                 out.flush();
                             }
                             break;
