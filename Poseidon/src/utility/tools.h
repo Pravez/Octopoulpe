@@ -44,8 +44,6 @@ boolean readline_started;
         }else{ \
         printf("[ "GREEN"INFO"RESET" ] \t" message "\n", ##__VA_ARGS__);}}
 
-#define CONSOLE_LOG_TEST(message, ...) if(test_verbosity) fprintf(CONSOLE_OUTPUT, "[ "GREENBOLD" OK "RESET" ] \t" message "\n", ##__VA_ARGS__);
-
 struct position {
     double x;
     double y;
