@@ -21,7 +21,7 @@ public class Fish {
     private long timeGoal; //in millisecond
     private boolean started;
     private double toDoX, toDoY;
-    private int doEach;
+    private int doEachX, doEachY;
     private int cpt;
 
     public Fish(int x, int y, int w, int h, String s) {
@@ -107,14 +107,48 @@ public class Fish {
         goal.y = y;
         timeGoal = d;
         cpt=0;
-        doEach = 1;
+        doEachX = 1;
+        doEachY = 1;
+        double nbUpdateInit = d/averageElapsed;
         double nbUpdate = d/averageElapsed;
-        System.out.println("ON A X="+this.x+" ET Y="+this.y);
-        do {
-            toDoX = (x - this.x) / nbUpdate;
+        //System.out.println("ON A X="+this.x+" ET Y="+this.y);
+        //System.out.println("ON A NBUPDATE=" + nbUpdate);
+
+        if (Math.abs(x-this.x) < nbUpdateInit) {
+            //System.out.println("ICI EN X");
+            toDoX = (x - this.x) == 0 ? 0 : (x - this.x) / Math.abs(x - this.x);
+        }
+        else {
+            toDoX = (x - this.x)/nbUpdate;
+            while (Math.abs(toDoX) < 1)
+            {
+                //System.out.println("TODOX="+toDoX);
+                //System.out.println("DOEACHX="+doEachX);
+                //System.out.println("nbUpdate="+nbUpdate);
+                nbUpdate = nbUpdateInit/doEachX;
+                doEachX++;
+                toDoX = (x - this.x) / nbUpdate;
+            }
+        }
+        nbUpdate = d/averageElapsed;
+
+        if (Math.abs(y-this.y) < nbUpdateInit) {
+            //System.out.println("ICI EN Y");
+            toDoY = (y - this.y) == 0 ? 0 : (y - this.y) / Math.abs(y - this.y);
+        }
+        else {
             toDoY = (y - this.y) / nbUpdate;
-            nbUpdate /= ++doEach;
-        } while (toDoY < 1 || toDoX < 1);
+            while (Math.abs(toDoY) < 1)
+            {
+                //System.out.println("TODOY="+toDoY);
+                //System.out.println("DOEACHY="+doEachY);
+                //System.out.println("nbUpdate="+nbUpdate);
+                nbUpdate = nbUpdateInit/doEachY;
+                doEachY++;
+                toDoY = (y - this.y) / nbUpdate;
+            }
+        }
+        //System.out.println("ON A TODOX=" + toDoX + " TODOY=" + toDoY);
     }
 
     public ImageView get_View(int nb) {
@@ -128,34 +162,37 @@ public class Fish {
 
         if (!goal.equals(new Point(-1, -1))) {
             timeGoal -= timeElapsed;
-                cpt++;
+            cpt++;
 
-                if (cpt%doEach == 0) {
-                    if (goal.x != x) {
-                        if (goal.x < x && x + toDoX < goal.x)
-                            x = goal.x;
-                        else if (goal.x > x && x + toDoX > goal.x)
-                            x = goal.x;
-                        else
-                            x += toDoX;
-                    }
-
-                    if (goal.y != y) {
-                        if (goal.y < y && y + toDoY < goal.y)
-                            y = goal.y;
-                        else if (goal.y > y && y + toDoY > goal.y)
-                            y = goal.y;
-                        else
-                            y += toDoY;
-                    }
+            if (cpt % doEachX == 0) {
+                if (goal.x != x) {
+                    if (goal.x < x && x + toDoX < goal.x)
+                        x = goal.x;
+                    else if (goal.x > x && x + toDoX > goal.x)
+                        x = goal.x;
+                    else
+                        x += toDoX;
                 }
+            }
 
-                setPosition(x, y);
+            if (cpt % doEachY == 0) {
 
-                if (goal.equals(new Point(x, y))) {
-                    goal.x = -1;
-                    goal.y = -1;
+                if (goal.y != y) {
+                    if (goal.y < y && y + toDoY < goal.y)
+                        y = goal.y;
+                    else if (goal.y > y && y + toDoY > goal.y)
+                        y = goal.y;
+                    else
+                        y += toDoY;
                 }
+            }
+
+            setPosition(x, y);
+
+            if (goal.equals(new Point(x, y))) {
+                goal.x = -1;
+                goal.y = -1;
+            }
         }
     }
 }

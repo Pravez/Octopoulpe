@@ -280,7 +280,8 @@ public class Console extends Stage {
     }
 
     private String getFishesAvailable() {
-            File directory = new File(  System.getProperty("user.dir") + "/Images/");
+            File directory = new File(  System.getProperty("user.dir") + "/src/sample/Images/");
+            System.out.println("DEBUG : Directory " + directory.getAbsolutePath() + " and LIST=" + directory.list());
             String[] listFiles = directory.list();
             String res = new String("");
             for(int i=0;i<listFiles.length;i++) {

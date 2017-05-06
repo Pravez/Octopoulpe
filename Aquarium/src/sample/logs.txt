@@ -2,6 +2,7 @@
 ..
 .
 
+> Exception lors de la lecture du fichier de modeles de mobilite/n
 > On configure :
  ID=N1
  Adresse du serveur=10.1.18.255
@@ -13,55 +14,429 @@
 
 > Connexion etablie.
 
-> Nouvelle entree : addFish PoissonNain at 50x50, 10x10, HorizontalWayPoint/n
-> On envoie au serveur : addFish PoissonNain at 50x50, 10x10, HorizontalWayPoint
+> Nouvelle entree : addFish PoissonRouge at 50x50, 15x15, RandomWayPoint/n
+> On envoie au serveur : addFish PoissonRouge at 50x50, 15x15, RandomWayPoint
 
 > On recoit : OK
-> Nouvelle entree : startFish PoissonNain/n
-> On envoie au serveur : startFish PoissonNain
+> Nouvelle entree : getFishes/n
+> On envoie au serveur : getFishes
 
-> On recoit : OK
-> Nouvelle entree : delFish PoissonNain/n
-> On envoie au serveur : delFish PoissonNain
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouvelle entree : getFishesContinuously/n
+> On envoie au serveur : getFishesContinuously
 
-> On recoit : OK
-> Nouvelle entree : addFish PoissonClown at 50x50, 10x10, VerticalWayPoint/n
-> On envoie au serveur : addFish PoissonClown at 50x50, 10x10, VerticalWayPoint
-
-> On recoit : OK
-> Nouvelle entree : startFish PoissonClown/n
-> On envoie au serveur : startFish PoissonClown
-
-> On recoit : OK
-> Nouvelle entree : delFish PoissonClown/n
-> On envoie au serveur : delFish PoissonClown
-
-> On recoit : OK
-> Nouvelle entree : addFish PoissonClown at 50x50, 10x10, VerticalWayPoint/n
-> On envoie au serveur : addFish PoissonClown at 50x50, 10x10, VerticalWayPoint
-
-> On recoit : OK
-> Nouvelle entree : startFish PoissonClown/n
-> On envoie au serveur : startFish PoissonClown
-
-> On recoit : OK
-> Nouvelle entree : delFish PoissonClown/n
-> On envoie au serveur : delFish PoissonClown
-
-> On recoit : OK
-> Nouvelle entree : addFish PoissonNain at 50x50, 10x10, HorizontalWayPoint/n
-> On envoie au serveur : addFish PoissonNain at 50x50, 10x10, HorizontalWayPoint
-
-> On recoit : OK
-> Nouvelle entree : startFish PoissonNain/n
-> On envoie au serveur : startFish PoissonNain
-
-> On recoit : OK
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
 > Timeout bientot atteint : on ping.
 
 > On envoie au serveur : ping 12345
 
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
 > Timeout bientot atteint : on ping.
 
 > On envoie au serveur : ping 12345
 
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 80x80,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 80x80 en 2000 millisecondes/n
+> On recoit : list [PoissonRouge at 0x0,15x15,2]
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
+> Nouveau but pour le poisson PoissonRouge : aller en 0x0 en 2000 millisecondes/n
