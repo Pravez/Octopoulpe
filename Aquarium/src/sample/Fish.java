@@ -23,6 +23,7 @@ public class Fish {
     private double toDoX, toDoY;
     private int doEachX, doEachY;
     private int cpt;
+    private long lastElapsed;
 
     public Fish(int x, int y, int w, int h, String s) {
 
@@ -111,20 +112,14 @@ public class Fish {
         doEachY = 1;
         double nbUpdateInit = d/averageElapsed;
         double nbUpdate = d/averageElapsed;
-        //System.out.println("ON A X="+this.x+" ET Y="+this.y);
-        //System.out.println("ON A NBUPDATE=" + nbUpdate);
-
+        this.lastElapsed = averageElapsed;
         if (Math.abs(x-this.x) < nbUpdateInit) {
-            //System.out.println("ICI EN X");
             toDoX = (x - this.x) == 0 ? 0 : (x - this.x) / Math.abs(x - this.x);
         }
         else {
             toDoX = (x - this.x)/nbUpdate;
             while (Math.abs(toDoX) < 1)
             {
-                //System.out.println("TODOX="+toDoX);
-                //System.out.println("DOEACHX="+doEachX);
-                //System.out.println("nbUpdate="+nbUpdate);
                 nbUpdate = nbUpdateInit/doEachX;
                 doEachX++;
                 toDoX = (x - this.x) / nbUpdate;
@@ -133,22 +128,17 @@ public class Fish {
         nbUpdate = d/averageElapsed;
 
         if (Math.abs(y-this.y) < nbUpdateInit) {
-            //System.out.println("ICI EN Y");
             toDoY = (y - this.y) == 0 ? 0 : (y - this.y) / Math.abs(y - this.y);
         }
         else {
             toDoY = (y - this.y) / nbUpdate;
             while (Math.abs(toDoY) < 1)
             {
-                //System.out.println("TODOY="+toDoY);
-                //System.out.println("DOEACHY="+doEachY);
-                //System.out.println("nbUpdate="+nbUpdate);
                 nbUpdate = nbUpdateInit/doEachY;
                 doEachY++;
                 toDoY = (y - this.y) / nbUpdate;
             }
         }
-        //System.out.println("ON A TODOX=" + toDoX + " TODOY=" + toDoY);
     }
 
     public ImageView get_View(int nb) {
@@ -163,6 +153,10 @@ public class Fish {
         if (!goal.equals(new Point(-1, -1))) {
             timeGoal -= timeElapsed;
             cpt++;
+
+            if (timeGoal<=1000 && timeGoal >0) {
+                setGoal(goal.x, goal.y, timeGoal, lastElapsed); //to try to rectify a possible mistake of timing
+            }
 
             if (timeGoal <= 0) {
                 x=goal.x;
