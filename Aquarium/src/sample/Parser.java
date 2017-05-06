@@ -40,7 +40,7 @@ public class Parser {
             case "status" :
                 if (args.length == 1) {
                     if (communicator.isConnected()) {
-                        console.display.appendText("< OK : Connecte au contrôleur, " + console.aquarium.toString());
+                        console.display.appendText("< OK : Connecte au controleur, " + console.aquarium.toString());
                     }
                     else
                         console.display.appendText("< NOK : Connexion non trouvee."  + console.aquarium.toString());
