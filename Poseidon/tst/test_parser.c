@@ -41,6 +41,9 @@ void tst__parse_config_file(){
     assert(_get_value(config_vector, "fish-update-interval") == 1); nb_tst++;
     CONSOLE_LOG_TEST("Correct value of fish-update-interval");
 
+    /* Free */
+    _delete_tvector(config_vector);
+
     CONSOLE_TEST_RES(nb_tst);
 }
 
