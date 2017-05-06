@@ -34,31 +34,34 @@ int world_init() {
 }
 
 struct position determine_new_position(struct position previous, struct fish *fish) {
-    struct position newpos;
+    struct position newpos = (struct position) {-1, -1};
     struct movement movement;
     int iteration_nb = RAND_IN_RANGE(1, MAX_ITER);
-    switch (fish->_strategy) {
-        case HORIZONTAL:
-            movement = (struct movement){1, 0};
-            newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate) * update_rate * iteration_nb,
-                                     (movement.y * fish->_speed_rate) * update_rate * iteration_nb);
-            return newpos;
-        case VERTICAL:
-            movement = (struct movement){0, 1};
-            newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate*2) * update_rate * iteration_nb,
-                                     (movement.y * fish->_speed_rate) * update_rate * iteration_nb);
-            return newpos;
-        case RANDOM:
-            movement = (struct movement){RAND_IN_RANGE(2, -1), RAND_IN_RANGE(2, -1)};
-            newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate*2) * update_rate * iteration_nb,
-                                     (movement.y * fish->_speed_rate) * update_rate * iteration_nb);
-            return newpos;
-        case UNREGISTERED:break;
-    }
+    do {
+        switch (fish->_strategy) {
+            case HORIZONTAL:
+                movement = (struct movement) {1, RAND_IN_RANGE(3, -1)};
+                newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate) * update_rate * iteration_nb,
+                                         (movement.y * fish->_speed_rate) * update_rate * iteration_nb);
+                break;
+            case VERTICAL:
+                movement = (struct movement) {RAND_IN_RANGE(3, -1), 1};
+                newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate * 2) * update_rate * iteration_nb,
+                                         (movement.y * fish->_speed_rate) * update_rate * iteration_nb);
+                break;
+            case RANDOM:
+                movement = (struct movement) {RAND_IN_RANGE(3, -1), RAND_IN_RANGE(3, -1)};
+                newpos = add_to_position(fish->_current, (movement.x * fish->_speed_rate * 2) * update_rate * iteration_nb,
+                                         (movement.y * fish->_speed_rate) * update_rate * iteration_nb);
+                break;
+            case UNREGISTERED:
+                break;
+        }
+    }while(movement.x == 0 && movement.y == 0);
 
     //Then we adapt speed
 
-    return (struct position) {-1, -1};
+    return newpos;
 }
 
 struct movement next_movement(struct fish *fish) {
@@ -108,7 +111,6 @@ int update_fishes(any_t nothing, any_t item) {
                                              : newpos;
 
         //TODO test if new position*2 is after the position in itself
-
 
 #ifdef DEBUG
         fprintf(stderr, "Fish %s is at %d, %d\n", fish->_id, (int) fish->_current.x, (int) fish->_current.y);
