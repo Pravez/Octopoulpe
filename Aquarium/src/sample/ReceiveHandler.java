@@ -60,34 +60,37 @@ public class ReceiveHandler implements Runnable {
                     message = in.readLine();
 
                 console.aquarium.writeLogs("On recoit : " + message);
-                String[] args = message.split(" |\\[|\\]|\\,");
-                for (String s : args)
-                switch (args[0]) {
-                    case "bye":
-                        running = false;
-                        break;
-                    case "list":
-                        handleGoal(args);
-                        break;
-                    case "no":
-                        running = false;
-                        break;
-                    case "greeting":
-                        console.setId(args[1]);
-                        break;
-                    case "NOK":
-                        console.writeDisplay(message);
-                        break;
-                    case "OK":
-                        handleOK();
-                        break;
-                    default:
-                        break;
+		if (message != null) 
+		{
+                	String[] args = message.split(" |\\[|\\]|\\,");
+                	for (String s : args)
+                	switch (args[0]) {
+                    	case "bye":
+                        	running = false;
+                        	break;
+                    	case "list":
+                        	handleGoal()args;
+				break;
+                    	case "no":
+                        	running = false;
+                        	break;
+                    	case "greeting":
+                        	console.setId(args[1]);
+                        	break;
+                    	case "NOK":
+                        	console.writeDisplay(message);
+                        	break;
+                    	case "OK":
+                        	handleOK();
+                        	break;
+                    	default:
+                        	break;
                 }
 
                 if (args[0] != "pong") {
                     console.writeDisplay(message);
                 }
+		}
                 } catch (SocketException e) {running = false;}
             } catch (IOException e) {e.printStackTrace();}
         }
