@@ -8,7 +8,7 @@
 extern struct aquarium *aquarium;
 static const char *delim = SERVER_CMD_DELIMITER;
 
-static struct aquarium_view* current_view;
+static struct aquarium_view *current_view;
 
 /* Auxiliar functions*/
 /**
@@ -18,7 +18,7 @@ static struct aquarium_view* current_view;
  *                      NULL                        if none of the view identifier is available
  *                      an other view identifier    else
  */
-struct client* available_id(char *wanted) {
+struct client *available_id(char *wanted) {
     struct client *first_available_id = NULL;
     struct client *client;
     LIST_FOREACH(client, &clients, entries) {
@@ -67,8 +67,7 @@ int asw__hello(char *arg, char **res, struct thread_p *thread) {
         // Seeking for an available id
         if (argv[1] == NULL && argv[0] != NULL) {
             id = available_id(argv[0]);
-        }
-        else {
+        } else {
             asprintf(res, "no greeting\n");
             free(cpy);
             return HELLO_INVALID;
@@ -99,7 +98,7 @@ int asw__iterate_fishes(any_t *res, any_t fish) {
     char *temp_str = NULL;
 
     if (fishes_str != NULL) {
-        temp_str = malloc(sizeof(char) * (strlen(fishes_str)+1));
+        temp_str = malloc(sizeof(char) * (strlen(fishes_str) + 1));
         strcpy(temp_str, fishes_str);
     }
 
@@ -107,7 +106,8 @@ int asw__iterate_fishes(any_t *res, any_t fish) {
     //double lasting_time =
 
     char *new_str;
-    asprintf(&new_str, "%s [%s at %dx%d,%dx%d,%d]", temp_str == NULL ? "" : temp_str, ffish->_id/*get_type_string(ffish->_type)*/,
+    asprintf(&new_str, "%s [%s at %dx%d,%dx%d,%d]", temp_str == NULL ? "" : temp_str,
+             ffish->_id/*get_type_string(ffish->_type)*/,
              fish_pos.x, fish_pos.y,
              ffish->_cover.width, ffish->_cover.height, (unsigned int) ffish->_speed_rate);
 
@@ -155,10 +155,10 @@ void asw__get_fishes(char **res, struct client *cli) {
 char *asw__log(char *arg, struct thread_p *thread) {
     if (arg == NULL || strcmp(arg, "out")) {
         return "NOK\n";
-    } else if(thread == NULL) {
+    } else if (thread == NULL) {
         return "NOK\n";
     } else {
-        if(thread->_authenticated == TRUE && thread->_client != NULL)
+        if (thread->_authenticated == TRUE && thread->_client != NULL)
             thread->_client->is_free = TRUE;
 
         thread->_authenticated = FALSE;
@@ -224,7 +224,7 @@ void asw__remove_aquarium() {
 
 void asw__ping(char *arg, char **res, struct client *client) {
     char *pingarg = strtok(arg, delim);
-    char *suparg = strtok(NULL,delim);
+    char *suparg = strtok(NULL, delim);
 
     if (pingarg != NULL && client != NULL && suparg == NULL) {
         asprintf(res, "pong %s\n", pingarg);
@@ -242,7 +242,7 @@ asw__add_fish(char *id, struct relative_position pos, struct dimension dimension
 
     if (/*type == NONE || */mv_strategy == UNREGISTERED) {
         asprintf(res, "%s",/* type == NONE ? "> Fish type is not known\n" : "",*/
-                 /*mv_strategy == UNREGISTERED ? */"NOK\n"/* : ""*/);
+                /*mv_strategy == UNREGISTERED ? */"NOK\n"/* : ""*/);
         return;
     }
 
@@ -267,39 +267,39 @@ asw__add_fish(char *id, struct relative_position pos, struct dimension dimension
                      "NOK\n");
 
         asprintf(res, "%s%s", dimstr == NULL ? "" : dimstr, posstr == NULL ? "" : posstr);
-        if(dimstr != NULL)
+        if (dimstr != NULL)
             free(dimstr);
-        if(posstr != NULL)
+        if (posstr != NULL)
             free(posstr);
 
         return;
     }
 
 
-    if(hashmap_get(aquarium->_fishes, id, NULL) == MAP_MISSING) {
+    if (hashmap_get(aquarium->_fishes, id, NULL) == MAP_MISSING) {
         struct fish *fish = fish__create(NONE, (int) real_position.x, (int) real_position.y, id, mv_strategy, dimension,
                                          UPDATE_INTERVAL);
         aq__add_fish_to_aqv(aquarium, cli->aqv->_id, fish);
         asprintf(res, "OK\n");
         CONSOLE_LOG_INFO("%s added fish %s", cli->id, id);
-    }else{
+    } else {
         asprintf(res, "NOK\n");
     }
 }
 
-void asw__start_fish(char *arg, char **res){
-    if(aq__set_fish_running_state(aquarium, arg, 1) == -1){
+void asw__start_fish(char *arg, char **res) {
+    if (aq__set_fish_running_state(aquarium, arg, 1) == -1) {
         asprintf(res, "NOK\n");
-    }else{
+    } else {
         asprintf(res, "OK\n");
         CONSOLE_LOG_INFO("Fish %s started", arg);
     }
 }
 
-void asw__del_fish(char *arg, char **res){
-    if(aq__remove_fish(aquarium, arg) == 0){
+void asw__del_fish(char *arg, char **res) {
+    if (aq__remove_fish(aquarium, arg) == 0) {
         asprintf(res, "NOK\n");
-    }else{
+    } else {
         asprintf(res, "OK\n");
         CONSOLE_LOG_INFO("Fish %s removed", arg);
     }

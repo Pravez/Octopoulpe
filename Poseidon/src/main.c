@@ -9,9 +9,9 @@
 #include "view/view.h"
 #include "server/world/world.h"
 
-extern struct _tvector* config_vector;
+extern struct _tvector *config_vector;
 extern boolean readline_started;
-struct aquarium* aquarium;
+struct aquarium *aquarium;
 
 pthread_mutex_t mutex_observers;
 
@@ -23,7 +23,7 @@ int WORLD_READY;
 int SERVER_READY;
 int world_execution;
 
-int main(int argc, char* argv[]){
+int main(int argc, char *argv[]) {
     _set_verbosity(TRUE);
     _set_output_file("log.txt");
     readline_started = FALSE;
@@ -42,7 +42,7 @@ int main(int argc, char* argv[]){
     aquarium = NULL;
 
     //Job to do with config file ... (before launching server)
-    if(access("controller.cfg", F_OK) != -1) {
+    if (access("controller.cfg", F_OK) != -1) {
 
         //We parse config file
         parse_config_file("controller.cfg");
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]){
         _close_output_file();
 
         return EXIT_SUCCESS;
-    }else{
+    } else {
         _close_output_file();
         CONSOLE_LOG_ERR("Impossible to find controller.cfg config file");
 

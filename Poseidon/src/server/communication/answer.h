@@ -41,8 +41,19 @@ int asw__hello(char *arg, char **res, struct thread_p *thread);
  *                          SEC         how many seconds has to last the move from the current position to the new one
  *                                      if SEC equals 0, the fish is shown immediately
  */
+/**
+ * Function which iterates over fishes in order to fill a string of their positions
+ * @param res
+ * @param fish
+ * @return
+ */
 int asw__iterate_fishes(any_t *res, any_t fish);
 
+/**
+ * Function to format and prepare a string of each fish's position according to a certain view
+ * @param res
+ * @param cli
+ */
 void asw__get_fishes(char **res, struct client *cli);
 
 void asw__ping(char *arg, char **res,

@@ -51,14 +51,14 @@ void aq__add_fish_to_aqv(struct aquarium *aq, char *id, struct fish *fish) {
 
 int aq__remove_fish(struct aquarium *aquarium, char *fish_id) {
     //We first remove it from the entire aquarium
-    struct fish* fish = NULL;
+    struct fish *fish = NULL;
     if (hashmap_get(aquarium->_fishes, fish_id, (any_t *) &fish) == MAP_OK) {
         hashmap_remove(aquarium->_fishes, fish->_id);
         CONSOLE_LOG_INFO("Removed fish %s", fish_id);
     }
 
     //If we found it it has a presence in at least one view
-    if(fish != NULL){
+    if (fish != NULL) {
         for (int j = 0; j < v__size(&aquarium->_views); j++) {
             struct aquarium_view *view = GET_VIEW_PTR(&aquarium->_views, j);
             if (view != NULL) {
@@ -77,11 +77,11 @@ int aq__remove_fish(struct aquarium *aquarium, char *fish_id) {
     return 0;
 }
 
-int aq__set_fish_running_state(struct aquarium* aquarium, char* fish_id, int state){
-    void* fish_ptr;
-    if(hashmap_get(aquarium->_fishes, fish_id, &fish_ptr) == MAP_OK){
-        fish__set_running_state((struct fish*) fish_ptr, state);
-    }else{
+int aq__set_fish_running_state(struct aquarium *aquarium, char *fish_id, int state) {
+    void *fish_ptr;
+    if (hashmap_get(aquarium->_fishes, fish_id, &fish_ptr) == MAP_OK) {
+        fish__set_running_state((struct fish *) fish_ptr, state);
+    } else {
         return -1;
     }
 
@@ -100,7 +100,7 @@ int get_aquarium_view_position(struct aquarium *aquarium, char *view_id) {
 
 int removal_iterator(any_t aquarium_view, any_t fish) {
     struct aquarium_view *aqua = aquarium_view;
-    char *f = ((struct fish*) fish)->_id;
+    char *f = ((struct fish *) fish)->_id;
 
     return hashmap_remove(aqua->_fishes, f);
 }
@@ -158,7 +158,7 @@ int aq__check_free_id(struct aquarium *aquarium, char *id) {
     return 1;
 }
 
-struct relative_position aq__get_relative_pos(struct aquarium_view* aqv, struct fish* fish){
+struct relative_position aq__get_relative_pos(struct aquarium_view *aqv, struct fish *fish) {
     /*struct aquarium_view* aqv = NULL;
     for (int i = 0; i < v__size(&aquarium->_views) && aqv == NULL; i++) {
         if (hashmap_get(GET_VIEW_PTR(&aquarium->_views, i)->_fishes, fish->_id, NULL) == MAP_OK) {
@@ -166,14 +166,16 @@ struct relative_position aq__get_relative_pos(struct aquarium_view* aqv, struct 
         }
     }*/
 
-    if(aqv == NULL || hashmap_get(aqv->_fishes, fish->_id, NULL) != MAP_OK)
-        return (struct relative_position) { -1 , -1};
+    if (aqv == NULL || hashmap_get(aqv->_fishes, fish->_id, NULL) != MAP_OK)
+        return (struct relative_position) {-1, -1};
 
-    int relative_x = (100*((int)fish->_current.x - (int)aqv->_inner._starting_position.x))/(aqv->_inner._dimensions.width);
-    int relative_y = (100*((int)fish->_current.y - (int)aqv->_inner._starting_position.y))/(aqv->_inner._dimensions.height);
+    int relative_x =
+            (100 * ((int) fish->_current.x - (int) aqv->_inner._starting_position.x)) / (aqv->_inner._dimensions.width);
+    int relative_y = (100 * ((int) fish->_current.y - (int) aqv->_inner._starting_position.y)) /
+                     (aqv->_inner._dimensions.height);
 
 
-    return (struct relative_position) { relative_x, relative_y };
+    return (struct relative_position) {relative_x, relative_y};
 }
 
 ///////DEBUG

@@ -230,7 +230,7 @@ int cmd__delete() {
 
     if (!strcmp(string, "view")) {
         char *view_name = strtok(NULL, delim);
-        if(view_name != NULL){
+        if (view_name != NULL) {
             struct aquarium_view *view = aq__get_view_by_id(aquarium, view_name);
             if (view != NULL) {
                 aq__remove_aquarium_view(aquarium, view_name);
@@ -241,7 +241,7 @@ int cmd__delete() {
                 return 0;
             }
             return 1;
-        }else{
+        } else {
             printf("\t> Please give a name to remove view\n");
             return 0;
         }
@@ -305,7 +305,7 @@ void __end__() {
 
     printf("\t> Stopping aquarium emulation thread ...\n");
     world_execution = FALSE;
-    if(aquarium != NULL)
+    if (aquarium != NULL)
         aquarium->_running = FALSE;
     pthread_join(thread_world, NULL);
 
