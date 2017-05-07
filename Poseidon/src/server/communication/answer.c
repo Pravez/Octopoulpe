@@ -8,6 +8,8 @@
 extern struct aquarium *aquarium;
 static const char *delim = SERVER_CMD_DELIMITER;
 
+static struct aquarium_view* current_view;
+
 /* Auxiliar functions*/
 /**
  * @brief available_id  returns an available view identifier
@@ -101,7 +103,7 @@ int asw__iterate_fishes(any_t *res, any_t fish) {
         strcpy(temp_str, fishes_str);
     }
 
-    struct relative_position fish_pos = aq__get_relative_pos(aquarium, ffish);
+    struct relative_position fish_pos = aq__get_relative_pos(current_view, ffish);
     //double lasting_time =
 
     char *new_str;
@@ -134,6 +136,7 @@ void asw__get_fishes(char **res, struct client *cli) {
             asprintf(res, "list\n");
         } else {
             char *fishes_str = NULL;
+            current_view = cli->aqv;
             hashmap_iterate(cli->aqv->_fishes, (PFany) asw__iterate_fishes, &fishes_str);
             asprintf(res, "list%s\n", fishes_str);
             free(fishes_str);

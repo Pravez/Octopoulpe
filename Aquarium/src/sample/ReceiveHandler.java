@@ -59,17 +59,18 @@ public class ReceiveHandler implements Runnable {
                 try {
                     message = in.readLine();
 
-                console.aquarium.writeLogs("On recoit : " + message);
-		if (message != null) 
+		if (message != null)
 		{
-                	String[] args = message.split(" |\\[|\\]|\\,");
+            console.aquarium.writeLogs("On recoit : " + message);
+
+            String[] args = message.split(" |\\[|\\]|\\,");
                 	for (String s : args)
                 	switch (args[0]) {
                     	case "bye":
                         	running = false;
                         	break;
                     	case "list":
-                        	handleGoal()args;
+                        	handleGoal(args);
 				break;
                     	case "no":
                         	running = false;

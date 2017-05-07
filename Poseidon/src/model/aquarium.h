@@ -29,7 +29,7 @@ struct array aq__get_views_ids(struct aquarium* aquarium);
 int aq__check_free_id(struct aquarium* aquarium, char* id);
 
 int aq__set_fish_running_state(struct aquarium* aquarium, char* fish_id, int state);
-struct relative_position aq__get_relative_pos(struct aquarium* aquarium, struct fish* fish);
+struct relative_position aq__get_relative_pos(struct aquarium_view* aqv, struct fish* fish);
 
 //For debug purposes
 void display_fish(struct fish* fish);

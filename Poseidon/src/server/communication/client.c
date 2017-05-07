@@ -79,7 +79,7 @@ char *client__parse_command(char buffer[BUFFER_SIZE], struct thread_p *thread) {
     asprintf(&cmd, "%s", buffer);
 
     if (strlen(cmd) > 1)
-        cmd[strlen(cmd) - 2] = '\0';
+        cmd[strlen(cmd) - 1] = '\0';
 
     char *token = strtok(cmd, delim);
     if (token == NULL || *token == -1) {
