@@ -49,14 +49,14 @@ execute(){
         if [ "$EXECUTABLE_NAME" == "Server" ] && [ -f $SCRIPTPATH/build/Poseidon/src/Server ]
         then
             echo "Running Server ..."
-            cd Poseidon/src
+            cd $SCRIPTPATH/build/Poseidon/src
             ./Server
             runned=true
         fi
         if [ "$EXECUTABLE_NAME" == "Aquarium" ] && [ -f $SCRIPTPATH/build/Aquarium/src/Aquarium.jar ]
         then
             echo "Running aquarium ..."
-            cd Aquarium/src
+            cd $SCRIPTPATH/build/Aquarium/src
             java -cp Aquarium.jar sample.Aquarium
             runned=true
         fi
@@ -64,6 +64,35 @@ execute(){
         if [ ${runned} == false ]
         then
             echo "Please be sure to give a correct executable name"
+        fi
+    else
+        echo "No build directory, are you sure you runned \"-p\" option first ?"
+    fi }
+}
+
+test(){
+    runned=false
+
+    { if [ -d $SCRIPTPATH/build ]
+    then
+        echo "Moving to build directory"
+        cd $SCRIPTPATH/build
+        if [ -f $SCRIPTPATH/build/Poseidon/tst/Test_intern_protocol ]
+        then
+            cd $SCRIPTPATH/build/Poseidon/tst
+            ./Test_intern_protocol
+            runned=true
+        fi
+        if [ -f $SCRIPTPATH/build/Poseidon/tst/Test_parser ]
+        then
+            cd $SCRIPTPATH/build/Poseidon/tst
+            ./Test_parser
+            runned=true
+        fi
+
+        if [ ${runned} == false ]
+        then
+            echo "Please be sure you compiled test executables"
         fi
     else
         echo "No build directory, are you sure you runned \"-p\" option first ?"
@@ -96,13 +125,16 @@ then
 
 
     case $key in
-        -p)
+        -p|--prepare)
         prepare
         ;;
-        -c)
+        -c|--compile)
         compile
         ;;
-        -r)
+        -t|--test)
+        test
+        ;;
+        -r|--run)
         EXECUTABLE_NAME="$2"
         execute
         shift

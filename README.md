@@ -37,3 +37,10 @@ Si malheureusement CMake refuse de compiler correctement, vous pourrez trouver �
 permettra tout de même de compiler et d'exécuter le programme en Java (même s'il est tout de même plus "agréable" d'utiliser le CMake).
 Attention, le répertoire Images/ doit se trouver au même niveau que les .class de java. De plus, le repertoire resources/ doit se trouver au
 même endroit que le classpath global (pas besoin de s'en soucier dans le cadre par défaut, tout est normalement géré).
+
+## A propos des tests
+
+Nous avons réalisé des tests sur le serveur uniquement, permettant de vérifier le bon fonctionnement d'après notre implémentation
+du protocole de communication entre les clients et le serveur, et le bon parsage des données en entrée d'un fichier .cfg donné.
+Pour lancer ces tests, utilisez le script `Oceans.sh` via l'option -t ou --test. Si vous souhaitez exécuter à la main, ces 
+exécutables se situent dans le répertoire tst/ de la solution (et donc dans un répertoire du même nom dans le build).
