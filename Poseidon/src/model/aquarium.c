@@ -203,7 +203,7 @@ void display_aquarium(struct aquarium *aq) {
         display_view(GET_VIEW_PTR(&aq->_views, i));
     }
 
-    printf("NOT DISPLAYED FISHES : \n");
+    printf("TOTAL OF FISHES : \n");
     hashmap_iterate(aq->_fishes, (PFany) iterate_fishes, NULL);
     printf("~~~~~~~~~~~~~~~~~~~~~~\n");
 }

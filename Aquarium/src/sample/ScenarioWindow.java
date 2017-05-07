@@ -40,7 +40,7 @@ public class ScenarioWindow extends Stage {
 
     private void createPanes() {
         try {
-            List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "scenarios.txt"), StandardCharsets.UTF_8);
+            List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/resources/scenarios.txt"), StandardCharsets.UTF_8);
             for (int i = 0; i < lines.size(); ++i) {
                 if (lines.get(i).charAt(0) == '>') {
                     String title = lines.get(i).substring(2, lines.get(i).length());

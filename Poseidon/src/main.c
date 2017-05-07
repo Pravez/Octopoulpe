@@ -21,6 +21,7 @@ pthread_t thread_world;
 
 int WORLD_READY;
 int SERVER_READY;
+int world_execution;
 
 int main(int argc, char* argv[]){
     _set_verbosity(TRUE);
@@ -31,12 +32,14 @@ int main(int argc, char* argv[]){
 
     WORLD_READY = FALSE;
     SERVER_READY = FALSE;
+    world_execution = TRUE;
 
     // Initialisation of the aquarium
-    aquarium = malloc(sizeof(struct aquarium));
+    /*aquarium = malloc(sizeof(struct aquarium));
     aq__initialize_aquarium(aquarium, AQUARIUM_DIMENSIONS);
-    
-    aq__add_view(aquarium, (struct position) {250, 250}, (struct dimension){250, 250}, "N1");
+
+    aq__add_view(aquarium, (struct position) {250, 250}, (struct dimension){250, 250}, "N1");*/
+    aquarium = NULL;
 
     //Job to do with config file ... (before launching server)
     if(access("controller.cfg", F_OK) != -1) {

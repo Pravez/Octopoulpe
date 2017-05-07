@@ -40,12 +40,15 @@ void _set_test_verbosity(int value) {
 void _set_output_file(char* path){
     output = fopen(path, "a");
 
-    time_t t = time(NULL);
-    struct tm *tm = localtime(&t);
-    char s[64];
-    strftime(s, sizeof(s), "%c", tm);
-    fprintf(output, "EXECUTION STARTING ON : %s\n", s);
-
+    if(output != NULL) {
+        time_t t = time(NULL);
+        struct tm *tm = localtime(&t);
+        char s[64];
+        strftime(s, sizeof(s), "%c", tm);
+        fprintf(output, "EXECUTION STARTING ON : %s\n", s);
+    }else{
+        CONSOLE_LOG_ERR("Impossible to open or create a log file named %s", path);
+    }
 }
 
 void _close_output_file(){
