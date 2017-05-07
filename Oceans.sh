@@ -10,6 +10,7 @@ usage(){
     echo "Run with -c option to ask to compile sources"
     echo "Run with -r [executable name] to ask to run an executable"
     echo "Executables are : \" Server \" for the Server in C, and \" Aquarium \" for the View in Java"
+    echo "If you want to clean : you can use \"--clean\" option to execute a make clean, or if you want to remove even the build directory, use \"--clean-everything\" "
 }
 
 prepare(){
@@ -56,7 +57,7 @@ execute(){
         then
             echo "Running aquarium ..."
             cd Aquarium/src
-            java -jar Aquarium.jar
+            java -cp Aquarium.jar sample.Aquarium
             runned=true
         fi
 
@@ -69,6 +70,23 @@ execute(){
     fi }
 }
 
+clean(){
+	if [ -d $SCRIPTPATH/build ]
+    	then
+        	echo "Moving to build directory"
+        	cd $SCRIPTPATH/build
+        	if [ -f Makefile ]
+        	then
+            		echo "Cleaning ..."
+            		make clean
+        	else
+            		echo "No makefile, are you sure you runned \"-p\" option 
+first ?"
+        	fi
+    	else
+        	echo "No build directory, are you sure you runned \"-p\" option first ?"
+    	fi
+}
 
 if [ $# -ge 1 ]
 then
@@ -95,6 +113,14 @@ then
         usage
         shift
         ;;
+	--clean)
+	clean
+	shift
+	;;
+	--clean-everything)
+	rm -rf build/
+	shift
+	;;
         *)
                 echo "Unknown option"
         ;;

@@ -7,30 +7,34 @@ set(JAVA_SOURCES sample/Aquarium.java
         sample/ReceiveHandler.java
         sample/ScenarioWindow.java)
 
-add_jar(Aquarium ${JAVA_SOURCES})
+set(JAVA_RESOURCES sample/bb.png sample/bg.png)
 
-set(RESOURCE_IMAGES sample/Images/*)
-set(RESOURCE_FILES sample/affichage.cfg
-        sample/MobilityModels.txt
-        sample/scenarios.txt
-        sample/logs.txt)
+add_jar(Aquarium ${JAVA_SOURCES} ${JAVA_RESOURCES})
 
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Images)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-foreach (item IN LISTS RESOURCE_IMAGES)
-    message(STATUS ${item})
-    add_custom_command(TARGET Aquarium
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_CURRENT_SOURCE_DIR}/${item}
-            ${CMAKE_CURRENT_BINARY_DIR}/Images/)
-endforeach ()
-foreach (item IN LISTS RESOURCE_FILES)
-    message(STATUS ${item})
-    add_custom_command(TARGET Aquarium
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_CURRENT_SOURCE_DIR}/${item}
-            ${CMAKE_CURRENT_BINARY_DIR})
-endforeach ()
+#set(RESOURCE_IMAGES ../resources/Images/*)
+#set(RESOURCE_FILES ../resources/affichage.cfg
+#        ../resources/MobilityModels.txt
+#        ../resources/scenarios.txt
+#        ../resources/logs.txt)
+
+#file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Images)
+
+#foreach (item IN LISTS RESOURCE_IMAGES)
+#    message(STATUS ${item})
+#    add_custom_command(TARGET Aquarium
+#            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#            ${CMAKE_CURRENT_SOURCE_DIR}/${item}
+#            ${CMAKE_CURRENT_BINARY_DIR}/resources/)
+#endforeach ()
+#foreach (item IN LISTS RESOURCE_FILES)
+#    message(STATUS ${item})
+#    add_custom_command(TARGET Aquarium
+#            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#            ${CMAKE_CURRENT_SOURCE_DIR}/${item}
+#            ${CMAKE_CURRENT_BINARY_DIR})
+#endforeach ()
 
 #add_custom_target(data-target ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/Images/*.png")
 #set_target_properties(Aquarium PROPERTIES RESOURCE "${RESOURCE_FILES}")

@@ -269,7 +269,7 @@ public class Console extends Stage {
         String res="";
         try {
 
-            List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/MobilityModels.txt"), StandardCharsets.UTF_8);
+            List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/resources/MobilityModels.txt"), StandardCharsets.UTF_8);
             for (String s : lines) {
                 res += "- " + s + System.lineSeparator();
             }
@@ -280,7 +280,7 @@ public class Console extends Stage {
     }
 
     private String getFishesAvailable() {
-            File directory = new File(  System.getProperty("user.dir") + "/src/sample/Images/");
+            File directory = new File(  System.getProperty("user.dir") + "/resources/Images/");
             System.out.println("DEBUG : Directory " + directory.getAbsolutePath() + " and LIST=" + directory.list());
             String[] listFiles = directory.list();
             String res = new String("");
