@@ -39,6 +39,12 @@ Nous vous mettons à disposition un aquarium préfait (fichier aquarium.save), q
 pour que vous n'ayez pas à vous en occuper. La seule chose à faire est de charger, au lancement du programme, l'aquarium en question (sachant
 que vous pourriez charger un quelconque autre aquarium). Il vous suffit donc d'exécuter la commande : `load aquarium.save`.
 
+### DETAIL A NE PAS RATER
+
+Lors de l'exécution chez certains d'entre nous le programme s'arrêtait brusquement sur des instructions de la bibliothèque Readline
+avec le programme recevant un SIGABRT. Ce problème est arrivé quelques fois mais reste trop peu compréhensible, et est certainement
+lié à GNU Readline. Lancer l'exécution une nouvelle fois "règle" le problème, que nous n'avons pas réussi à expliquer.
+
 ## Poseidon
 
 Comme pour tout projet réalisé avec cmake, créez un répertoire build/ à la racine principale du projet. 
