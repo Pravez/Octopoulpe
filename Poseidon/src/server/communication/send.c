@@ -14,7 +14,6 @@ static const char *val_delim = SERVER_FISHVAL_DELIMITER;
 extern struct vector *observers;
 
 
-
 char *send__client_id(struct thread_p *thread) {
     char *result = NULL;
 
@@ -24,7 +23,7 @@ char *send__client_id(struct thread_p *thread) {
     char *str = NULL;
     if (in != NULL && strcmp(in, "in") == 0 && as != NULL && strcmp(as, "as") == 0 && id != NULL) {
         asprintf(&str, "%s", id);
-    } else if (in !=NULL && strcmp(in,"\n")!= 0) {
+    } else if (in != NULL && strcmp(in, "\n") != 0) {
         asprintf(&result, "no greeting\n");
         return result;
     }
@@ -102,32 +101,36 @@ char *send__add_fish(struct client *client) {
     char *tmp_strategy = strtok(NULL, end_delim);
 
     char *rel_pos = strtok(tmp_rel_pos, delim);
-    char *missing_fisrt_comma = strtok(NULL,delim);
+    char *missing_fisrt_comma = strtok(NULL, delim);
     char *size = strtok(tmp_size, delim);
     char *strategy = strtok(tmp_strategy, delim);
     char *suparg = strtok(NULL, delim);
 
-    if(client == NULL || suparg != NULL || id == NULL || at == NULL || rel_pos == NULL || size == NULL || strategy == NULL || missing_fisrt_comma != NULL){
-        asprintf(&result,"NOK\n");
+    if (client == NULL || suparg != NULL || id == NULL || at == NULL || rel_pos == NULL || size == NULL ||
+        strategy == NULL || missing_fisrt_comma != NULL) {
+        asprintf(&result, "NOK\n");
         return result;
     }
 
     /* Testing the format of <x>x<y> arguments */
     char *tmp = strdup(rel_pos);
-    char *arg1_rel_pos = strtok(tmp,"x");
-    char *arg2_rel_pos = strtok(NULL," ");
+    char *arg1_rel_pos = strtok(tmp, "x");
+    char *arg2_rel_pos = strtok(NULL, " ");
 
-    char * tmp2 = strdup(size);
-    char *arg1_size = strtok(tmp2,"x");
-    char *arg2_size = strtok(NULL," ");
+    char *tmp2 = strdup(size);
+    char *arg1_size = strtok(tmp2, "x");
+    char *arg2_size = strtok(NULL, " ");
 
-    if(arg2_rel_pos == NULL  || arg2_size == NULL || ((atoi(arg1_rel_pos) == 0) && (strcmp(arg1_rel_pos,"0") != 0))|| ((atoi(arg2_rel_pos) == 0) && (strcmp(arg2_rel_pos,"0") != 0))|| (atoi(arg1_size) == 0)|| (atoi(arg2_size) == 0))
-    {
-        asprintf(&result,"NOK\n");
-        free(tmp); free(tmp2);
+    if (arg2_rel_pos == NULL || arg2_size == NULL || ((atoi(arg1_rel_pos) == 0) && (strcmp(arg1_rel_pos, "0") != 0)) ||
+        ((atoi(arg2_rel_pos) == 0) && (strcmp(arg2_rel_pos, "0") != 0)) || (atoi(arg1_size) == 0) ||
+        (atoi(arg2_size) == 0)) {
+        asprintf(&result, "NOK\n");
+        free(tmp);
+        free(tmp2);
         return result;
     }
-    free(tmp); free(tmp2);
+    free(tmp);
+    free(tmp2);
 
     struct relative_position pos;
     struct dimension dimensions;
@@ -156,8 +159,8 @@ char *send__logout(struct thread_p *thread) {
 
 char *send__delete_fish() {
     char *result;
-    char *tmp_id= strtok(NULL, end_delim);
-    char * id = strtok(tmp_id,delim);
+    char *tmp_id = strtok(NULL, end_delim);
+    char *id = strtok(tmp_id, delim);
     char *suparg = strtok(NULL, delim);
     if (id != NULL && strtok(NULL, delim) == NULL && suparg == NULL) {
         asw__del_fish(id, &result);
@@ -176,8 +179,8 @@ char *send__ping(struct client *client) {
 
 char *send__start_fish() {
     char *result;
-    char *tmp_id= strtok(NULL, end_delim);
-    char * id = strtok(tmp_id,delim);
+    char *tmp_id = strtok(NULL, end_delim);
+    char *id = strtok(tmp_id, delim);
     char *suparg = strtok(NULL, delim);
     if (id != NULL && strtok(NULL, delim) == NULL && suparg == NULL) {
         asw__start_fish(id, &result);

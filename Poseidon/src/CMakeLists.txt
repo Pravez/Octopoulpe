@@ -29,3 +29,7 @@ add_custom_command(TARGET Server
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_CURRENT_SOURCE_DIR}/../controller.cfg
         $<TARGET_FILE_DIR:Server>)
+add_custom_command(TARGET Server
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_CURRENT_SOURCE_DIR}/../aquarium.save
+        $<TARGET_FILE_DIR:Server>)

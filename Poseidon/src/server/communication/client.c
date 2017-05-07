@@ -31,7 +31,7 @@ void *client__start(void *arg) {
         bzero(thread->_last_message, BUFFER_SIZE);
 
         code_return = (int) read(thread->_socket_fd, thread->_last_message, BUFFER_SIZE);
-        if(code_return == -1){
+        if (code_return == -1) {
             //Error reading from socket
             CONSOLE_LOG_ERR("Client from IP %s reset connection", inet_ntoa(thread->_client_socket.sin_addr));
             thread->_connected = FALSE;
@@ -43,8 +43,8 @@ void *client__start(void *arg) {
             time(&thread->_last_ping);
             UNLOCK(&thread->_time_mutex);
 
-            if(thread->_authenticated){
-                if(strcmp(thread->_client_name, thread->_client->id)) {
+            if (thread->_authenticated) {
+                if (strcmp(thread->_client_name, thread->_client->id)) {
                     CONSOLE_LOG_WARN("Removing Client from view %s", thread->_client_name);
                     thread->_connected = FALSE;
                     code_return = -1;
@@ -100,7 +100,7 @@ char *client__parse_command(char buffer[BUFFER_SIZE], struct thread_p *thread) {
         return send__ping(thread->_client);
     } else if (thread->_client != NULL) {
         if (!strcmp(token, "getFishes")) {
-            if(thread->_client->_is_observer)
+            if (thread->_client->_is_observer)
                 __stop_send_continuously(thread);
             return send__fishes(thread->_client);
         } else if (!strcmp(token, "getFishesContinuously")) {
@@ -135,7 +135,7 @@ void client__destroy(struct thread_entry *client_thread) {
     UNLOCK(&threads_list_mutex);
 
     if (client_thread->_thread._client != NULL) {
-        if(client_thread->_thread._client->_is_observer){
+        if (client_thread->_thread._client->_is_observer) {
             __stop_send_continuously(&client_thread->_thread);
         }
         client_thread->_thread._client->is_free = TRUE;

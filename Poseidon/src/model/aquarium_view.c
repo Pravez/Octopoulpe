@@ -47,13 +47,13 @@ struct bounds aqv__determine_outer_bounds(struct aquarium_view *aqv) {
     }
     if (outer._starting_position.x + relative_adding_width + aqv->_inner._dimensions.width > AQUARIUM_WIDTH) {
         outer._dimensions.width = AQUARIUM_WIDTH - aqv->_inner._dimensions.width;
-    }else{
-        outer._dimensions.width = aqv->_inner._dimensions.width + relative_adding_width*2;
+    } else {
+        outer._dimensions.width = aqv->_inner._dimensions.width + relative_adding_width * 2;
     }
-    if(outer._starting_position.y + relative_adding_height + aqv->_inner._dimensions.height > AQUARIUM_HEIGHT){
+    if (outer._starting_position.y + relative_adding_height + aqv->_inner._dimensions.height > AQUARIUM_HEIGHT) {
         outer._dimensions.height = AQUARIUM_HEIGHT - aqv->_inner._dimensions.height;
-    }else{
-        outer._dimensions.height = aqv->_inner._dimensions.height + relative_adding_height*2;
+    } else {
+        outer._dimensions.height = aqv->_inner._dimensions.height + relative_adding_height * 2;
     }
 
     return outer;

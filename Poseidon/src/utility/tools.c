@@ -21,7 +21,8 @@ struct dimension __dimension(int width, int height) {
 
 boolean check_in_screen(struct position s_pos, struct dimension dimensions, struct position position) {
     if (position.x >= s_pos.x && position.y >= s_pos.y) {
-        struct position e_pos = __position((int) (s_pos.x + dimensions.width), (int) (s_pos.y + dimensions.height)); //end_position
+        struct position e_pos = __position((int) (s_pos.x + dimensions.width),
+                                           (int) (s_pos.y + dimensions.height)); //end_position
         if (position.x <= e_pos.x && position.y <= e_pos.y)
             return TRUE;
     }
@@ -37,18 +38,21 @@ void _set_test_verbosity(int value) {
     test_verbosity = value;
 }
 
-void _set_output_file(char* path){
+void _set_output_file(char *path) {
     output = fopen(path, "a");
 
-    time_t t = time(NULL);
-    struct tm *tm = localtime(&t);
-    char s[64];
-    strftime(s, sizeof(s), "%c", tm);
-    fprintf(output, "EXECUTION STARTING ON : %s\n", s);
-
+    if (output != NULL) {
+        time_t t = time(NULL);
+        struct tm *tm = localtime(&t);
+        char s[64];
+        strftime(s, sizeof(s), "%c", tm);
+        fprintf(output, "EXECUTION STARTING ON : %s\n", s);
+    } else {
+        CONSOLE_LOG_ERR("Impossible to open or create a log file named %s", path);
+    }
 }
 
-void _close_output_file(){
+void _close_output_file() {
     fclose(output);
 }
 
@@ -98,10 +102,10 @@ void print_trace() {
     free(strings);
 }
 
-double add_to_coordinate(double start, double val, int max_value){
-    if(start + val > max_value)
+double add_to_coordinate(double start, double val, int max_value) {
+    if (start + val > max_value)
         return (max_value - (start + val));
-    else if(start + val < 0)
+    else if (start + val < 0)
         return (max_value + (start + val));
     else
         return (start + val);
@@ -113,39 +117,39 @@ struct position add_to_position(struct position p, double x, double y) {
     new.y = add_to_coordinate(p.y, y, AQUARIUM_HEIGHT);
 
     //If the position goes beyond the limits
-    if(new.x > AQUARIUM_WIDTH)
+    if (new.x > AQUARIUM_WIDTH)
         new.x = new.x - AQUARIUM_WIDTH;
-    else if(new.x < 0)
+    else if (new.x < 0)
         new.x = AQUARIUM_WIDTH + new.x;
 
-    if(new.y > AQUARIUM_HEIGHT)
+    if (new.y > AQUARIUM_HEIGHT)
         new.y = new.y - AQUARIUM_HEIGHT;
-    else if(new.y < 0)
+    else if (new.y < 0)
         new.y = AQUARIUM_HEIGHT + new.y;
 
     return new;
 }
 
-struct position add_to_position_basic(struct position p, double x, double y){
-    return (struct position){p.x + x, p.y + y};
+struct position add_to_position_basic(struct position p, double x, double y) {
+    return (struct position) {p.x + x, p.y + y};
 }
 
-int position_equals(struct position pos1, struct position pos2){
-    return ((int)pos1.x == (int)pos2.x) && ((int)pos1.y == (int)pos2.y);
+int position_equals(struct position pos1, struct position pos2) {
+    return ((int) pos1.x == (int) pos2.x) && ((int) pos1.y == (int) pos2.y);
 }
 
-int in_bounds(struct position starting_point, struct dimension dim, struct position pos){
+int in_bounds(struct position starting_point, struct dimension dim, struct position pos) {
     return (pos.x >= starting_point.x && pos.x <= starting_point.x + dim.width)
-            && (pos.y >= starting_point.y && pos.y <= starting_point.y + dim.height);
+           && (pos.y >= starting_point.y && pos.y <= starting_point.y + dim.height);
 }
 
 int msleep(unsigned long milisec) {
-    struct timespec req={0};
-    time_t sec=(int)(milisec/1000);
-    milisec=milisec-(sec*1000);
-    req.tv_sec=sec;
-    req.tv_nsec=milisec*1000000L;
-    while(nanosleep(&req,&req)==-1)
+    struct timespec req = {0};
+    time_t sec = (int) (milisec / 1000);
+    milisec = milisec - (sec * 1000);
+    req.tv_sec = sec;
+    req.tv_nsec = milisec * 1000000L;
+    while (nanosleep(&req, &req) == -1)
         continue;
     return 1;
 }

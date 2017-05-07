@@ -14,6 +14,11 @@ struct aquarium{
     int _running;
 };
 
+/**
+ * Function to initialize an aquarium
+ * @param aquarium
+ * @param dimension
+ */
 void aq__initialize_aquarium(struct aquarium* aquarium, struct dimension dimension);
 void aq__remove_aquarium(struct aquarium* aquarium);
 

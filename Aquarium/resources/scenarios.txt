@@ -38,3 +38,11 @@ status
 delFish PoissonRouge
 delFish PoissonNain
 delFish PoissonClown
+> Soutenance
+addFish PoissonRouge at 50x50, 15x15, HorizontalWayPoint
+addFish PoissonNain at 90x30, 8x8, RandomWayPoint
+addFish PoissonClown at 10x10, 10x10, RandomWayPoint
+startFish PoissonRouge
+startFish PoissonNain
+startFish PoissonClown
+getFishesContinuously

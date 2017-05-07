@@ -21,9 +21,10 @@ extern pthread_t thread_server;
 extern pthread_t thread_world;
 extern int WORLD_READY;
 extern int SERVER_READY;
+extern int world_execution;
 
 void display_menu() {
-    while (!WORLD_READY || !SERVER_READY);
+    while (!SERVER_READY);
     printf("Welcome to "REDBOLD"Octopoulpe"RESET" main menu ! Enter a command to continue ...\n");
 }
 
@@ -154,6 +155,7 @@ int cmd__load_file() {
             RETURN_ERROR_MSG("Error while reading input file, are you sure it has the right format ?\n", 0)
         } else {
             printf("\t> Successfully loaded file \n");
+            aquarium->_running = TRUE;
         }
     } else {
         RETURN_ERROR_MSG("Impossible to find file, please verify if it exists.\n", 0)
@@ -228,7 +230,7 @@ int cmd__delete() {
 
     if (!strcmp(string, "view")) {
         char *view_name = strtok(NULL, delim);
-        if(view_name != NULL){
+        if (view_name != NULL) {
             struct aquarium_view *view = aq__get_view_by_id(aquarium, view_name);
             if (view != NULL) {
                 aq__remove_aquarium_view(aquarium, view_name);
@@ -239,7 +241,7 @@ int cmd__delete() {
                 return 0;
             }
             return 1;
-        }else{
+        } else {
             printf("\t> Please give a name to remove view\n");
             return 0;
         }
@@ -302,7 +304,9 @@ void __end__() {
     pthread_join(thread_server, NULL);
 
     printf("\t> Stopping aquarium emulation thread ...\n");
-    aquarium->_running = FALSE;
+    world_execution = FALSE;
+    if (aquarium != NULL)
+        aquarium->_running = FALSE;
     pthread_join(thread_world, NULL);
 
     printf("\t> Clearing data ...\n");

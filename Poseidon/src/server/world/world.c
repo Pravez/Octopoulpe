@@ -12,6 +12,7 @@ extern struct aquarium *aquarium;
 extern int WORLD_READY;
 extern struct vector* observers;
 extern pthread_mutex_t mutex_observers;
+extern int world_execution;
 
 static double update_rate;
 
@@ -25,10 +26,13 @@ void *world_process(void *pVoid) {
 int world_init() {
     CONSOLE_LOG_INFO("Initializing Aquarium's world");
     srand((unsigned int) time(NULL));
-    aquarium->_running = TRUE;
     update_rate = UPDATE_INTERVAL < 0 ? 1.0 / (-UPDATE_INTERVAL) : UPDATE_INTERVAL;
-
     WORLD_READY = TRUE;
+
+    //We wait for an aquarium to be created
+    while(aquarium == NULL && world_execution == TRUE){msleep(500);}
+    if(aquarium != NULL)
+        aquarium->_running = TRUE;
 
     return 0;
 }
@@ -151,11 +155,14 @@ void notify_observers(){
 int world_loop() {
 
     //Need to implement an alarm to stop the while true
-    while (aquarium->_running) {
-        update();
-        notify_observers();
+    while(world_execution) {
+        while (aquarium != NULL && aquarium->_running) {
+            update();
+            notify_observers();
 
-        msleep((unsigned long) (update_rate * 1000));
+            msleep((unsigned long) (update_rate * 1000));
+        }
+        msleep(500);
     }
 
     return 1;

@@ -1,8 +1,8 @@
 #include <string.h>
 #include "fish_type.h"
 
-char* get_type_string(enum fish_type type){
-    switch(type){
+char *get_type_string(enum fish_type type) {
+    switch (type) {
         case REDFISH:
             return "RedFish";
         case OCTOPUS:
@@ -16,31 +16,31 @@ char* get_type_string(enum fish_type type){
     }
 }
 
-enum fish_type get_type_from_string(char* type){
-    if(!strcmp(type, "RedFish")){
+enum fish_type get_type_from_string(char *type) {
+    if (!strcmp(type, "RedFish")) {
         return REDFISH;
     }
-    if(!strcmp(type, "Octopus")){
+    if (!strcmp(type, "Octopus")) {
         return OCTOPUS;
     }
-    if(!strcmp(type, "CatFish")){
+    if (!strcmp(type, "CatFish")) {
         return CATFISH;
     }
-    if(!strcmp(type, "BlobFish")){
+    if (!strcmp(type, "BlobFish")) {
         return BLOBFISH;
     }
 
     return NONE;
 }
 
-enum MOVING_STRATEGY get_strategy_from_string(char* type){
-    if(!strcmp(type, "RandomWayPoint")){
+enum MOVING_STRATEGY get_strategy_from_string(char *type) {
+    if (!strcmp(type, "RandomWayPoint")) {
         return RANDOM;
     }
-    if(!strcmp(type, "HorizontalWayPoint")){
+    if (!strcmp(type, "HorizontalWayPoint")) {
         return HORIZONTAL;
     }
-    if(!strcmp(type, "VerticalWayPoint")){
+    if (!strcmp(type, "VerticalWayPoint")) {
         return VERTICAL;
     }
 
