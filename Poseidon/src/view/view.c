@@ -82,6 +82,7 @@ int handle_line() {
                 printf("\t> Unrecognized command, use 'help' or '?' to list available commands\n");
             }
 
+            //Supposed to create a history, but does damages to the console output ...
             //add_history(line);
 
         }
@@ -200,6 +201,7 @@ int cmd__add() {
             width = strtok(NULL, "+");
             height = strtok(NULL, "+");
 
+            //We check for the presence of each data, and its correctness (check an int is not a char ...)
             if (id != NULL && off_x != NULL && off_y != NULL && width != NULL && height != NULL) {
                 if (atoi(off_x) != -1 && atoi(off_y) != -1 && atoi(width) != -1 && atoi(height) != -1) {
                     char *returned = aq__add_view(aquarium, (struct position) {atoi(off_x), atoi(off_y)},
@@ -324,7 +326,9 @@ void *main_menu(void *args) {
     display_menu();
 
     while (1) {
+        //We wait for an input
         line_read = readline(prompt);
+        //And then we analyze it
         if (!handle_line()) {
             break;
         }

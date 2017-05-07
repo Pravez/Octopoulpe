@@ -71,10 +71,12 @@ void server__init(struct server_p *server, int port) {
 
 void server__stop(int signo) {
     if (signo == SIGNAL_END_EVERYTHING) {
+        //We say stop to the link keeper, and wait for him at the end
         server_working = FALSE;
         check_threads_connection = FALSE;
         pthread_kill(server._link_keeper, SIGCONT);
 
+        //For each thread, we remove it from the list, and wait for him to end
         struct thread_entry *en;
         LOCK(&threads_list_mutex);
         LIST_FOREACH(en, &thread_head, thread_entries) {
@@ -87,6 +89,7 @@ void server__stop(int signo) {
 
         pthread_join(server._link_keeper, NULL);
 
+        //We close socket file descriptor in order to stop read() syscall
         shutdown(server._listen_socket_fd, SHUT_RDWR);
     }
 }
@@ -137,8 +140,10 @@ void *server__check_connections(void *args) {
 
             LOCK(&threads_list_mutex);
             LIST_FOREACH(en, &thread_head, thread_entries) {
+                //If a thread is authenticated
                 if (en->_thread._authenticated) {
                     LOCK(&en->_thread._time_mutex);
+                    //If he hasn't send anything for MAXIMUM_IDLE_TIME
                     if (difftime(now, en->_thread._last_ping) > (double) MAXIMUM_IDLE_TIME) {
                         CONSOLE_LOG_WARN("Thread %s has not sent anything for %d seconds, terminating it ...",
                                          en->_thread._client->id, MAXIMUM_IDLE_TIME);

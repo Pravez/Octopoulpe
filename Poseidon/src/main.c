@@ -24,6 +24,8 @@ int SERVER_READY;
 int world_execution;
 
 int main(int argc, char *argv[]) {
+
+    //We set verbosity level
     _set_verbosity(TRUE);
     _set_output_file("log.txt");
     readline_started = FALSE;
@@ -55,7 +57,7 @@ int main(int argc, char *argv[]) {
         CONSOLE_LOG_INFO("Display timeout value is %d seconds", DISPLAY_TIMEOUT_VALUE);
         CONSOLE_LOG_INFO("Controller port is %d", CONTROLLER_PORT);
 
-        //First we allocate the mutex and lock it
+        //we allocate the mutex and lock it (mutex for the observers)
         pthread_mutex_init(&mutex_observers, NULL);
         pthread_mutex_lock(&mutex_observers);
 
@@ -65,7 +67,7 @@ int main(int argc, char *argv[]) {
         CHK_ERROR(pthread_create(&thread_server, NULL, server_process, NULL), "server thread");
         CONSOLE_LOG_INFO("Done !");
 
-
+        //And now we wait for the threads
         pthread_join(thread_server, NULL);
         pthread_join(thread_menu, NULL);
 
