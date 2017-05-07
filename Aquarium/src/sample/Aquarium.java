@@ -56,7 +56,7 @@ public class Aquarium extends Application {
     public void start(Stage primaryStage) throws Exception{
 
         fishes = new ArrayList<Fish>();
-        logsPath = Paths.get(System.getProperty("user.dir") + "logs.txt");
+        logsPath = Paths.get(System.getProperty("user.dir") + "/logs.txt");
         try {
             Files.write(logsPath, Arrays.asList("> Demarrage de l'application...\n..\n.\n"), Charset.forName("UTF-8"));
         } catch (IOException e) {System.out.println("Probleme lors de l'ecriture des logs : " + e.toString());}
@@ -90,7 +90,7 @@ public class Aquarium extends Application {
     }
 
     private void initView () {
-        final URL url = getClass().getResource("bg.png");
+        final URL url = getClass().getResource("Images/bg.png");
         final Image bg = new Image(url.toExternalForm());
         background =  new ImageView(bg);
         background.setFitHeight(height);

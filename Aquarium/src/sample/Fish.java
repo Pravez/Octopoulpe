@@ -35,7 +35,7 @@ public class Fish {
     }
 
     private String[] listImage(){
-        File directory = new File(  System.getProperty("user.dir") + "/src/sample/Images/");
+        File directory = new File(System.getProperty("user.dir") + "/resources/Images");
         String[] listFiles = directory.list();
 
         for(int i=0;i<listFiles.length;i++) {
