@@ -113,17 +113,21 @@ char *send__add_fish(struct client *client) {
     }
 
     /* Testing the format of <x>x<y> arguments */
-    char *arg1_rel_pos = strtok(strdup(rel_pos),"x");
+    char *tmp = strdup(rel_pos);
+    char *arg1_rel_pos = strtok(tmp,"x");
     char *arg2_rel_pos = strtok(NULL," ");
 
-    char *arg1_size = strtok(strdup(size),"x");
+    char * tmp2 = strdup(size);
+    char *arg1_size = strtok(tmp2,"x");
     char *arg2_size = strtok(NULL," ");
 
     if(arg2_rel_pos == NULL  || arg2_size == NULL || ((atoi(arg1_rel_pos) == 0) && (strcmp(arg1_rel_pos,"0") != 0))|| ((atoi(arg2_rel_pos) == 0) && (strcmp(arg2_rel_pos,"0") != 0))|| (atoi(arg1_size) == 0)|| (atoi(arg2_size) == 0))
     {
         asprintf(&result,"NOK\n");
+        free(tmp); free(tmp2);
         return result;
     }
+    free(tmp); free(tmp2);
 
     struct relative_position pos;
     struct dimension dimensions;

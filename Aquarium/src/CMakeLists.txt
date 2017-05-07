@@ -1,29 +1,49 @@
 set(JAVA_SOURCES sample/Aquarium.java
-                 sample/Console.java
-                sample/Controller.java
-                sample/Fish.java)
+        sample/Communicator.java
+        sample/Console.java
+        sample/Controller.java
+        sample/Fish.java
+        sample/Parser.java
+        sample/ReceiveHandler.java
+        sample/ScenarioWindow.java)
 
-add_jar(Aquarium ${JAVA_SOURCES})
+set(JAVA_RESOURCES sample/Images/bb.png
+                   sample/Images/bg.png
+                   sample/Images/PoissonClown.png
+                   sample/Images/PoissonClown2.png
+                   sample/Images/PoissonDore.png
+                   sample/Images/PoissonDore2.png
+                   sample/Images/PoissonNain.png
+                   sample/Images/PoissonNain2.png
+                   sample/Images/PoissonRouge.png
+                   sample/Images/PoissonRouge2.png)
 
-set(RESOURCE_FILES sample/Images/bb.png
-        sample/Images/bg.png
-        sample/Images/magicarpe.png
-        sample/Images/magicarpe2.png
-        sample/Images/nemo.png
-        sample/Images/nemo2.png
-        sample/Images/poulpy.png
-        sample/Images/poulpy2.png
-        sample/Images/shiny.png
-        sample/Images/shiny2.png)
+add_jar(Aquarium ${JAVA_SOURCES} ${JAVA_RESOURCES})
 
-foreach(item IN LISTS RESOURCE_FILES)
-    message(STATUS ${item})
-    add_custom_command(
-        OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${item}"
-        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/${item}" "${CMAKE_CURRENT_BINARY_DIR}/${item}"
-        DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${item}"
-    )
-endforeach()
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-add_custom_target(data-target ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/Images/*.png")
-set_target_properties(Aquarium PROPERTIES RESOURCE "${RESOURCE_FILES}")
+#set(RESOURCE_IMAGES ../resources/Images/*)
+#set(RESOURCE_FILES ../resources/affichage.cfg
+#        ../resources/MobilityModels.txt
+#        ../resources/scenarios.txt
+#        ../resources/logs.txt)
+
+#file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Images)
+
+#foreach (item IN LISTS RESOURCE_IMAGES)
+#    message(STATUS ${item})
+#    add_custom_command(TARGET Aquarium
+#            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#            ${CMAKE_CURRENT_SOURCE_DIR}/${item}
+#            ${CMAKE_CURRENT_BINARY_DIR}/resources/)
+#endforeach ()
+#foreach (item IN LISTS RESOURCE_FILES)
+#    message(STATUS ${item})
+#    add_custom_command(TARGET Aquarium
+#            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#            ${CMAKE_CURRENT_SOURCE_DIR}/${item}
+#            ${CMAKE_CURRENT_BINARY_DIR})
+#endforeach ()
+
+#add_custom_target(data-target ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/Images/*.png")
+#set_target_properties(Aquarium PROPERTIES RESOURCE "${RESOURCE_FILES}")

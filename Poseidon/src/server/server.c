@@ -57,11 +57,11 @@ void server__init(struct server_p *server, int port) {
     CHK_ERROR(bind(server->_listen_socket_fd, (struct sockaddr *) &server->_server_socket,
                    sizeof(server->_server_socket)), "Error on binding")
 
-    //We create the thread in charge of verifying clients are always connected
-    CHK_ERROR(pthread_create(&server->_link_keeper, NULL, server__check_connections, NULL), "Error creating thread");
-
     //We set the mutex for the threads list
     pthread_mutex_init(&threads_list_mutex, NULL);
+
+    //We create the thread in charge of verifying clients are always connected
+    CHK_ERROR(pthread_create(&server->_link_keeper, NULL, server__check_connections, NULL), "Error creating thread");
 
     //If we get a sigstop, we stop everything
     signal(SIGNAL_END_EVERYTHING, server__stop);
@@ -73,7 +73,7 @@ void server__stop(int signo) {
     if (signo == SIGNAL_END_EVERYTHING) {
         server_working = FALSE;
         check_threads_connection = FALSE;
-        pthread_kill(server._link_keeper, SIGNAL_NOTIFICATION);
+        pthread_kill(server._link_keeper, SIGCONT);
 
         struct thread_entry *en;
         LOCK(&threads_list_mutex);
@@ -83,8 +83,9 @@ void server__stop(int signo) {
             LIST_REMOVE(en, thread_entries);
             free(en);
         }
-        pthread_join(server._link_keeper, NULL);
         UNLOCK(&threads_list_mutex);
+
+        pthread_join(server._link_keeper, NULL);
 
         shutdown(server._listen_socket_fd, SHUT_RDWR);
     }

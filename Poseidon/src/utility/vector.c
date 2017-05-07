@@ -58,7 +58,7 @@ struct vector_item vi__create(enum TTYPE type, void *data) {
 
 int vi__convert_int(struct vector_item* item){
     if(item->_type == INT)
-        return (int)item->_data;
+        return (int*)item->_data;
     return INV_INT;
 }
 

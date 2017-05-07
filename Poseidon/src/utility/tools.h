@@ -22,29 +22,35 @@
 #define GREENBOLD "\e[32;1m"
 #define RESET "\e[0m"
 
- #define MAX_ITER 7
+#define MAX_ITER 7
 
 boolean verbosity;
 boolean test_verbosity;
 boolean readline_started;
 
+FILE* output;
+
 #define CONSOLE_LOG_ERR(message, ...) if(verbosity){ \
+        if(verbosity){ \
         if(readline_started){ \
         rl_save_prompt();rl_message("[ "REDBOLD"ERROR"RESET" ]    " message "\n", ##__VA_ARGS__);rl_restore_prompt(); rl_clear_message();\
-        }else{ \
-        printf("[ "REDBOLD"ERROR"RESET" ] \t" message "\n", ##__VA_ARGS__);}}
+        }else{printf("[ "REDBOLD"ERROR"RESET" ]    " message "\n", ##__VA_ARGS__);}     \
+        } if(output != NULL){ \
+        fprintf(stdout, "[ ERROR ] \t" message "\n", ##__VA_ARGS__);}}
 #define CONSOLE_LOG_WARN(message, ...) if(verbosity){ \
+        if(verbosity){ \
         if(readline_started){ \
         rl_save_prompt();rl_message("[ "YELLOW"WARN"RESET" ]     " message "\n", ##__VA_ARGS__);rl_restore_prompt(); rl_clear_message();\
-        }else{ \
-        printf("[ "YELLOW"WARN"RESET" ] \t" message "\n", ##__VA_ARGS__);}}
+        }else{printf("[ "YELLOW"WARN"RESET" ]     " message "\n", ##__VA_ARGS__);}     \
+        } if(output != NULL){ \
+        fprintf(output, "[ WARN ] \t" message "\n", ##__VA_ARGS__);}}
 #define CONSOLE_LOG_INFO(message, ...) if(verbosity){ \
+        if(verbosity){ \
         if(readline_started){ \
         rl_save_prompt();rl_message("[ "GREEN"INFO"RESET" ]     " message "\n", ##__VA_ARGS__);rl_restore_prompt(); rl_clear_message();\
-        }else{ \
-        printf("[ "GREEN"INFO"RESET" ] \t" message "\n", ##__VA_ARGS__);}}
-
-#define CONSOLE_LOG_TEST(message, ...) if(test_verbosity) fprintf(CONSOLE_OUTPUT, "[ "GREENBOLD" OK "RESET" ] \t" message "\n", ##__VA_ARGS__);
+        }else{printf("[ "GREEN"INFO"RESET" ]     " message "\n", ##__VA_ARGS__);}     \
+        } if(output != NULL){ \
+        fprintf(output, "[ INFO ] \t" message "\n", ##__VA_ARGS__);}}
 
 struct position {
     double x;
@@ -71,11 +77,6 @@ struct bounds {
     struct position _starting_position;
 };
 
-struct outer_bounds{
-    struct bounds bounds[4];
-    int _bounds_number;
-};
-
 struct array {
     int _length;
     void *_values;
@@ -92,6 +93,10 @@ void _set_verbosity(int value);
 
 void _set_test_verbosity(int value);
 
+void _set_output_file(char* path);
+
+void _close_output_file();
+
 char *concatenate_strings(int qty, ...);
 
 char *m_strcat(char *dest, char *src);
@@ -105,8 +110,6 @@ struct position add_to_position_basic(struct position p, double x, double y);
 int position_equals(struct position pos1, struct position pos2);
 
 int in_bounds(struct position starting_point, struct dimension dim, struct position pos);
-
-int in_outer_bounds(struct outer_bounds bounds, struct position pos);
 
 int msleep(unsigned long milisec);
 

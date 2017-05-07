@@ -26,6 +26,9 @@ import java.util.List;
 
 import static javafx.scene.control.Alert.AlertType.INFORMATION;
 
+/**
+ * class that define the console, the IHM on which the user will interact
+ */
 public class Console extends Stage {
 
     //Window Structure
@@ -50,6 +53,12 @@ public class Console extends Stage {
     Thread continuously;
     protected Parser parser;
 
+    /**
+     * constructor of the console
+     * @param a aquarium related to the console
+     * @param w width of the console
+     * @param h height of the console
+     */
     public Console(Aquarium a, int w, int h) {
         aquarium = a;
         width = w;
@@ -62,18 +71,15 @@ public class Console extends Stage {
         parser = new Parser(this, display);
     }
 
+    /**
+     * initialize the severals elements of the display
+     */
     private void initDisplay() {
         this.setTitle("Console");
         entry = new Pane();
 
         display = new TextArea();
         display.setEditable(false);
-        display.setOnInputMethodTextChanged(new EventHandler<InputMethodEvent>() {
-
-            public void handle(InputMethodEvent e) {
-                System.out.println("DEBUG : INPUT ENTRE : " + display.getText());
-            }
-        });
 
         history = new ArrayList<>();
 
@@ -90,22 +96,41 @@ public class Console extends Stage {
         this.setScene(new Scene(entry, width, height));
     }
 
+    /**
+     * write a string on the display of the console
+     * @param s string to write
+     */
     public void writeDisplay(String s) {
         display.appendText("< " + s + System.lineSeparator());
     }
 
+    /**
+     * allow to know if the reicever thread is over
+     * @return 1 if the thread is over, 0 else
+     */
     public boolean threadIsOver() {
         return (parser.communicator.receiver != null && parser.communicator.receiver.getState() == Thread.State.TERMINATED);
     }
 
+    /**
+     * set the id of the view
+     * @param id new id of the view
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * set a string in the input of the console
+     * @param s string that we want suggest
+     */
     public void suggestInput(String s) {
         input.setText(s);
     }
 
+    /**
+     * initialise the severals element of the input field
+     */
     private void initInput() {
         input = new TextField ();
         input.setPrefColumnCount(20);
@@ -114,7 +139,7 @@ public class Console extends Stage {
                 case ENTER:
                     String action = input.getText();
                     history.add(action);
-                    historyCount++;
+                    historyCount= history.size();
                     display.appendText("> " + action + System.lineSeparator());
                     input.clear();
 
@@ -137,7 +162,7 @@ public class Console extends Stage {
                     }
                     if (historyCount < history.size()) {
                         historyCount++;
-                        input.setText(history.get(historyCount - 1));
+                        input.setText(history.get(historyCount));
                         input.selectAll();
                     }
                     break;
@@ -148,11 +173,17 @@ public class Console extends Stage {
         });
     }
 
+    /**
+     * allow to log out from the console
+     */
     public void logOut() {
         parser.communicator.logOut();
         this.close();
     }
 
+    /**
+     * initialise every elements of the combo box for the quick orders
+     */
     private void initComboBox() {
         comboBox = new ComboBox();
         comboBox.getItems().addAll("addFish PoissonRouge at 50x50, 15x15, RandomWayPoint",
@@ -171,13 +202,39 @@ public class Console extends Stage {
                 case ENTER:
                     String action = input.getText();
                     history.add(action);
-                    historyCount++;
+                    historyCount= history.size();
                     display.appendText("> " + action + System.lineSeparator());
                     comboBox.setValue(null);
                     input.clear();
 
                     aquarium.writeLogs("Nouvelle entree : "+ action+ "/n");
                     parser.parser(action);
+                    break;
+                case UP:
+                    if (historyCount == 0) {
+                        break;
+                    }
+                    historyCount--;
+                    comboBox.setValue(history.get(historyCount));
+                    input.setText(history.get(historyCount));
+                    input.selectAll();
+                    break;
+                case DOWN:
+                    if (historyCount == history.size() - 1) {
+                        historyCount = history.size();
+                        input.clear();
+                        comboBox.setValue(null);
+                        break;
+                    }
+                    if (historyCount < history.size()) {
+                        historyCount++;
+                        comboBox.setValue(history.get(historyCount));
+                        input.setText(history.get(historyCount));
+                        input.selectAll();
+                    }
+                    break;
+                default:
+                    historyCount = history.size();
                     break;
             }});
 
@@ -189,6 +246,9 @@ public class Console extends Stage {
         });
     }
 
+    /**
+     * initialise the tab bar of the console
+     */
     private void initTab() {
 
         Label tab1 = new Label("Fishes");
@@ -245,6 +305,13 @@ public class Console extends Stage {
         toolbar = new ToolBar(tab1, new Separator(), tab2, new Separator(), tab3, new Separator(), tab4, new Separator(), tab5, new Separator(), cb);
     }
 
+    /**
+     * initialise a tab
+     * @param l label of the new tab
+     * @param title title of the new tab
+     * @param header header of the new tab
+     * @param content content of the new tab
+     */
     private void initInfoTab(Label l, String title, String header, String content) {
         l.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
@@ -265,11 +332,15 @@ public class Console extends Stage {
         });
     }
 
+    /**
+     * get the models of mobility that are available
+     * @return a string that contains every models available
+     */
     private String getModelsAvailable() {
         String res="";
         try {
 
-            List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/src/sample/MobilityModels.txt"), StandardCharsets.UTF_8);
+            List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/resources/MobilityModels.txt"), StandardCharsets.UTF_8);
             for (String s : lines) {
                 res += "- " + s + System.lineSeparator();
             }
@@ -279,8 +350,13 @@ public class Console extends Stage {
         return res;
     }
 
+    /**
+     * get the name of fish that are available
+     * @return a string that contains every name of fish available
+     */
     private String getFishesAvailable() {
-            File directory = new File(  System.getProperty("user.dir") + "/src/sample/Images/");
+            File directory = new File(  System.getProperty("user.dir") + "/resources/Images/");
+            System.out.println("DEBUG : Directory " + directory.getAbsolutePath() + " and LIST=" + directory.list());
             String[] listFiles = directory.list();
             String res = new String("");
             for(int i=0;i<listFiles.length;i++) {

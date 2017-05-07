@@ -18,12 +18,19 @@ import java.util.List;
 
 import static javafx.scene.input.KeyCode.ENTER;
 
+/**
+ * class that define the scenario window, the window that presents the scenarios available and allow to launch them
+ */
 public class ScenarioWindow extends Stage {
 
     private Accordion accordion;
     private TextField input;
     private int height;
 
+    /**
+     * constructor of the scenario window
+     * @param tf text field on which we want to write when we launch a scenario
+     */
     public ScenarioWindow(TextField tf) {
         input = tf;
 
@@ -38,9 +45,12 @@ public class ScenarioWindow extends Stage {
         this.setTitle("Scenario");
     }
 
+    /**
+     * create every pane of the window, using the file scenarios.txt
+     */
     private void createPanes() {
         try {
-            List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/src/sample/scenarios.txt"), StandardCharsets.UTF_8);
+            List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "scenarios.txt"), StandardCharsets.UTF_8);
             for (int i = 0; i < lines.size(); ++i) {
                 if (lines.get(i).charAt(0) == '>') {
                     String title = lines.get(i).substring(2, lines.get(i).length());
@@ -60,6 +70,11 @@ public class ScenarioWindow extends Stage {
         }
     }
 
+    /**
+     * create and add a pane to the window
+     * @param title title of the scenario corresponding to te new pane
+     * @param steps steps of the scenario corresponding to the new pane
+     */
     private void createPane(String title, String steps) {
         ScenarioWindow w = this;
         VBox vb = new VBox();
@@ -82,6 +97,11 @@ public class ScenarioWindow extends Stage {
         accordion.getPanes().add(tp);
     }
 
+    /**
+     * create a button that will launch ascenario
+     * @param steps step of the scenario that will be launched by the button
+     * @return the button created
+     */
     private Button createButton(String steps) {
         ScenarioWindow w = this;
         Button b = new Button("Lancer scenario");

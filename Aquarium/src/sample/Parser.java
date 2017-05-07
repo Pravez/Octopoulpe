@@ -8,18 +8,30 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+/**
+ * class that define the parser, to parse the different orders of the user
+ */
 public class Parser {
 
     protected Console console;
     protected Communicator communicator;
     public Thread continuously;
 
+    /**
+     * constructor of the parser
+     * @param c console that will use the parser
+     * @param ta text area on which the parser will write
+     */
     public Parser(Console c, TextArea ta) {
         console = c;
         console.display = ta;
         communicator = new Communicator(console);
     }
 
+    /**
+     * function that will parse a string
+     * @param action string to parse
+     */
     synchronized public void parser(String action) {
         String[] args = action.split (" |\\, ");
         switch (args[0]) {
@@ -40,7 +52,7 @@ public class Parser {
             case "status" :
                 if (args.length == 1) {
                     if (communicator.isConnected()) {
-                        console.display.appendText("< OK : Connecte au contrôleur, " + console.aquarium.toString());
+                        console.display.appendText("< OK : Connecte au controleur, " + console.aquarium.toString());
                     }
                     else
                         console.display.appendText("< NOK : Connexion non trouvee."  + console.aquarium.toString());
@@ -110,9 +122,14 @@ public class Parser {
         }
     }
 
+    /**
+     * allow to check the mobility model, verify if it's available in the file in ressources
+     * @param m model we want to verify
+     * @return 1 if the model we verify is available, 0 else
+     */
     private boolean checkMobilityModel(String m) {
         try {
-            List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/src/sample/MobilityModels.txt"), Charset.defaultCharset());
+            List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/resources/MobilityModels.txt"), Charset.defaultCharset());
 
             for (String s : lines) {
                 if (m.contentEquals(s))

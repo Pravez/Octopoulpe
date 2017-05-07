@@ -24,6 +24,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
+/**
+ * class that represent a view, a part of the global aquarium
+ */
 public class Aquarium extends Application {
 
     //config attributes
@@ -52,11 +55,16 @@ public class Aquarium extends Application {
     protected Path logsPath;
     private int konamiCode = 0;
 
+    /**
+     * allow to start the application
+     * @param primaryStage
+     * @throws Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception{
 
         fishes = new ArrayList<Fish>();
-        logsPath = Paths.get(System.getProperty("user.dir") + "/src/sample/logs.txt");
+        logsPath = Paths.get(System.getProperty("user.dir") + "/logs.txt");
         try {
             Files.write(logsPath, Arrays.asList("> Demarrage de l'application...\n..\n.\n"), Charset.forName("UTF-8"));
         } catch (IOException e) {System.out.println("Probleme lors de l'ecriture des logs : " + e.toString());}
@@ -89,6 +97,9 @@ public class Aquarium extends Application {
         handler();
     }
 
+    /**
+     * initialise the elements of the view
+     */
     private void initView () {
         final URL url = getClass().getResource("Images/bg.png");
         final Image bg = new Image(url.toExternalForm());
@@ -99,12 +110,19 @@ public class Aquarium extends Application {
         aquarium.getChildren().addAll(getAllViews(0));
     }
 
+    /**
+     * write a string in the log file
+     * @param s logs to write
+     */
     protected void writeLogs(String s) {
         try {
             Files.write(logsPath, Arrays.asList("> " + s), Charset.forName("UTF-8"), StandardOpenOption.APPEND);
         } catch (IOException e) {System.out.println("Probleme lors de l'ecriture des logs : " + e.toString());}
     }
 
+    /**
+     * define the severals actions to handle each tick
+     */
     private void handler() {
         new AnimationTimer() {
             @Override
@@ -150,10 +168,12 @@ public class Aquarium extends Application {
         }.start();
     }
 
+    /**
+     * configure the aquarium thanks to the aquarium.cfg
+     */
     private void config() {
-        //TODO : On suppose que le config est correctement fait  et complete ?
             try {
-                List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/src/sample/affichage.cfg"), StandardCharsets.ISO_8859_1);
+                List<String> lines = Files.readAllLines(Paths.get(System.getProperty("user.dir") + "/resources/affichage.cfg"), StandardCharsets.ISO_8859_1);
 
                 String address = new String();
                 int port = 0;
@@ -181,7 +201,7 @@ public class Aquarium extends Application {
                         }
                     }
                 }
-                writeLogs("On configure :\n ID="+id+"\n Adresse du serveur="+address+"\n Port="+port+"\n Timeout par défaut="+pingTimeslice+" millisecondes\n Repertoire des images="+imagesURL+"\n");
+                writeLogs("On configure :\n ID="+id+"\n Adresse du serveur="+address+"\n Port="+port+"\n Timeout par defaut="+pingTimeslice+" millisecondes\n Repertoire des images="+imagesURL+"\n");
                 console.parser.communicator.config(address, port);
             } catch (IOException e) {
                 System.out.println("Exception lors de la lecture de affichage.cfg : " + e.toString());
@@ -189,6 +209,12 @@ public class Aquarium extends Application {
             }
         }
 
+    /**
+     * update the size of the fish with corresponding name
+     * @param name name of the fish to update
+     * @param w the new width
+     * @param h the new height
+     */
     public void setFishSize(String name, int w, int h) {
         for (Fish f: fishes) {
             if (f.getName().contentEquals(name)) {
@@ -197,6 +223,11 @@ public class Aquarium extends Application {
         }
     }
 
+    /**
+     * allow to know with the aquarium has a fish
+     * @param name name of the fish we seacrh
+     * @return 1 if it contains the fish, 0 else
+     */
     public boolean hasFish(String name) {
         for (Fish f: fishes) {
             if (f.getName().contentEquals(name))
@@ -205,6 +236,10 @@ public class Aquarium extends Application {
         return false;
     }
 
+    /**
+     * allow to get a description of the aquarium
+     * @return a description of the aquarium in string
+     */
     public String toString() {
         String s = new String(fishes.size() + " poisson(s) trouve(s)" + System.lineSeparator());
 
@@ -215,10 +250,17 @@ public class Aquarium extends Application {
         return s;
     }
 
+    /**
+     * allow to know how many fishes the aquarium contains
+     * @return the number of fish in the aquarium
+     */
     public int getNbFishes() {
         return fishes.size();
     }
 
+    /**
+     * initialise the elements for the konami code
+     */
     private void initKonami() {
         aquarium.requestFocus();
         aquarium.setOnKeyReleased(new EventHandler<KeyEvent>(){
@@ -253,6 +295,11 @@ public class Aquarium extends Application {
         });
     }
 
+    /**
+     * allow to get the view of each fish in the aquarium
+     * @param nb specify the view we want (two views for animation)
+     * @return a collection of all the views of fishes
+     */
     public Collection<ImageView> getAllViews(int nb) {
         ArrayList<ImageView> res = new ArrayList<ImageView>();
         for(Fish f : fishes) {
@@ -261,17 +308,35 @@ public class Aquarium extends Application {
         return res;
     }
 
+    /**
+     * add a fish in the aquarium
+     * @param f the fish we want to add
+     */
     public void addFish(Fish f) {
         hasNew = true; //to know that another thread add a fish (just the main thread can add it at the view)
         fishes.add(f);
     }
 
-    public void addFish(String name, int x, int y, int w, int h) {
+    /**
+     * add a fish in the aquarium
+     * @param name name of the new fish
+     * @param x position in x of the new fish
+     * @param y position in y of the new fish
+     * @param w width of the new fish
+     * @param h height of the new fish
+     * @param started a boolean to know with the new fish is already started or not
+     */
+    public void addFish(String name, int x, int y, int w, int h, boolean started) {
               Fish f = new Fish(x*width/100, y*height/100, w*width/100, h*height/100, name);
+              f.setStarted(started);
               fishes.add(f);
               hasNew = true;
     }
 
+    /**
+     * start a fish
+     * @param name name of the fish we want to start
+     */
     public void setStarted(String name) {
         for (Fish f: fishes) {
             if (f.getName().contentEquals(name)) {
@@ -281,6 +346,10 @@ public class Aquarium extends Application {
         }
     }
 
+    /**
+     * remove a fish
+     * @param name name of the fish we want to remove
+     */
     public void removeFish(String name) {
         Fish toRemove = null;
         for (Fish f : fishes) {
@@ -292,6 +361,13 @@ public class Aquarium extends Application {
             fishes.remove(toRemove);
     }
 
+    /**
+     * set a new goal to a fish
+     * @param name name of the fish we want to work on
+     * @param x position in x of the goal
+     * @param y position in y of the goal
+     * @param d duration expected for the goal
+     */
     public void setGoal(String name, int x, int y, long d) {
         for (Fish f : fishes ) {
             if (f.getName().equalsIgnoreCase(name)) {
@@ -301,6 +377,27 @@ public class Aquarium extends Application {
         }
     }
 
+    /**
+     * remove all the fishes that were not updated
+     * @param fishesUpdated ArrayList of all the names of fish that were updated
+     */
+    public void removeNonUpdated(ArrayList<String> fishesUpdated) {
+        ArrayList<Fish> toRemove = new ArrayList<Fish>();
+        for( Fish f : fishes) {
+            if (!fishesUpdated.contains(f.getName()))
+                toRemove.add(f);
+        }
+
+        for (Fish f: toRemove){
+            fishes.remove(f);
+        }
+
+    }
+
+    /**
+     * main function
+     * @param args no args expected
+     */
     public static void main(String[] args) {
         launch(args);
     }

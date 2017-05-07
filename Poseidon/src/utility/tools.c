@@ -37,6 +37,21 @@ void _set_test_verbosity(int value) {
     test_verbosity = value;
 }
 
+void _set_output_file(char* path){
+    output = fopen(path, "a");
+
+    time_t t = time(NULL);
+    struct tm *tm = localtime(&t);
+    char s[64];
+    strftime(s, sizeof(s), "%c", tm);
+    fprintf(output, "EXECUTION STARTING ON : %s\n", s);
+
+}
+
+void _close_output_file(){
+    fclose(output);
+}
+
 char *concatenate_strings(int qty, ...) {
     va_list list;
     va_start(list, qty);
@@ -122,17 +137,6 @@ int position_equals(struct position pos1, struct position pos2){
 int in_bounds(struct position starting_point, struct dimension dim, struct position pos){
     return (pos.x >= starting_point.x && pos.x <= starting_point.x + dim.width)
             && (pos.y >= starting_point.y && pos.y <= starting_point.y + dim.height);
-}
-
-int in_outer_bounds(struct outer_bounds bounds, struct position pos){
-    int in = FALSE;
-    for(int i = 0; i < bounds._bounds_number && !in;i++){
-        if(in_bounds(bounds.bounds[i]._starting_position, bounds.bounds[i]._dimensions, pos)){
-            in = TRUE;
-        }
-    }
-
-    return in;
 }
 
 int msleep(unsigned long milisec) {

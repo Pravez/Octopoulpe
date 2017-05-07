@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * class that define the communicator, the element that will allow the TCP communication with the socket
+ */
 public class Communicator {
 
     private Console console;
@@ -19,20 +22,33 @@ public class Communicator {
     protected ReceiveHandler handler;
 
 
+    /**
+     * constructor of the communicator
+     * @param c console that will use the communicator
+     */
     public Communicator(Console c) {
         console = c;
     }
 
+    /**
+     * check if the socket is connected
+     * @return 1 if the socket is connected, 0 else
+     */
     public boolean isConnected() {
         return (socket != null && socket.isConnected());
     }
 
+    /**
+     * configure the connexion
+     * @param address address of ther server we want to connect with
+     * @param port port on which we want to connect
+     */
     public void config(String address, int port) {
         boolean connected = false;
         while (!connected) {
             try {
                 console.aquarium.writeLogs("Tentative de connexion sur " + InetAddress.getByName(address) + "sur le port = " + port + "\n");
-                socket = new Socket(InetAddress.getByName(InetAddress.getLocalHost().toString().split("/")[1]), port);
+                socket = new Socket(address, port);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 connected = true;
             } catch (IOException e) {
@@ -45,6 +61,9 @@ public class Communicator {
         receiver.start();
     }
 
+    /**
+     * allow to log out from the connexion
+     */
     synchronized public void logOut() {
         try {
             if (socket != null) {
@@ -53,6 +72,10 @@ public class Communicator {
         }catch (IOException e) {System.out.println("Exception : " + e.toString()); console.aquarium.writeLogs("Exception lors de la fermeture de socket\n");}
          }
 
+    /**
+     * send a message on the socket
+     * @param s message to send
+     */
     public void send(String s) {
         console.aquarium.writeLogs("On envoie au serveur : " +s+"\n");
         if (isConnected()) {
