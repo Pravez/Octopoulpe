@@ -24,6 +24,7 @@ int SERVER_READY;
 
 int main(int argc, char* argv[]){
     _set_verbosity(TRUE);
+    _set_output_file("log.txt");
     readline_started = FALSE;
     CONSOLE_LOG_INFO("Starting Octopoulpe");
     CONSOLE_LOG_INFO("Initializing values ...");
@@ -66,9 +67,13 @@ int main(int argc, char* argv[]){
         pthread_join(thread_menu, NULL);
 
         pthread_mutex_destroy(&mutex_observers);
+        _close_output_file();
 
         return EXIT_SUCCESS;
     }else{
+        _close_output_file();
         CONSOLE_LOG_ERR("Impossible to find controller.cfg config file");
+
+        return EXIT_FAILURE;
     }
 }

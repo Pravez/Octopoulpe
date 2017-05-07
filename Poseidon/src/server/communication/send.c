@@ -54,7 +54,6 @@ char *send__fishes(struct client *client) {
     } else {
         asw__get_fishes(&result, client);
     }
-    CONSOLE_LOG_INFO("%s", result);
     return result;
 }
 

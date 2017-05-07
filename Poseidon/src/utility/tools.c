@@ -37,6 +37,21 @@ void _set_test_verbosity(int value) {
     test_verbosity = value;
 }
 
+void _set_output_file(char* path){
+    output = fopen(path, "a");
+
+    time_t t = time(NULL);
+    struct tm *tm = localtime(&t);
+    char s[64];
+    strftime(s, sizeof(s), "%c", tm);
+    fprintf(output, "EXECUTION STARTING ON : %s\n", s);
+
+}
+
+void _close_output_file(){
+    fclose(output);
+}
+
 char *concatenate_strings(int qty, ...) {
     va_list list;
     va_start(list, qty);
