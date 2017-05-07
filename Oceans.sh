@@ -98,11 +98,9 @@ then
     case $key in
         -p)
         prepare
-        shift
         ;;
         -c)
         compile
-        shift
         ;;
         -r)
         EXECUTABLE_NAME="$2"
@@ -111,11 +109,9 @@ then
         ;;
         -h|--help)
         usage
-        shift
         ;;
 	--clean)
 	clean
-	shift
 	;;
 	--clean-everything)
 	rm -rf build/
@@ -125,7 +121,7 @@ then
                 echo "Unknown option"
         ;;
     esac
-    shift # past argument or value
+    shift
     done
 else
     echo "Please give at least one option"

@@ -43,19 +43,15 @@ then
     case $key in
         --create)
         create
-        shift
         ;;
         --run)
         run
-        shift
         ;;
         -h|--help)
         usage
-        shift
         ;;
         --clean)
         clean
-        shift
         ;;
         *)
                 echo "Unknown option"
