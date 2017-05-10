@@ -1,0 +1,49 @@
+> Classique
+addFish PoissonRouge at 50x50, 15x15, RandomWayPoint
+startFish PoissonRouge
+getFishes
+status
+status
+delFish PoissonRouge
+> Double 
+addFish PoissonRouge at 50x50, 15x15, RandomWayPoint
+startFish PoissonRouge
+addFish PoissonNain at 20x20, 10x10, RandomWayPoint
+startFish PoissonNain
+getFishes
+status
+status
+delFish PoissonRouge
+delFish PoissonNain
+> Others Models
+addFish PoissonRouge at 50x50, 15x15, VerticalWayPoint
+startFish PoissonRouge
+addFish PoissonNain at 20x20, 10x10, HorizontalPoint
+startFish PoissonNain
+getFishes
+status
+status
+delFish PoissonRouge
+delFish PoissonNain
+> Big family
+addFish PoissonRouge at 50x50, 15x15, RandomWayPoint
+startFish PoissonRouge
+addFish PoissonNain at 20x20, 10x10, HorizontalPoint
+startFish PoissonNain
+addFish PoissonClown at 40x20, 10x10, HorizontalPoint
+startFish PoissonClown
+getFishes
+status
+status
+delFish PoissonRouge
+delFish PoissonNain
+delFish PoissonClown
+> Démo simple
+addFish PoissonClown at 20x20, 10x10, HorizontalWayPoint
+startFish PoissonClown
+getFishesContinuously
+> Démo avancée
+getFishesContinuously
+addFish PoissonClown at 20x20, 10x10, HorizontalWayPoint
+startFish PoissonClown
+

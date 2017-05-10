@@ -47,8 +47,9 @@ public class Communicator {
         boolean connected = false;
         while (!connected) {
             try {
-                console.aquarium.writeLogs("Tentative de connexion sur " + InetAddress.getByName(address) + "sur le port = " + port + "\n");
-                socket = new Socket(address, port);
+                console.aquarium.writeLogs("Tentative de connexion sur " + InetAddress.getByName(InetAddress.getLocalHost().toString().split("/")[1]) + " sur le port = " + port + "\n");
+
+                socket = new Socket(InetAddress.getByName(InetAddress.getLocalHost().toString().split("/")[1].substring(1)), port);
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 connected = true;
             } catch (IOException e) {

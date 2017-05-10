@@ -68,6 +68,8 @@ public class Parser {
                         else {
                             //console.addFishToHandle(args[1], Integer.parseInt(args[3].split("x")[0]), Integer.parseInt(args[3].split("x")[1]), Integer.parseInt(args[4].split("x")[0]), Integer.parseInt(args[4].split("x")[1]));
                             communicator.handler.addToHistory(action);
+                            console.aquarium.addFish(args[1], Integer.parseInt(args[3].split("x")[0]), Integer.parseInt(args[3].split("x")[1]), Integer.parseInt(args[4].split("x")[0]), Integer.parseInt(args[4].split("x")[1]), false);
+
                             //while (!communicator.orderHistory.contains(action));
                             communicator.send(action);
                         }
