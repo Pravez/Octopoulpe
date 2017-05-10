@@ -18,7 +18,7 @@ fish__create(enum fish_type type, int x, int y, char *id, enum MOVING_STRATEGY s
     f->_goal = __position(x, y);
     f->_cover = dimension;
     f->_type = type;
-    f->_speed_rate = UPDATE_INTERVAL < 0 ? 1.0 / (-UPDATE_INTERVAL) : UPDATE_INTERVAL;
+    f->_speed_rate = UPDATE_INTERVAL < 0 ? 1.0 / (-UPDATE_INTERVAL) : UPDATE_INTERVAL*10;
     f->_strategy = strategy;
     f->_running = 0;
 
