@@ -19,5 +19,5 @@ then
 fi
 
 echo "Please execute these two lines to change your JAVA_HOME"
-echo export JAVA_HOME=`pwd`/oracle-jdk8/
+echo export JAVA_HOME=`pwd`/oracle-jdk8
 echo export PATH=\$JAVA_HOME/bin:\$PATH
