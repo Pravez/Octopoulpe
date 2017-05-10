@@ -99,6 +99,8 @@ public class ReceiveHandler implements Runnable {
                         	console.setId(args[1]);
                         	break;
                     	case "NOK":
+							if (! orderHistory.isEmpty())
+								orderHistory.pop();
                         	break;
                     	case "OK":
                         	handleOK();
