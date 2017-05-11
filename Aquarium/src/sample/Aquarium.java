@@ -129,7 +129,7 @@ public class Aquarium extends Application {
             public void handle(long now) {
                 timer++;;
 
-                if (console.threadIsOver() ){//|| !console.parser.communicator.isConnected()) {
+                if (console.threadIsOver() || !console.parser.communicator.isConnected()) {
                     writeLogs("Arret du programme.");
                     console.logOut();
                     System.exit(1);
@@ -202,7 +202,7 @@ public class Aquarium extends Application {
                     }
                 }
                 writeLogs("On configure :\n ID="+id+"\n Adresse du serveur="+address+"\n Port="+port+"\n Timeout par defaut="+pingTimeslice+" millisecondes\n Repertoire des images="+imagesURL+"\n");
-                //console.parser.communicator.config(address, port);
+                console.parser.communicator.config(address, port);
             } catch (IOException e) {
                 System.out.println("Exception lors de la lecture de affichage.cfg : " + e.toString());
                 writeLogs("Probleme lors de la lecture du fichier de configuration.\n");
@@ -340,7 +340,6 @@ public class Aquarium extends Application {
     public void setStarted(String name) {
         for (Fish f: fishes) {
             if (f.getName().contentEquals(name)) {
-                System.out.println("FOUND FISH : " + name);
                 f.setStarted(true);
             }
         }
