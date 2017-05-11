@@ -101,7 +101,6 @@ public class Fish {
      */
     public void setStarted(boolean s) {
         started=s;
-        System.out.println("SET STARTED DONE");
     }
 
     /**
